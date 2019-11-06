@@ -6,15 +6,15 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 15:23:29 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/06 16:52:28 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/06 23:00:12 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FDF_H
 # define FDF_H
 
-# define WIN_W 500
-# define WIN_H 500
+# define WIN_W 1280
+# define WIN_H 720
 
 # define ESC 53
 
@@ -46,5 +46,7 @@ typedef struct		s_mlx_data
 	void			*win_ptr;
 	t_mouse_data 	*mouse_data;
 }					t_mlx_data;
+
+t_vec3	make_vec3(float x, float y, float z);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:53:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/06 19:03:44 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/06 23:57:18 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,26 +22,55 @@
 
 #define WHITE 0xFFFFFFF
 
+/*
+** plotLineLow(x0,y0, x1,y1)
+**   dx = x1 - x0
+**   dy = y1 - y0
+**   yi = 1
+**   if dy < 0
+**     yi = -1
+**     dy = -dy
+**   end if
+**   D = 2*dy - dx
+**   y = y0
+**
+**   for x from x0 to x1
+**     plot(x,y)
+**     if D > 0
+**        y = y + yi
+**        D = D - 2*dx
+**     end if
+**     D = D + 2*dy
+*/
+
 void	draw_line(t_mlx_data *mlx_data, t_vec3 p0, t_vec3 p1)
 {
 	float x;
-	float slope;
-	float yintercept;
 	float y;
-
-	if (p1.z > 0)
-			p1.y -= 5;
-
+	float deltaX;
+	float deltaY;
+	float yintercept;
+	float D;
+	deltaX = p1.x - p0.x;
+	deltaY = p1.y - p0.y;
+	yintercept = 1;
+	if (deltaY < 0)
+	{
+		yintercept = -1;
+		deltaY = -deltaY;
+	}
+	D = 2 * deltaY - deltaX;
+	y = p0.y;
 	x = p0.x;
-	slope = (p1.y - p0.y) / (p1.x - p0.x);
-	yintercept = p0.y;
-
-
 	while (x < p1.x)
 	{
-		y = slope * x + yintercept;
-
 		mlx_pixel_put(mlx_data->mlx_ptr, mlx_data->win_ptr, x, y, WHITE);
+		if (D > 0)
+		{
+			y = y + yintercept;
+			D = D - 2 * deltaX;
+		}
+		D = D + 2 * deltaY;
 		x++;
 	}
 }
@@ -94,86 +123,79 @@ t_mlx_data *init(char *title)
 	return (mlx_data);
 }
 
-t_vec3 *read_to_list(int fd)
+int	read_map_data(int fd, t_vec3 *vec_map)
 {
 	int y;
 	int x;
 	char	*line;
-	char	**ps;
-
-	t_vec3 *vec_map;
-	vec_map = malloc(sizeof(t_vec3) * 20);
-
-	t_list *new;
+	char	**points;
+	int		size;
 	t_vec3 vec3;
-	t_list *p_lst;
-	t_list **begin;
-	begin = malloc(sizeof(t_list*));
-	p_lst = *begin;
+	int xoff = 100;
+	int yoff = 100;
+
+	size = 0;
 	y = 0;
 	while (ft_get_next_line(fd, &line))
 	{
-		ps = ft_strsplit(line, ' ');
+		points = ft_strsplit(line, ' ');
 		x = 0;
-		while (*ps)
+		while (*points)
 		{
-			vec3.x = x * 20;
-			vec3.y = y * 20;
-			vec3.z = ft_atoi(*ps) * 10;
-			vec_map[y * 10 + x] = vec3;
-			//new = ft_lstnew(&vec3, sizeof(vec3));
-			//ft_lstappend(&p_lst, new);
-			ps++;
+			vec_map[y * 19 + x] = make_vec3(x * 50 + xoff, y * 50 + yoff, ft_atoi(*points) * 50);
+			points++;
 			x++;
+			size++;
 		}
+		free(line);
 		y++;
 	}
-	return (vec_map);
+	return (size);
 }
-
-
 
 int	main(int argc, char const *argv[])
 {
 	t_mlx_data *mlx_data;
-	t_vec3 *vec_map;
+	t_vec3 vec_map[209];
+	int	fd;
+	int map_size;
 
 	if (argc == 2)
 	{
-		vec_map = read_to_list(open(argv[1], O_RDONLY));
+		fd = open(argv[1], O_RDONLY);
+		map_size = read_map_data(fd, vec_map);
+		close(fd);
 	}
-
 
 	mlx_data = init("fdf");
 
-	mlx_key_hook(mlx_data->win_ptr, on_key_down, mlx_data);
 	mlx_hook(mlx_data->win_ptr, 6, 0, on_mouse_move, mlx_data);
+	mlx_hook(mlx_data->win_ptr, 2, 0, on_key_down, mlx_data);
 	mlx_loop_hook (mlx_data->mlx_ptr, on_render, mlx_data);
 	//mlx_pixel_put(mlx_data->mlx_ptr, mlx_data->win_ptr, p0.x, p0.y, 0xFFF0000);
-	/* t_vec3 p0;
-	t_vec3 p1;
 
-	p0.x = 10;
-	p0.y = 10;
-	p1.x = 490;
-	p1.y = 10;
-	draw_line(mlx_data, p0, p1); */
 	int x;
 	int y;
 
+	//draw_line(mlx_data, vec_map[0], vec_map[10]);
+
 	y = 0;
-	while (y < 10)
+	while (y < 11)
 	{
 		x = 0;
-		while (x < 10)
+		while (x < 19)
 		{
-			draw_line(mlx_data, vec_map[y * 10 + x], vec_map[(y * 10) + x + 1]);
-			//draw_line(mlx_data, vec_map[y * 10 + x], vec_map[((y+1) * 10) + x + 1]);
-			//mlx_string_put(mlx_data->mlx_ptr, mlx_data->win_ptr, vec_map[y * 10 + x].x, vec_map[y * 10 + x].y, WHITE, "x");
+			t_vec3 p0 = vec_map[y * 19 + x];
+			t_vec3 p1 = vec_map[y * 19 + x + 1];
+			if(p1.z > 0)
+				p1.y -= p1.z * 0.5;
+			draw_line(mlx_data, p0, p1);
+			mlx_string_put(mlx_data->mlx_ptr, mlx_data->win_ptr, p0.x, p0.y, WHITE, "O");
 			x++;
 		}
 		y++;
 	}
 	mlx_loop(mlx_data->mlx_ptr);
+	free(mlx_data);
 	return (0);
 }
