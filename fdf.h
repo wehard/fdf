@@ -6,24 +6,31 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 15:23:29 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/05 16:32:01 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/06 16:52:28 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FDF_H
 # define FDF_H
 
-# define WIN_W 1280
-# define WIN_H 720
+# define WIN_W 500
+# define WIN_H 500
 
 # define ESC 53
 
 typedef struct 		s_vec3
 {
-	int				x;
-	int				y;
-	int				z;
+	float			x;
+	float			y;
+	float			z;
 }					t_vec3;
+
+typedef struct 		s_line
+{
+	t_vec3			p0;
+	t_vec3			p1;
+	int				color;
+}					t_line;
 
 typedef struct		s_mouse_data
 {
