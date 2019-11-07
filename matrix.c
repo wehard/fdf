@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/07 17:20:13 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/07 22:57:44 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/08 00:45:00 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,29 +64,39 @@
 **		afx / z, fy / z, zq - znearq
 */
 
+// [row][col]
+
+t_mat4x4	create_identity_matrix(void)
+{
+	t_mat4x4 mat;
+
+	mat.m[0][0] = 1.0f;
+	mat.m[0][1] = 0.0f;
+	mat.m[0][2] = 0.0f;
+	mat.m[0][3] = 0.0f;
+	mat.m[1][0] = 0.0f;
+	mat.m[1][1] = 1.0f;
+	mat.m[1][2] = 0.0f;
+	mat.m[1][3] = 0.0f;
+	mat.m[2][0] = 0.0f;
+	mat.m[2][1] = 0.0f;
+	mat.m[2][2] = 1.0f;
+	mat.m[2][3] = 0.0f;
+	mat.m[3][0] = 0.0f;
+	mat.m[3][1] = 0.0f;
+	mat.m[3][2] = 0.0f;
+	mat.m[3][3] = 1.0f;
+	return (mat);
+}
+
 t_mat4x4	create_proj_matrix(float znear, float zfar, float fov, float s_width, float s_height)
 {
 	t_mat4x4 mat_proj;
 
-	float a_ratio = (float)s_height / (float)s_width;
-	float fovrad = 1.0f / tanf(fov * 0.5f); //  / 180.0f * 3.14159f
+	mat_proj = create_identity_matrix();
 
-	mat_proj.m[0][0] = 0.0f;
-	mat_proj.m[1][0] = 0.0f;
-	mat_proj.m[2][0] = 0.0f;
-	mat_proj.m[3][0] = 0.0f;
-	mat_proj.m[0][1] = 0.0f;
-	mat_proj.m[1][1] = 0.0f;
-	mat_proj.m[2][1] = 0.0f;
-	mat_proj.m[3][1] = 0.0f;
-	mat_proj.m[0][2] = 0.0f;
-	mat_proj.m[1][2] = 0.0f;
-	mat_proj.m[2][2] = 0.0f;
-	mat_proj.m[3][2] = 0.0f;
-	mat_proj.m[0][3] = 0.0f;
-	mat_proj.m[1][3] = 0.0f;
-	mat_proj.m[2][3] = 0.0f;
-	mat_proj.m[3][3] = 0.0f;
+	float a_ratio = (float)s_height / (float)s_width;
+	float fovrad = 1.0f / tanf(fov * 0.5f / 180.0f * 3.14159f); //  / 180.0f * 3.14159f
 
 	mat_proj.m[0][0] = a_ratio * fovrad;
 	mat_proj.m[1][1] = fovrad;

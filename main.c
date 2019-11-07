@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:53:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/07 23:51:40 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/08 00:44:32 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include "mlx.h"
 #include "fdf.h"
 #include "matrix.h"
+#include "math.h"
 #include "ft_get_next_line.h"
 
 #define GREEN 0x00FF00
@@ -145,7 +146,7 @@ int	read_map_data(int fd, t_vec3 *vec_map)
 		x = 0;
 		while (*points)
 		{
-			vec_map[y * 19 + x] = make_vec3(x * 0.25f, y * 0.25f, -ft_atoi(*points) * 0.025f);
+			vec_map[y * 19 + x] = make_vec3(x * 0.25f, y * 0.25f, -ft_atoi(*points) * 0.05f);
 			points++;
 			x++;
 			size++;
@@ -229,6 +230,26 @@ int	main(int argc, char const *argv[])
 		//mlx_string_put(mlx_data->mlx_ptr, mlx_data->win_ptr, px.x, px.y, WHITE, "X");
 	} */
 
+	float anglez = 0.4f;
+	float anglex = -0.4f;
+	t_mat4x4 mat_rot_z = create_identity_matrix();
+
+	mat_rot_z.m[0][0] = cosf(anglez);
+	mat_rot_z.m[0][1] = sinf(anglez);
+	mat_rot_z.m[1][0] = -sinf(anglez);
+	mat_rot_z.m[1][1] = cosf(anglez);
+	mat_rot_z.m[2][2] = 1.0f;
+	mat_rot_z.m[3][3] = 1.0f;
+
+
+	t_mat4x4 mat_rot_x = create_identity_matrix();
+
+	mat_rot_x.m[0][0] = 1.0f;
+	mat_rot_x.m[1][1] = cosf(anglex * 0.5f);
+	mat_rot_x.m[1][2] = sinf(anglex * 0.5f);
+	mat_rot_x.m[2][1] = -sinf(anglex * 0.5f);
+	mat_rot_x.m[2][2] = cosf(anglex * 0.5f);
+	mat_rot_x.m[3][3] = 1.0f;
 
 	int x;
 	int y;
@@ -239,6 +260,8 @@ int	main(int argc, char const *argv[])
 		while (x < 19)
 		{
 			t_vec3 p = vec_map[y * 19 + x];
+			p = multiply_matrix_vec3(p, mat_rot_z);
+			p = multiply_matrix_vec3(p, mat_rot_x);
 			p.z += 2.0f;
 			p.x -= 2.25f;
 			p.y -= 1.25f;
