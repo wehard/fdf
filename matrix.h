@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/07 17:20:25 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/07 18:52:13 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/07 21:30:44 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,10 @@
 # define MATRIX_H
 
 #include "point.h"
+
+/*
+**	Defines a 4x4 matrix [row][col]
+*/
 
 typedef struct	s_mat4x4
 {

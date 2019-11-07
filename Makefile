@@ -6,7 +6,7 @@
 #    By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/05 13:58:13 by wkorande          #+#    #+#              #
-#    Updated: 2019/11/07 18:47:50 by wkorande         ###   ########.fr        #
+#    Updated: 2019/11/07 20:53:01 by wkorande         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,7 +32,7 @@ debug:
 
 linux: libft
 	@echo "Creating LINUX executable $(NAME) ..."
-	@gcc -g -o $(NAME) -I $(LIBFT)/includes -I /usr/local/include $(SRC) -L $(LIBFT) -lft -L minilibx -lmlx_Linux -lXext -lX11
+	@gcc -g -o $(NAME) -I $(LIBFT)/includes -I /usr/local/include $(SRC) -L $(LIBFT) -lft -L minilibx -lmlx_Linux -lXext -lX11 -lm
 
 libft:
 	@make -C $(LIBFT) fclean

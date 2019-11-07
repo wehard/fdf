@@ -6,10 +6,11 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/07 17:20:13 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/07 19:37:01 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/07 21:55:09 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "libft.h"
 #include "point.h"
 #include "matrix.h"
 #include "math.h"
@@ -36,20 +37,20 @@ t_mat4x4	create_proj_matrix(float znear, float zfar, float fov, float s_width, f
 	float fovrad = 1.0f / tanf(fov * 0.5f / 180.0f * 3.14159f);
 
 	mat_proj.m[0][0] = 0.0f;
-	mat_proj.m[0][1] = 0.0f;
-	mat_proj.m[0][2] = 0.0f;
-	mat_proj.m[0][3] = 0.0f;
 	mat_proj.m[1][0] = 0.0f;
-	mat_proj.m[1][1] = 0.0f;
-	mat_proj.m[1][2] = 0.0f;
-	mat_proj.m[1][3] = 0.0f;
 	mat_proj.m[2][0] = 0.0f;
-	mat_proj.m[2][1] = 0.0f;
-	mat_proj.m[2][2] = 0.0f;
-	mat_proj.m[2][3] = 0.0f;
 	mat_proj.m[3][0] = 0.0f;
+	mat_proj.m[0][1] = 0.0f;
+	mat_proj.m[1][1] = 0.0f;
+	mat_proj.m[2][1] = 0.0f;
 	mat_proj.m[3][1] = 0.0f;
+	mat_proj.m[0][2] = 0.0f;
+	mat_proj.m[1][2] = 0.0f;
+	mat_proj.m[2][2] = 0.0f;
 	mat_proj.m[3][2] = 0.0f;
+	mat_proj.m[0][3] = 0.0f;
+	mat_proj.m[1][3] = 0.0f;
+	mat_proj.m[2][3] = 0.0f;
 	mat_proj.m[3][3] = 0.0f;
 
 	mat_proj.m[0][0] = a_ratio * fovrad;
