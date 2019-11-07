@@ -6,7 +6,7 @@
 #    By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/05 13:58:13 by wkorande          #+#    #+#              #
-#    Updated: 2019/11/06 22:38:02 by wkorande         ###   ########.fr        #
+#    Updated: 2019/11/07 11:18:45 by wkorande         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ NAME = fdf
 CFLAGS = -Wall -Wextra -Werror
 
 SRC = main.c\
-	vec3.c
+	point.c
 
 OBJ =
 

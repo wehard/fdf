@@ -6,24 +6,19 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 15:23:29 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/06 23:00:12 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/07 11:17:17 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FDF_H
 # define FDF_H
 
+# include "point.h"
+
 # define WIN_W 1280
 # define WIN_H 720
 
 # define ESC 53
-
-typedef struct 		s_vec3
-{
-	float			x;
-	float			y;
-	float			z;
-}					t_vec3;
 
 typedef struct 		s_line
 {
