@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:53:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/08 00:44:32 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/08 00:55:53 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,7 +146,7 @@ int	read_map_data(int fd, t_vec3 *vec_map)
 		x = 0;
 		while (*points)
 		{
-			vec_map[y * 19 + x] = make_vec3(x * 0.25f, y * 0.25f, -ft_atoi(*points) * 0.05f);
+			vec_map[y * 19 + x] = make_vec3(x * 0.25f, y * 0.25f, ft_atoi(*points) * 0.25f);
 			points++;
 			x++;
 			size++;
@@ -262,17 +262,17 @@ int	main(int argc, char const *argv[])
 			t_vec3 p = vec_map[y * 19 + x];
 			p = multiply_matrix_vec3(p, mat_rot_z);
 			p = multiply_matrix_vec3(p, mat_rot_x);
-			p.z += 2.0f;
-			p.x -= 2.25f;
-			p.y -= 1.25f;
+			p.z += 3.0f;
+			p.x -= 1.5f;
+			p.y -= 2.25f;
 			p = multiply_matrix_vec3(p, m);
 			p.x += 1.0f;
 			p.y += 1.0f;
 			p.z += 20.0f;
 			p.x *= 0.5f * (float)WIN_W;
 			p.y *= 0.5f * (float)WIN_H;
-			//mlx_pixel_put(mlx_data->mlx_ptr, mlx_data->win_ptr, p.x, p.y, WHITE);
-			mlx_string_put(mlx_data->mlx_ptr, mlx_data->win_ptr, p.x, p.y, WHITE, "*");
+			mlx_pixel_put(mlx_data->mlx_ptr, mlx_data->win_ptr, p.x, p.y, WHITE);
+			mlx_string_put(mlx_data->mlx_ptr, mlx_data->win_ptr, p.x, p.y, WHITE, "|");
 			x++;
 		}
 		y++;
