@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:53:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/07 11:18:00 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/07 19:41:03 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include "libft.h"
 #include "mlx.h"
 #include "fdf.h"
+#include "matrix.h"
 #include "ft_get_next_line.h"
 
 #define WHITE 0xFFFFFFF
@@ -54,23 +55,23 @@ void	draw_line(t_mlx_data *mlx_data, t_vec3 p0, t_vec3 p1)
 	deltaX = p1.x - p0.x;
 	deltaY = p1.y - p0.y;
 	yintercept = 1;
-	if (deltaY < 0)
+	if (deltaY < 0.0f)
 	{
-		yintercept = -1;
+		yintercept = -1.0f;
 		deltaY = -deltaY;
 	}
-	D = 2 * deltaY - deltaX;
+	D = 2.0f * deltaY - deltaX;
 	y = p0.y;
 	x = p0.x;
 	while (x < p1.x)
 	{
 		mlx_pixel_put(mlx_data->mlx_ptr, mlx_data->win_ptr, x, y, WHITE);
-		if (D > 0)
+		if (D > 0.0f)
 		{
 			y = y + yintercept;
-			D = D - 2 * deltaX;
+			D = D - 2.0f * deltaX;
 		}
-		D = D + 2 * deltaY;
+		D = D + 2.0f * deltaY;
 		x++;
 	}
 }
@@ -142,7 +143,7 @@ int	read_map_data(int fd, t_vec3 *vec_map)
 		x = 0;
 		while (*points)
 		{
-			vec_map[y * 19 + x] = make_vec3(x * 50 + xoff, y * 50 + yoff, ft_atoi(*points) * 50);
+			vec_map[y * 19 + x] = make_vec3(x, y, ft_atoi(*points));
 			points++;
 			x++;
 			size++;
@@ -156,16 +157,34 @@ int	read_map_data(int fd, t_vec3 *vec_map)
 int	main(int argc, char const *argv[])
 {
 	t_mlx_data *mlx_data;
-	t_vec3 vec_map[209];
+	//t_vec3 vec_map[209];
 	int	fd;
-	int map_size;
+	//int map_size;
 
-	if (argc == 2)
+	float aspect = (float)WIN_W / (float)WIN_H;
+	float zfar = 10000.0f;
+	float znear = 1.0f;
+
+	t_mat4x4 m = create_proj_matrix(znear, zfar, 90.0f, WIN_W, WIN_H);
+
+	t_vec3 ps[8];
+
+	ps[0] = make_vec3(-1.0f, -1.0f, -1.0f);
+	ps[1] = make_vec3(1.0f, -1.0f, -1.0f);
+	ps[2] = make_vec3(-1.0f, -1.0f, 1.0f);
+	ps[3] = make_vec3(1.0f, -1.0f, 1.0f);
+
+	ps[4] = make_vec3(-1.0f, 1.0f, -1.0f);
+	ps[5] = make_vec3(1.0f, 1.0f, -1.0f);
+	ps[6] = make_vec3(-1.0f, 1.0f, -1.0f);
+	ps[7] = make_vec3(1.0f, 1.0f, 1.0f);
+
+	/* if (argc == 2)
 	{
 		fd = open(argv[1], O_RDONLY);
 		map_size = read_map_data(fd, vec_map);
 		close(fd);
-	}
+	} */
 
 	mlx_data = init("fdf");
 
@@ -174,27 +193,42 @@ int	main(int argc, char const *argv[])
 	mlx_loop_hook (mlx_data->mlx_ptr, on_render, mlx_data);
 	//mlx_pixel_put(mlx_data->mlx_ptr, mlx_data->win_ptr, p0.x, p0.y, 0xFFF0000);
 
-	int x;
-	int y;
+	t_vec3 p0;
+	t_vec3 p1;
+
+	p0 = multiply_matrix_vec3(ps[0], m);
+	p1 = multiply_matrix_vec3(ps[7], m);
+
+	p0.x += 1.0f;
+	p0.y += 1.0f;
+
+	p1.x += 1.0f;
+	p1.y += 1.0f;
+
+	p0.x *= 0.5f * (float)WIN_W;
+	p0.y *= 0.5f * (float)WIN_H;
+
+	p1.x *= 0.5f * (float)WIN_W;
+	p1.y *= 0.5f * (float)WIN_H;
 
 	//draw_line(mlx_data, vec_map[0], vec_map[10]);
 
-	y = 0;
+	//int x;
+	//int y;
+	/* y = 0;
 	while (y < 11)
 	{
 		x = 0;
 		while (x < 19)
 		{
-			t_vec3 p0 = vec_map[y * 19 + x];
-			t_vec3 p1 = vec_map[y * 19 + x + 1];
-			if(p1.z > 0)
-				p1.y -= p1.z * 0.5;
+			t_vec3 p0 = multiply_matrix_vec3(vec_map[y * 19 + x], m);
+			t_vec3 p1 = multiply_matrix_vec3(vec_map[y * 19 + x + 1], m);
 			draw_line(mlx_data, p0, p1);
-			mlx_string_put(mlx_data->mlx_ptr, mlx_data->win_ptr, p0.x, p0.y, WHITE, "O");
+			//mlx_string_put(mlx_data->mlx_ptr, mlx_data->win_ptr, p0.x, p0.y, WHITE, "O");
 			x++;
 		}
 		y++;
-	}
+	} */
 	mlx_loop(mlx_data->mlx_ptr);
 	free(mlx_data);
 	return (0);

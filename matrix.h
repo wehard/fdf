@@ -1,32 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   point.c                                            :+:      :+:    :+:   */
+/*   matrix.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/11/07 11:14:13 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/07 17:18:50 by wkorande         ###   ########.fr       */
+/*   Created: 2019/11/07 17:20:25 by wkorande          #+#    #+#             */
+/*   Updated: 2019/11/07 18:52:13 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#ifndef MATRIX_H
+# define MATRIX_H
+
 #include "point.h"
 
-t_vec2	make_vec2(float x, float y)
+typedef struct	s_mat4x4
 {
-	t_vec2 v;
+	float		m[4][4];
+}				t_mat4x4;
 
-	v.x = 0;
-	v.y = 0;
-	return (v);
-}
+t_mat4x4	create_proj_matrix(float znear, float zfar, float fov, float s_width, float s_height);
+t_vec3		multiply_matrix_vec3(t_vec3 in, t_mat4x4 m);
 
-t_vec3	make_vec3(float x, float y, float z)
-{
-	t_vec3 v;
-
-	v.x = x;
-	v.y = y;
-	v.z = z;
-	return (v);
-}
+#endif
