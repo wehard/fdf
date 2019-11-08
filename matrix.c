@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/07 17:20:13 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/08 00:45:00 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/08 16:28:58 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,33 @@
 
 // [row][col]
 
+/*
+**	Identity matrix
+**
+**	[1 0 0 0]
+**	[0 1 0 0]
+**	[0 0 1 0]
+**	[0 0 0 1]
+*/
+
+/*
+**	Rotation matrices
+**
+**	X
+**
+**	[ 1    0       0    ]
+**	[ 0  cos(a) -sin(a) ]
+**	[ 0  sin(a)  cos(a) ]
+**
+**	[ cos(a)  0  sin(a) ]
+**	[   0     1      0  ]
+**	[-sin(a)  0  cos(a) ]
+**
+**	[ cos(a) -sin(a)  0 ]
+**	[ sin(a)  cos(a)  0 ]
+**	[   0       0     1 ]
+*/
+
 t_mat4x4	create_identity_matrix(void)
 {
 	t_mat4x4 mat;
@@ -86,6 +113,45 @@ t_mat4x4	create_identity_matrix(void)
 	mat.m[3][1] = 0.0f;
 	mat.m[3][2] = 0.0f;
 	mat.m[3][3] = 1.0f;
+	return (mat);
+}
+
+t_mat4x4	create_rotation_matrix_x(float angle)
+{
+	t_mat4x4 mat;
+
+	mat = create_identity_matrix();
+	mat.m[0][0] = 1.0f;
+	mat.m[1][1] = cosf(angle * 0.5f);
+	mat.m[1][2] = -sinf(angle * 0.5f);
+	mat.m[2][1] = sinf(angle * 0.5f);
+	mat.m[2][2] = cosf(angle * 0.5f);
+	mat.m[3][3] = 1.0f;
+	return (mat);
+}
+
+t_mat4x4	create_rotation_matrix_y(float angle)
+{
+	t_mat4x4 mat;
+
+	mat = create_identity_matrix();
+	mat.m[0][0] = cosf(angle * 0.5f);
+	mat.m[0][2] = sinf(angle * 0.5f);
+	mat.m[1][1] = 1.0f;
+	mat.m[2][0] = -sinf(angle * 0.5f);
+	mat.m[2][2] = cosf(angle * 0.5f);
+	return (mat);
+}
+
+t_mat4x4	create_rotation_matrix_z(float angle)
+{
+	t_mat4x4 mat;
+
+	mat = create_identity_matrix();
+	mat.m[0][0] = cosf(angle);
+	mat.m[0][1] = -sinf(angle);
+	mat.m[1][0] = sinf(angle);
+	mat.m[1][1] = cosf(angle);
 	return (mat);
 }
 
