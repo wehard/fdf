@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/07 17:20:13 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/08 16:28:58 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/08 17:10:16 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,6 +152,28 @@ t_mat4x4	create_rotation_matrix_z(float angle)
 	mat.m[0][1] = -sinf(angle);
 	mat.m[1][0] = sinf(angle);
 	mat.m[1][1] = cosf(angle);
+	return (mat);
+}
+
+t_mat4x4	create_scaling_matrix(t_vec3 scale)
+{
+	t_mat4x4 mat;
+
+	mat = create_identity_matrix();
+	mat.m[0][0] = scale.x;
+	mat.m[1][1] = scale.y;
+	mat.m[2][2] = scale.z;
+	return (mat);
+}
+
+t_mat4x4	create_translation_matrix(t_vec3 translation)
+{
+	t_mat4x4 mat;
+
+	mat = create_identity_matrix();
+	mat.m[0][3] = translation.x;
+	mat.m[1][3] = translation.y;
+	mat.m[2][3] = translation.z;
 	return (mat);
 }
 

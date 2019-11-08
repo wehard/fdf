@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:53:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/08 16:43:16 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/08 17:29:49 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +139,7 @@ t_v_map	*read_map_data(int fd)
 	int xoff = 100;
 	int yoff = 100;
 
-	v_map = create_v_map(20, 11);
+	v_map = create_v_map(19, 11);
 
 	size = 0;
 	y = 0;
@@ -149,7 +149,7 @@ t_v_map	*read_map_data(int fd)
 		x = 0;
 		while (*points)
 		{
-			v_map->v[y * v_map->w + x] = make_vec3(x * 0.25f, y * 0.25f, -ft_atoi(*points) * 0.05f);
+			v_map->v[y * v_map->w + x] = make_vec3(x, y, -ft_atoi(*points));
 			points++;
 			x++;
 			size++;
@@ -176,8 +176,6 @@ static t_vec3 *make_unit_cube()
 	return (ps);
 }
 
-
-
 int on_render(void *param)
 {
 	t_mlx_data *mlx_data;
@@ -193,6 +191,8 @@ int on_render(void *param)
 	float angle = mlx_data->delta_time * 0.4f;
 
 	t_mat4x4 mat_rot_y = create_rotation_matrix_y(angle);
+	t_mat4x4 mat_rot_z = create_rotation_matrix_z(-angle);
+	t_mat4x4 s_matrix = create_scaling_matrix(make_vec3(1.0f, 1.0f, 0.2f));
 
 	y = 0;
 	while (y < mlx_data->v_map->h)
@@ -200,11 +200,11 @@ int on_render(void *param)
 		x = 0;
 		while (x < mlx_data->v_map->w)
 		{
-			t_vec3 p = mlx_data->v_map->v[y * 20 + x];
+			t_vec3 p = mlx_data->v_map->v[y * mlx_data->v_map->w + x];
+			p = multiply_matrix_vec3(p, s_matrix);
 			p = multiply_matrix_vec3(p, mat_rot_y);
-			p.z += 6.0f;
-			//p.x -= 1.5f;
-			p.y -= 1.25f;
+			//p = multiply_matrix_vec3(p, mat_rot_z);
+			p.z += 30.0f;
 			p = multiply_matrix_vec3(p, *(mlx_data->m_proj));
 			p.x += 1.0f;
 			p.y += 1.0f;
@@ -212,11 +212,11 @@ int on_render(void *param)
 			p.x *= 0.5f * (float)WIN_W;
 			p.y *= 0.5f * (float)WIN_H;
 			mlx_pixel_put(mlx_data->mlx_ptr, mlx_data->win_ptr, p.x, p.y, WHITE);
-			//mlx_string_put(mlx_data->mlx_ptr, mlx_data->win_ptr, p.x, p.y, WHITE, "|");
 			x++;
 		}
 		y++;
 	}
+	mlx_string_put(mlx_data->mlx_ptr, mlx_data->win_ptr, 10, 10, WHITE, "fps");
 	mlx_data->delta_time += 0.1f;
 	return (0);
 }
@@ -232,7 +232,7 @@ int	main(int argc, char const *argv[])
 	int map_size;
 
 	//float aspect = (float)WIN_W / (float)WIN_H;
-	float zfar = 100.0f;
+	float zfar = 1000.0f;
 	float znear = 0.01f;
 
 	t_mat4x4 m_proj = create_proj_matrix(znear, zfar, 90.0f, WIN_W, WIN_H);
