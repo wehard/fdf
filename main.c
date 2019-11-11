@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:53:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/11 13:42:38 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/11 17:41:18 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ static t_v_map *create_v_map(int w, int h)
 	size = w * h;
 	if (!(v_map = (t_v_map*)malloc(sizeof(t_v_map))))
 		return (NULL);
+	v_map->size = size;
 	v_map->w = w;
 	v_map->h = h;
 	if (!(v_map->v = (t_vec3*)malloc(sizeof(t_vec3) * size)))
@@ -142,32 +143,25 @@ int on_render(void *param)
 	clear_frame_buffer(mlx_data->f_buf);
 	int i;
 
-	float angle = 0.4f; // mlx_data->delta_time * 0.3f;
+	float angle = mlx_data->delta_time * 0.3f;
 
 	t_mat4x4 mat_trans = create_translation_matrix(make_vec3(0.0f, 0.0f, 3.0f));
 	t_mat4x4 mat_rot_y = create_rotation_matrix_y(angle);
-	t_mat4x4 mat_rot_z = create_rotation_matrix_z(-angle);
-	//t_mat4x4 s_matrix = create_scaling_matrix(make_vec3(2.0f, 2.0f, 0.2f));
+	//t_mat4x4 mat_rot_z = create_rotation_matrix_z(-angle);
+	t_mat4x4 s_matrix = create_scaling_matrix(make_vec3(1.0f, 1.0f, 0.1f));
 
 	i = 0;
-	while (i < (mlx_data->v_map->h * mlx_data->v_map->w))
+	while (i < mlx_data->v_map->size)
 	{
 			t_vec3 p0 = mlx_data->v_map->v[i];
-			t_vec3 p1 = mlx_data->v_map->v[i+1];
-			//p.x -= mlx_data->v_map->w / 2;
-			//p.y -= mlx_data->v_map->h / 2;
-			//p = multiply_matrix_vec3(p, s_matrix);
+			p0.x -= mlx_data->v_map->w / 2;
+			p0.y -= mlx_data->v_map->h / 2;
+			p0 = multiply_matrix_vec3(p0, s_matrix);
 			p0 = multiply_matrix_vec3(p0, mat_rot_y);
-			p0 = multiply_matrix_vec3(p0, mat_rot_z);
-			p0.z += 2.0f;
+			//p0 = multiply_matrix_vec3(p0, mat_rot_z);
+			p0.z += 20.0f;
 			p0 = multiply_matrix_vec3(p0, *(mlx_data->m_proj));
 			p0 = convert_to_screen_space(p0);
-
-			p1 = multiply_matrix_vec3(p1, mat_rot_y);
-			p1 = multiply_matrix_vec3(p1, mat_rot_z);
-			p1.z += 2.0f;
-			p1 = multiply_matrix_vec3(p1, *(mlx_data->m_proj));
-			p1 = convert_to_screen_space(p1);
 
 			frame_buffer_set(mlx_data->f_buf, p0.x, p0.y, WHITE);
 			//draw_line(mlx_data->f_buf, p0, p1);
