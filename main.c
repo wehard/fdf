@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:53:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/11 17:51:34 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/11 18:38:32 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include "mlx.h"
 #include "fdf.h"
 #include "matrix.h"
+#include "point.h"
 #include "math.h"
 #include "ft_get_next_line.h"
 
@@ -145,7 +146,7 @@ int on_render(void *param)
 
 	float angle = mlx_data->delta_time * 0.3f;
 
-	//t_mat4x4 mat_trans = create_translation_matrix(make_vec3(1.0f, 1.0f, 3.0f));
+	t_mat4x4 mat_trans = create_translation_matrix(mlx_data->v_map->pos);
 	t_mat4x4 mat_rot_y = create_rotation_matrix_y(angle);
 	//t_mat4x4 mat_rot_z = create_rotation_matrix_z(-angle);
 	t_mat4x4 s_matrix = create_scaling_matrix(make_vec3(1.0f, 1.0f, 0.1f));
@@ -154,12 +155,12 @@ int on_render(void *param)
 	while (i < mlx_data->v_map->size)
 	{
 			t_vec3 p0 = mlx_data->v_map->v[i];
-			p0.x -= mlx_data->v_map->w / 2;
-			p0.y -= mlx_data->v_map->h / 2;
 			p0 = multiply_matrix_vec3(p0, s_matrix);
 			p0 = multiply_matrix_vec3(p0, mat_rot_y);
 			//p0 = multiply_matrix_vec3(p0, mat_rot_z);
-			p0.z += 20.0f;
+			//p0 = transform_point(p0, make_vec3(1.0f, 1.0f, 10.0f), make_vec3(0.0f, 0.3f, 0.0f), make_vec3(1.0f, 1.0f, 1.0f));
+			p0.z += 30.0f;
+			//p0 = multiply_matrix_vec3(p0, mat_trans); // TRANSLATE
 			p0 = multiply_matrix_vec3(p0, *(mlx_data->m_proj));
 			p0 = convert_to_screen_space(p0);
 
@@ -205,6 +206,7 @@ int	main(int argc, char const *argv[])
 		mlx_data->v_map->v = make_unit_cube();
 	}
 
+	mlx_data->v_map->pos = make_vec3(0.0f, 0.0f, 10.0f);
 
 	mlx_hook(mlx_data->win_ptr, 2, 0, on_key_down, mlx_data);
 	mlx_loop_hook (mlx_data->mlx_ptr, on_render, mlx_data);
