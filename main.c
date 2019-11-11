@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:53:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/11 12:23:31 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/11 13:42:38 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,63 +21,6 @@
 #include "matrix.h"
 #include "math.h"
 #include "ft_get_next_line.h"
-
-#define GREEN 0x00FF00
-#define RED 0xFF0000
-#define WHITE 0xFFFFFF
-
-/*
-** plotLineLow(x0,y0, x1,y1)
-**   dx = x1 - x0
-**   dy = y1 - y0
-**   yi = 1
-**   if dy < 0
-**     yi = -1
-**     dy = -dy
-**   end if
-**   D = 2*dy - dx
-**   y = y0
-**
-**   for x from x0 to x1
-**     plot(x,y)
-**     if D > 0
-**        y = y + yi
-**        D = D - 2*dx
-**     end if
-**     D = D + 2*dy
-*/
-
-void	draw_line(t_mlx_data *mlx_data, t_vec3 p0, t_vec3 p1)
-{
-	float x;
-	float y;
-	float deltaX;
-	float deltaY;
-	float yintercept;
-	float D;
-	deltaX = p1.x - p0.x;
-	deltaY = p1.y - p0.y;
-	yintercept = 1;
-	if (deltaY < 0.0f)
-	{
-		yintercept = -1.0f;
-		deltaY = -deltaY;
-	}
-	D = 2.0f * deltaY - deltaX;
-	y = p0.y;
-	x = p0.x;
-	while (x < p1.x)
-	{
-		mlx_pixel_put(mlx_data->mlx_ptr, mlx_data->win_ptr, x, y, GREEN);
-		if (D > 0.0f)
-		{
-			y = y + yintercept;
-			D = D - 2.0f * deltaX;
-		}
-		D = D + 2.0f * deltaY;
-		x++;
-	}
-}
 
 int		on_key_down(int key, void *param)
 {
@@ -179,6 +122,15 @@ static t_vec3 *make_unit_cube()
 	return (ps);
 }
 
+t_vec3 convert_to_screen_space(t_vec3 p)
+{
+	p.x += 1.0f;
+	p.y += 1.0f;
+	p.x *= 0.5f * (float)WIN_W;
+	p.y *= 0.5f * (float)WIN_H;
+	return (p);
+}
+
 int on_render(void *param)
 {
 	t_mlx_data *mlx_data;
@@ -188,39 +140,42 @@ int on_render(void *param)
 		return (0);
 
 	clear_frame_buffer(mlx_data->f_buf);
-	int x;
-	int y;
+	int i;
 
-	float angle = mlx_data->delta_time * 0.4f;
+	float angle = 0.4f; // mlx_data->delta_time * 0.3f;
 
+	t_mat4x4 mat_trans = create_translation_matrix(make_vec3(0.0f, 0.0f, 3.0f));
 	t_mat4x4 mat_rot_y = create_rotation_matrix_y(angle);
 	t_mat4x4 mat_rot_z = create_rotation_matrix_z(-angle);
-	t_mat4x4 s_matrix = create_scaling_matrix(make_vec3(1.6f, 1.6f, 0.2f));
+	//t_mat4x4 s_matrix = create_scaling_matrix(make_vec3(2.0f, 2.0f, 0.2f));
 
-	y = 0;
-	while (y < mlx_data->v_map->h)
+	i = 0;
+	while (i < (mlx_data->v_map->h * mlx_data->v_map->w))
 	{
-		x = 0;
-		while (x < mlx_data->v_map->w)
-		{
-			t_vec3 p = mlx_data->v_map->v[y * mlx_data->v_map->w + x];
-			p.x -= mlx_data->v_map->w / 2;
-			p.y -= mlx_data->v_map->h / 2;
-			p = multiply_matrix_vec3(p, s_matrix);
-			p = multiply_matrix_vec3(p, mat_rot_y);
-			//p = multiply_matrix_vec3(p, mat_rot_z);
-			p.z += 30.0f;
-			p = multiply_matrix_vec3(p, *(mlx_data->m_proj));
-			p.x += 1.0f;
-			p.y += 1.0f;
-			p.z += 10.0f;
-			p.x *= 0.5f * (float)WIN_W;
-			p.y *= 0.5f * (float)WIN_H;
-			frame_buffer_set(mlx_data->f_buf, p.x, p.y, WHITE);
-			x++;
-		}
-		y++;
-	}
+			t_vec3 p0 = mlx_data->v_map->v[i];
+			t_vec3 p1 = mlx_data->v_map->v[i+1];
+			//p.x -= mlx_data->v_map->w / 2;
+			//p.y -= mlx_data->v_map->h / 2;
+			//p = multiply_matrix_vec3(p, s_matrix);
+			p0 = multiply_matrix_vec3(p0, mat_rot_y);
+			p0 = multiply_matrix_vec3(p0, mat_rot_z);
+			p0.z += 2.0f;
+			p0 = multiply_matrix_vec3(p0, *(mlx_data->m_proj));
+			p0 = convert_to_screen_space(p0);
+
+			p1 = multiply_matrix_vec3(p1, mat_rot_y);
+			p1 = multiply_matrix_vec3(p1, mat_rot_z);
+			p1.z += 2.0f;
+			p1 = multiply_matrix_vec3(p1, *(mlx_data->m_proj));
+			p1 = convert_to_screen_space(p1);
+
+			frame_buffer_set(mlx_data->f_buf, p0.x, p0.y, WHITE);
+			//draw_line(mlx_data->f_buf, p0, p1);
+		i++;
+	 }
+
+
+
 	if (mlx_data->f_buf->img)
 		mlx_put_image_to_window(mlx_data->mlx_ptr, mlx_data->win_ptr, mlx_data->f_buf->img, 0, 0);
 	mlx_data->delta_time += 0.1f;
@@ -250,6 +205,12 @@ int	main(int argc, char const *argv[])
 			return (1);
 		}
 	}
+	else
+	{
+		mlx_data->v_map = create_v_map(2, 4);
+		mlx_data->v_map->v = make_unit_cube();
+	}
+
 
 	mlx_hook(mlx_data->win_ptr, 2, 0, on_key_down, mlx_data);
 	mlx_loop_hook (mlx_data->mlx_ptr, on_render, mlx_data);
