@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:53:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/08 17:29:49 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/11 12:23:31 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,18 +93,22 @@ int		on_key_down(int key, void *param)
 t_mlx_data *init(char *title)
 {
 	t_mlx_data *mlx_data;
+	float		znear;
+	float		zfar;
 
+	znear = 0.1f;
+	zfar = 100.0f;
 	mlx_data = (t_mlx_data*)malloc(sizeof(t_mlx_data));
 	mlx_data->mlx_ptr = mlx_init();
 	mlx_data->win_ptr = mlx_new_window(mlx_data->mlx_ptr, WIN_W, WIN_H, title);
-	mlx_data->mouse_data = (t_mouse_data*)malloc(sizeof(t_mouse_data));
-	mlx_data->mouse_data->x = 0;
-	mlx_data->mouse_data->y = 0;
-	mlx_data->mouse_data->oldx = 0;
-	mlx_data->mouse_data->oldy = 0;
+	mlx_data->f_buf = create_frame_buffer(mlx_data);
+	//mlx_data->mouse_data = (t_mouse_data*)malloc(sizeof(t_mouse_data));
+	//mlx_data->mouse_data->x = 0;
+	//mlx_data->mouse_data->y = 0;
+	//mlx_data->mouse_data->oldx = 0;
+	//mlx_data->mouse_data->oldy = 0;
 	mlx_data->m_proj = (t_mat4x4*)malloc(sizeof(t_mat4x4*));
-	*(mlx_data->m_proj) = create_identity_matrix();
-	//mlx_data->v_map = (t_v_map*)malloc(sizeof(t_v_map*));
+	*(mlx_data->m_proj) = create_proj_matrix(znear, zfar, 90.0f, WIN_W, WIN_H);
 	mlx_data->delta_time = 0.001f;
 	return (mlx_data);
 }
@@ -114,8 +118,6 @@ static t_v_map *create_v_map(int w, int h)
 	t_v_map *v_map;
 	int		size;
 
-	if (!size)
-		return (NULL);
 	size = w * h;
 	if (!(v_map = (t_v_map*)malloc(sizeof(t_v_map))))
 		return (NULL);
@@ -139,7 +141,8 @@ t_v_map	*read_map_data(int fd)
 	int xoff = 100;
 	int yoff = 100;
 
-	v_map = create_v_map(19, 11);
+	if (!(v_map = create_v_map(19, 11)))
+		return (NULL);
 
 	size = 0;
 	y = 0;
@@ -154,7 +157,7 @@ t_v_map	*read_map_data(int fd)
 			x++;
 			size++;
 		}
-		free(line);
+		//free(line);
 		y++;
 	}
 	return (v_map);
@@ -184,7 +187,7 @@ int on_render(void *param)
 	if (!mlx_data || !mlx_data->v_map)
 		return (0);
 
-	mlx_clear_window(mlx_data->mlx_ptr, mlx_data->win_ptr);
+	clear_frame_buffer(mlx_data->f_buf);
 	int x;
 	int y;
 
@@ -192,7 +195,7 @@ int on_render(void *param)
 
 	t_mat4x4 mat_rot_y = create_rotation_matrix_y(angle);
 	t_mat4x4 mat_rot_z = create_rotation_matrix_z(-angle);
-	t_mat4x4 s_matrix = create_scaling_matrix(make_vec3(1.0f, 1.0f, 0.2f));
+	t_mat4x4 s_matrix = create_scaling_matrix(make_vec3(1.6f, 1.6f, 0.2f));
 
 	y = 0;
 	while (y < mlx_data->v_map->h)
@@ -201,6 +204,8 @@ int on_render(void *param)
 		while (x < mlx_data->v_map->w)
 		{
 			t_vec3 p = mlx_data->v_map->v[y * mlx_data->v_map->w + x];
+			p.x -= mlx_data->v_map->w / 2;
+			p.y -= mlx_data->v_map->h / 2;
 			p = multiply_matrix_vec3(p, s_matrix);
 			p = multiply_matrix_vec3(p, mat_rot_y);
 			//p = multiply_matrix_vec3(p, mat_rot_z);
@@ -211,12 +216,13 @@ int on_render(void *param)
 			p.z += 10.0f;
 			p.x *= 0.5f * (float)WIN_W;
 			p.y *= 0.5f * (float)WIN_H;
-			mlx_pixel_put(mlx_data->mlx_ptr, mlx_data->win_ptr, p.x, p.y, WHITE);
+			frame_buffer_set(mlx_data->f_buf, p.x, p.y, WHITE);
 			x++;
 		}
 		y++;
 	}
-	mlx_string_put(mlx_data->mlx_ptr, mlx_data->win_ptr, 10, 10, WHITE, "fps");
+	if (mlx_data->f_buf->img)
+		mlx_put_image_to_window(mlx_data->mlx_ptr, mlx_data->win_ptr, mlx_data->f_buf->img, 0, 0);
 	mlx_data->delta_time += 0.1f;
 	return (0);
 }
@@ -224,20 +230,10 @@ int on_render(void *param)
 int	main(int argc, char const *argv[])
 {
 	t_mlx_data *mlx_data;
-	t_v_map *v_map;
+	int	fd;
 
 	mlx_data = init("fdf");
 
-	int	fd;
-	int map_size;
-
-	//float aspect = (float)WIN_W / (float)WIN_H;
-	float zfar = 1000.0f;
-	float znear = 0.01f;
-
-	t_mat4x4 m_proj = create_proj_matrix(znear, zfar, 90.0f, WIN_W, WIN_H);
-
-	mlx_data->m_proj = &m_proj;
 
 	if (argc == 2)
 	{
@@ -247,8 +243,12 @@ int	main(int argc, char const *argv[])
 			close(fd);
 			return (1);
 		}
-		mlx_data->v_map = read_map_data(fd);
-		close(fd);
+		if (!(mlx_data->v_map = read_map_data(fd)))
+		{
+			ft_putstr("error: map data read failed!");
+			close(fd);
+			return (1);
+		}
 	}
 
 	mlx_hook(mlx_data->win_ptr, 2, 0, on_key_down, mlx_data);

@@ -1,32 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   point.h                                            :+:      :+:    :+:   */
+/*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/11/07 11:14:55 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/11 11:49:33 by wkorande         ###   ########.fr       */
+/*   Created: 2019/11/11 10:45:54 by wkorande          #+#    #+#             */
+/*   Updated: 2019/11/11 10:46:58 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef POINT_H
-# define POINT_H
+#include "libft.h"
 
-typedef struct 		s_vec3
+int		throw_error(char *e)
 {
-	float			x;
-	float			y;
-	float			z;
-}					t_vec3;
-
-typedef struct 		s_vec2
-{
-	float			x;
-	float			y;
-}					t_vec2;
-
-t_vec2	make_vec2(float x, float y);
-t_vec3	make_vec3(float x, float y, float z);
-
-#endif
+	ft_putstr_fd(e, 2);
+	ft_putchar_fd('\n', 2);
+	return (1);
+}

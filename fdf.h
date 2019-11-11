@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 15:23:29 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/08 15:00:45 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/11 11:49:43 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,16 +43,32 @@ typedef struct		s_v_map
 	int				h;
 }					t_v_map;
 
+typedef struct		s_frame_buffer
+{
+	void			*img;
+	char			*d_addr;
+	int				bpp;
+	int				size_line;
+	int				endian;
+	int				w;
+	int				h;
+}					t_frame_buffer;
+
 typedef struct		s_mlx_data
 {
 	void			*mlx_ptr;
 	void			*win_ptr;
+	t_frame_buffer	*f_buf;
 	t_mat4x4		*m_proj;
 	t_v_map			*v_map;
 	t_mouse_data 	*mouse_data;
 	float			delta_time;
 }					t_mlx_data;
 
-t_vec3	make_vec3(float x, float y, float z);
+void			frame_buffer_set(t_frame_buffer *fb, int x, int y, int color);
+void			clear_frame_buffer(t_frame_buffer *fb);
+t_frame_buffer	*create_frame_buffer(t_mlx_data *mlx_data);
+
+int				throw_error(char *e);
 
 #endif

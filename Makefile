@@ -6,7 +6,7 @@
 #    By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/05 13:58:13 by wkorande          #+#    #+#              #
-#    Updated: 2019/11/07 20:53:01 by wkorande         ###   ########.fr        #
+#    Updated: 2019/11/11 10:47:07 by wkorande         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,9 @@ CFLAGS = -Wall -Wextra -Werror
 
 SRC = main.c\
 	point.c\
-	matrix.c
+	matrix.c\
+	frame_buffer.c\
+	error.c
 
 OBJ =
 
