@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/07 17:20:13 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/08 17:10:16 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/11 16:58:49 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,29 @@ t_mat4x4	create_identity_matrix(void)
 	return (mat);
 }
 
+t_mat4x4	init_matrix(void)
+{
+	t_mat4x4 mat;
+
+	mat.m[0][0] = 0.0f;
+	mat.m[0][1] = 0.0f;
+	mat.m[0][2] = 0.0f;
+	mat.m[0][3] = 0.0f;
+	mat.m[1][0] = 0.0f;
+	mat.m[1][1] = 0.0f;
+	mat.m[1][2] = 0.0f;
+	mat.m[1][3] = 0.0f;
+	mat.m[2][0] = 0.0f;
+	mat.m[2][1] = 0.0f;
+	mat.m[2][2] = 0.0f;
+	mat.m[2][3] = 0.0f;
+	mat.m[3][0] = 0.0f;
+	mat.m[3][1] = 0.0f;
+	mat.m[3][2] = 0.0f;
+	mat.m[3][3] = 0.0f;
+	return (mat);
+}
+
 t_mat4x4	create_rotation_matrix_x(float angle)
 {
 	t_mat4x4 mat;
@@ -152,6 +175,16 @@ t_mat4x4	create_rotation_matrix_z(float angle)
 	mat.m[0][1] = -sinf(angle);
 	mat.m[1][0] = sinf(angle);
 	mat.m[1][1] = cosf(angle);
+	return (mat);
+}
+
+t_mat4x4	create_rotation_matrix_xyz(t_vec3 rad_angle)
+{
+	t_mat4x4 mat;
+
+	mat = multiply_matrix(create_identity_matrix(), create_rotation_matrix_y(rad_angle.y));
+	mat = multiply_matrix(mat, create_rotation_matrix_x(rad_angle.x));
+	mat = multiply_matrix(mat, create_rotation_matrix_z(rad_angle.z));
 	return (mat);
 }
 
@@ -205,6 +238,39 @@ t_mat4x4	create_proj_matrix(float znear, float zfar, float fov, float s_width, f
     mat_proj.m[3][3] = 0.0f; */
 
 	return (mat_proj);
+}
+
+t_mat4x4	create_trs_matrix(t_vec3 pos, t_vec3 rot, t_vec3 scaale)
+{
+	t_mat4x4 mat;
+
+	return (mat);
+}
+
+t_mat4x4	multiply_matrix(t_mat4x4 a, t_mat4x4 b)
+{
+	t_mat4x4 res;
+	int i;
+	int j;
+	int k;
+
+	res = init_matrix();
+	i = 0;
+	while (i < 4)
+	{
+		j = 0;
+		while (j < 4)
+		{
+			while (k < 4)
+			{
+				res.m[i][j] += a.m[i][k] * b.m[k][j];
+				k++;
+			}
+			j++;
+		}
+		i++;
+	}
+	return (res);
 }
 
 t_vec3		multiply_matrix_vec3(t_vec3 in, t_mat4x4 m)
