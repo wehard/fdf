@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:53:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/11 17:41:18 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/11 17:51:34 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ t_v_map	*read_map_data(int fd)
 			x++;
 			size++;
 		}
-		//free(line);
+		free(line);
 		y++;
 	}
 	return (v_map);
@@ -145,7 +145,7 @@ int on_render(void *param)
 
 	float angle = mlx_data->delta_time * 0.3f;
 
-	t_mat4x4 mat_trans = create_translation_matrix(make_vec3(0.0f, 0.0f, 3.0f));
+	//t_mat4x4 mat_trans = create_translation_matrix(make_vec3(1.0f, 1.0f, 3.0f));
 	t_mat4x4 mat_rot_y = create_rotation_matrix_y(angle);
 	//t_mat4x4 mat_rot_z = create_rotation_matrix_z(-angle);
 	t_mat4x4 s_matrix = create_scaling_matrix(make_vec3(1.0f, 1.0f, 0.1f));
