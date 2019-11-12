@@ -6,7 +6,7 @@
 #    By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/05 13:58:13 by wkorande          #+#    #+#              #
-#    Updated: 2019/11/11 13:34:31 by wkorande         ###   ########.fr        #
+#    Updated: 2019/11/12 15:46:09 by wkorande         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,6 +18,7 @@ SRC = main.c\
 	point.c\
 	matrix.c\
 	draw.c\
+	map.c\
 	frame_buffer.c\
 	error.c
 

@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:53:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/11 18:38:32 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/12 17:40:05 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,73 +57,6 @@ t_mlx_data *init(char *title)
 	return (mlx_data);
 }
 
-static t_v_map *create_v_map(int w, int h)
-{
-	t_v_map *v_map;
-	int		size;
-
-	size = w * h;
-	if (!(v_map = (t_v_map*)malloc(sizeof(t_v_map))))
-		return (NULL);
-	v_map->size = size;
-	v_map->w = w;
-	v_map->h = h;
-	if (!(v_map->v = (t_vec3*)malloc(sizeof(t_vec3) * size)))
-		return (NULL);
-	ft_bzero(v_map->v, size);
-	return (v_map);
-}
-
-t_v_map	*read_map_data(int fd)
-{
-	t_v_map *v_map;
-	int y;
-	int x;
-	char	*line;
-	char	**points;
-	int		size;
-	t_vec3 vec3;
-	int xoff = 100;
-	int yoff = 100;
-
-	if (!(v_map = create_v_map(19, 11)))
-		return (NULL);
-
-	size = 0;
-	y = 0;
-	while (ft_get_next_line(fd, &line))
-	{
-		points = ft_strsplit(line, ' ');
-		x = 0;
-		while (*points)
-		{
-			v_map->v[y * v_map->w + x] = make_vec3(x, y, -ft_atoi(*points));
-			points++;
-			x++;
-			size++;
-		}
-		free(line);
-		y++;
-	}
-	return (v_map);
-}
-
-static t_vec3 *make_unit_cube()
-{
-	t_vec3 *ps;
-
-	ps = (t_vec3*)malloc(sizeof(t_vec3) * 8);
-	ps[0] = make_vec3(-0.5f, -0.5f, -0.5f);
-	ps[1] = make_vec3(0.5f, -0.5f, -0.5f);
-	ps[2] = make_vec3(-0.5f, 0.5f, -0.5f);
-	ps[3] = make_vec3(0.5f, 0.5f, -0.5f);
-	ps[4] = make_vec3(-0.5f, -0.5f, 0.5f);
-	ps[5] = make_vec3(0.5f, -0.5f, 0.5f);
-	ps[6] = make_vec3(-0.5f, 0.5f, 0.5f);
-	ps[7] = make_vec3(0.5f, 0.5f, 0.5f);
-	return (ps);
-}
-
 t_vec3 convert_to_screen_space(t_vec3 p)
 {
 	p.x += 1.0f;
@@ -148,18 +81,22 @@ int on_render(void *param)
 
 	t_mat4x4 mat_trans = create_translation_matrix(mlx_data->v_map->pos);
 	t_mat4x4 mat_rot_y = create_rotation_matrix_y(angle);
-	//t_mat4x4 mat_rot_z = create_rotation_matrix_z(-angle);
+	t_mat4x4 mat_rot_x = create_rotation_matrix_x(3.14f);
+	t_mat4x4 mat_rot_z = create_rotation_matrix_z(-angle);
 	t_mat4x4 s_matrix = create_scaling_matrix(make_vec3(1.0f, 1.0f, 0.1f));
 
 	i = 0;
 	while (i < mlx_data->v_map->size)
 	{
 			t_vec3 p0 = mlx_data->v_map->v[i];
-			p0 = multiply_matrix_vec3(p0, s_matrix);
+			p0.x -= mlx_data->v_map->w / 2;
+			p0.y -= mlx_data->v_map->h / 2;
+			//p0 = multiply_matrix_vec3(p0, s_matrix);
+			p0 = multiply_matrix_vec3(p0, mat_rot_x);
 			p0 = multiply_matrix_vec3(p0, mat_rot_y);
-			//p0 = multiply_matrix_vec3(p0, mat_rot_z);
 			//p0 = transform_point(p0, make_vec3(1.0f, 1.0f, 10.0f), make_vec3(0.0f, 0.3f, 0.0f), make_vec3(1.0f, 1.0f, 1.0f));
-			p0.z += 30.0f;
+			p0.z += mlx_data->v_map->w;
+			p0.y += 5.0f;
 			//p0 = multiply_matrix_vec3(p0, mat_trans); // TRANSLATE
 			p0 = multiply_matrix_vec3(p0, *(mlx_data->m_proj));
 			p0 = convert_to_screen_space(p0);
@@ -168,8 +105,6 @@ int on_render(void *param)
 			//draw_line(mlx_data->f_buf, p0, p1);
 		i++;
 	 }
-
-
 
 	if (mlx_data->f_buf->img)
 		mlx_put_image_to_window(mlx_data->mlx_ptr, mlx_data->win_ptr, mlx_data->f_buf->img, 0, 0);
@@ -193,7 +128,7 @@ int	main(int argc, char const *argv[])
 			close(fd);
 			return (1);
 		}
-		if (!(mlx_data->v_map = read_map_data(fd)))
+		if (!(read_map_data(fd, &mlx_data->v_map)))
 		{
 			ft_putstr("error: map data read failed!");
 			close(fd);

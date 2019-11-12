@@ -6,10 +6,11 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/07 11:14:13 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/11 18:18:35 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/12 15:47:51 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdlib.h>
 #include "point.h"
 #include "matrix.h"
 
@@ -44,4 +45,20 @@ t_vec3		transform_point(t_vec3 v, t_vec3 translate, t_vec3 rot, t_vec3 scale)
 	v = multiply_matrix_vec3(v, create_translation_matrix(translate));
 	v = multiply_matrix_vec3(v, create_scaling_matrix(scale));
 	return (v);
+}
+
+t_vec3 *make_unit_cube()
+{
+	t_vec3 *ps;
+
+	ps = (t_vec3*)malloc(sizeof(t_vec3) * 8);
+	ps[0] = make_vec3(-0.5f, -0.5f, -0.5f);
+	ps[1] = make_vec3(0.5f, -0.5f, -0.5f);
+	ps[2] = make_vec3(-0.5f, 0.5f, -0.5f);
+	ps[3] = make_vec3(0.5f, 0.5f, -0.5f);
+	ps[4] = make_vec3(-0.5f, -0.5f, 0.5f);
+	ps[5] = make_vec3(0.5f, -0.5f, 0.5f);
+	ps[6] = make_vec3(-0.5f, 0.5f, 0.5f);
+	ps[7] = make_vec3(0.5f, 0.5f, 0.5f);
+	return (ps);
 }

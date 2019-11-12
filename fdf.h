@@ -6,13 +6,14 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 15:23:29 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/11 16:24:44 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/12 16:46:59 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FDF_H
 # define FDF_H
 
+# include <stdlib.h>
 # include "matrix.h"
 # include "point.h"
 
@@ -79,6 +80,8 @@ void			draw_line(t_frame_buffer *fb, t_vec3 p0, t_vec3 p1);
 void			draw_tri(t_frame_buffer *fb, t_vec3 p0, t_vec3 p1, t_vec3 p2);
 void			draw_quad(t_frame_buffer *fb, t_vec3 p0, t_vec3 p1, t_vec3 p2, t_vec3 p3);
 
+int				read_map_data(int fd, t_v_map **map);
+t_v_map			*create_v_map(int w, int h);
 int				throw_error(char *e);
 
 #endif
