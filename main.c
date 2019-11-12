@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:53:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/12 17:40:05 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/12 18:37:02 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int		on_key_down(int key, void *param)
 	return (0);
 }
 
-t_mlx_data *init(char *title)
+t_mlx_data *init_mlx(char *title)
 {
 	t_mlx_data *mlx_data;
 	float		znear;
@@ -57,6 +57,17 @@ t_mlx_data *init(char *title)
 	return (mlx_data);
 }
 
+int	del_mlx(t_mlx_data *mlx_data)
+{
+	mlx_destroy_window(mlx_data->mlx_ptr, mlx_data->win_ptr);
+	mlx_destroy_image(mlx_data->mlx_ptr, mlx_data->f_buf->img);
+
+	free(mlx_data->f_buf->d_addr);
+	free(mlx_data->m_proj);
+	free(mlx_data);
+	return (1);
+}
+
 t_vec3 convert_to_screen_space(t_vec3 p)
 {
 	p.x += 1.0f;
@@ -64,6 +75,30 @@ t_vec3 convert_to_screen_space(t_vec3 p)
 	p.x *= 0.5f * (float)WIN_W;
 	p.y *= 0.5f * (float)WIN_H;
 	return (p);
+}
+
+static void	center_origin(t_v_map *map)
+{
+	int x;
+	int y;
+	double half_w;
+	double half_h;
+
+	half_w = (float)map->w * 0.5f;
+	half_h = (float)map->h * 0.5f;
+
+	y = 0;
+	while (y < map->h)
+	{
+		x = 0;
+		while (x < map->w)
+		{
+			map->v[y * map->w + x].x -= half_w;
+			map->v[y * map->w + x].y -= half_h;
+			x++;
+		}
+		y++;
+	}
 }
 
 int on_render(void *param)
@@ -89,8 +124,7 @@ int on_render(void *param)
 	while (i < mlx_data->v_map->size)
 	{
 			t_vec3 p0 = mlx_data->v_map->v[i];
-			p0.x -= mlx_data->v_map->w / 2;
-			p0.y -= mlx_data->v_map->h / 2;
+
 			//p0 = multiply_matrix_vec3(p0, s_matrix);
 			p0 = multiply_matrix_vec3(p0, mat_rot_x);
 			p0 = multiply_matrix_vec3(p0, mat_rot_y);
@@ -117,8 +151,11 @@ int	main(int argc, char const *argv[])
 	t_mlx_data *mlx_data;
 	int	fd;
 
-	mlx_data = init("fdf");
-
+	if (!(mlx_data = init_mlx("fdf")))
+	{
+		ft_putendl("mlx failed to init!");
+		return (1);
+	}
 
 	if (argc == 2)
 	{
@@ -141,12 +178,22 @@ int	main(int argc, char const *argv[])
 		mlx_data->v_map->v = make_unit_cube();
 	}
 
+	ft_putstr("map width: ");
+	ft_putnbr(mlx_data->v_map->h);
+	ft_putchar('\n');
+	ft_putstr("map height: ");
+	ft_putnbr(mlx_data->v_map->h);
+	ft_putchar('\n');
+
+	center_origin(mlx_data->v_map);
 	mlx_data->v_map->pos = make_vec3(0.0f, 0.0f, 10.0f);
 
 	mlx_hook(mlx_data->win_ptr, 2, 0, on_key_down, mlx_data);
 	mlx_loop_hook (mlx_data->mlx_ptr, on_render, mlx_data);
 
 	mlx_loop(mlx_data->mlx_ptr);
-	free(mlx_data);
+
+	if (!del_mlx(mlx_data))
+		ft_putendl("mlx_del failed!");
 	return (0);
 }

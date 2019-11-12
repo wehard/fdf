@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/12 15:15:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/12 17:15:40 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/12 18:22:39 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,22 @@ t_v_map *read_to_v_map(int w, int h, t_list *lst)
 	return (v_map);
 }
 
+static int	free_map_list(t_list *list)
+{
+	ft_putendl("destroying map list");
+	if (!list)
+	{
+		ft_putendl("list was null!");
+		return (0);
+	}
+	while (list)
+	{
+		free(list->content);
+		list = list->next;
+	}
+	return (0);
+}
+
 int	read_map_data(int fd, t_v_map **map)
 {
 	t_list *lst;
@@ -77,9 +93,9 @@ int	read_map_data(int fd, t_v_map **map)
 		if (width == -1)
 			width = ft_nwords(line, ' ');
 		if (!(temp = ft_lstnew(line, ft_strlen(line) + 1)))
-			return (0 /* cleanup list!! */);
+			return (free_map_list(lst));
 		if (ft_nwords(line, ' ') != width)
-			return (0 /* cleanup list!! */);
+			return (free_map_list(lst));
 		ft_lstadd(&lst, temp);
 		height++;
 		free(line);
