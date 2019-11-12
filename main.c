@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:53:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/12 19:08:52 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/12 20:14:20 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,12 +125,11 @@ int on_render(void *param)
 	{
 			t_vec3 p0 = mlx_data->v_map->v[i];
 
-			//p0 = multiply_matrix_vec3(p0, s_matrix);
 			p0 = multiply_matrix_vec3(p0, mat_rot_x);
 			p0 = multiply_matrix_vec3(p0, mat_rot_y);
-			//p0 = transform_point(p0, make_vec3(1.0f, 1.0f, 10.0f), make_vec3(0.0f, 0.3f, 0.0f), make_vec3(1.0f, 1.0f, 1.0f));
+
 			p0.z += mlx_data->v_map->w;
-			p0.y += 5.0f;
+			p0.y += sinf(angle) * (mlx_data->v_map->h * 0.5f);
 			//p0 = multiply_matrix_vec3(p0, mat_trans); // TRANSLATE
 			p0 = multiply_matrix_vec3(p0, *(mlx_data->m_proj));
 			p0 = convert_to_screen_space(p0);
@@ -189,7 +188,8 @@ int	main(int argc, char const *argv[])
 	ft_putchar('\n');
 
 	center_map_origin(mlx_data->v_map);
-	mlx_data->v_map->pos = make_vec3(0.0f, 0.0f, 10.0f);
+
+	mlx_data->v_map->pos = make_vec3(0.0f, 0.0f, 200.0f);
 
 	mlx_hook(mlx_data->win_ptr, 2, 0, on_key_down, mlx_data);
 	mlx_loop_hook (mlx_data->mlx_ptr, on_render, mlx_data);

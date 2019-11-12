@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/11 10:34:47 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/11 18:11:31 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/12 19:36:16 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,11 @@ t_frame_buffer	*create_frame_buffer(t_mlx_data *mlx_data)
 		return (NULL);
 	}
 
-	fb->d_addr = mlx_get_data_addr(fb->img, &fb->bpp, &fb->size_line, &fb->endian);
+	if (!(fb->d_addr = mlx_get_data_addr(fb->img, &fb->bpp, &fb->size_line, &fb->endian)))
+	{
+		throw_error("error: mlx_get_data_addr failed!");
+		return (NULL);
+	}
 	fb->bpp /= 8;
 	return (fb);
 }

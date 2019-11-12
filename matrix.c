@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/07 17:20:13 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/11 18:34:57 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/12 20:05:53 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -278,15 +278,11 @@ t_vec3		multiply_matrix_vec3(t_vec3 in, t_mat4x4 m)
 	t_vec3 	out;
 	float	w;
 
-	out.x   = in.x * m.m[0][0] + in.y * m.m[1][0] + in.z * m.m[2][0] + /* in.z = 1 */ m.m[3][0];
-	out.y   = in.x * m.m[0][1] + in.y * m.m[1][1] + in.z * m.m[2][1] + /* in.z = 1 */ m.m[3][1];
-	out.z   = in.x * m.m[0][2] + in.y * m.m[1][2] + in.z * m.m[2][2] + /* in.z = 1 */ m.m[3][2];
-	w = in.x * m.m[0][3] + in.y * m.m[1][3] + in.z * m.m[2][3] + /* in.z = 1 */ m.m[3][3];
-
-	//out.x = in.x * m.m[0][0] + in.y * m.m[1][0] + in.z * m.m[2][0] + m.m[3][0];
-	//out.y = in.x * m.m[0][1] + in.y * m.m[1][1] + in.z * m.m[2][1] + m.m[3][1];
-	//out.z = in.x * m.m[0][2] + in.y * m.m[1][2] + in.z * m.m[2][2] + m.m[3][2];
-	//w = in.x * m.m[0][3] + in.y * m.m[1][3] + in.z * m.m[2][3] + m.m[3][3];
+	w = 0.0f;
+	out.x = in.x * m.m[0][0] + in.y * m.m[1][0] + in.z * m.m[2][0] + m.m[3][0];
+	out.y = in.x * m.m[0][1] + in.y * m.m[1][1] + in.z * m.m[2][1] + m.m[3][1];
+	out.z = in.x * m.m[0][2] + in.y * m.m[1][2] + in.z * m.m[2][2] + m.m[3][2];
+	w = in.x * m.m[0][3] + in.y * m.m[1][3] + in.z * m.m[2][3] + m.m[3][3];
 
 	if (w != 1.0f)
 	{
