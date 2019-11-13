@@ -6,7 +6,7 @@
 #    By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/05 13:58:13 by wkorande          #+#    #+#              #
-#    Updated: 2019/11/12 19:24:50 by wkorande         ###   ########.fr        #
+#    Updated: 2019/11/13 12:08:39 by wkorande         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,6 +20,7 @@ SRC = main.c\
 	draw.c\
 	map.c\
 	frame_buffer.c\
+	event_handlers.c\
 	error.c
 
 OBJ =

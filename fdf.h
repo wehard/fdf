@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 15:23:29 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/12 16:46:59 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/13 13:14:36 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 # define WIN_H 720
 
 # define ESC 53
+# define SPACE 49
 
 typedef struct 		s_line
 {
@@ -39,12 +40,16 @@ typedef struct		s_mouse_data
 	int				y;
 	int				oldx;
 	int				oldy;
+	int				dx;
+	int				dy;
 }					t_mouse_data;
 
 typedef struct		s_v_map
 {
 	t_vec3			*v;
 	t_vec3			pos;
+	t_vec3			rot;
+	t_vec3			scale;
 	int				size;
 	int				w;
 	int				h;
@@ -77,11 +82,15 @@ void			clear_frame_buffer(t_frame_buffer *fb);
 t_frame_buffer	*create_frame_buffer(t_mlx_data *mlx_data);
 
 void			draw_line(t_frame_buffer *fb, t_vec3 p0, t_vec3 p1);
+void			draw_line_simple(t_frame_buffer *fb, t_vec3 p0, t_vec3 p1);
 void			draw_tri(t_frame_buffer *fb, t_vec3 p0, t_vec3 p1, t_vec3 p2);
 void			draw_quad(t_frame_buffer *fb, t_vec3 p0, t_vec3 p1, t_vec3 p2, t_vec3 p3);
 
 int				read_map_data(int fd, t_v_map **map);
 t_v_map			*create_v_map(int w, int h);
 int				throw_error(char *e);
+
+int				on_key_down(int key, void *param);
+int				mouse_event(int button, int x, int y, void *param);
 
 #endif

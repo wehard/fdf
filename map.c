@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/12 15:15:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/12 18:22:39 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/13 11:41:14 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,15 @@ t_v_map *create_v_map(int w, int h)
 	v_map->size = size;
 	v_map->w = w;
 	v_map->h = h;
+	v_map->pos.x = 0.0f;
+	v_map->pos.y = 0.0f;
+	v_map->pos.z = 0.0f;
+	v_map->rot.x = 0.0f;
+	v_map->rot.y = 0.0f;
+	v_map->rot.z = 0.0f;
 	if (!(v_map->v = (t_vec3*)malloc(sizeof(t_vec3) * size)))
 		return (NULL);
-	//ft_bzero(v_map->v, sizeof(t_vec3) * size);
+	ft_bzero(v_map->v, sizeof(t_vec3) * size);
 	return (v_map);
 }
 

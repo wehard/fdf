@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/11 13:06:16 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/11 13:17:28 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/13 13:06:26 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,26 @@ void	draw_line(t_frame_buffer *fb, t_vec3 p0, t_vec3 p1)
 			D = D - 2.0f * deltaX;
 		}
 		D = D + 2.0f * deltaY;
+		x++;
+	}
+}
+
+void	draw_line_simple(t_frame_buffer *fb, t_vec3 p0, t_vec3 p1)
+{
+	float x;
+	float slope;
+	float yintercept;
+	float y;
+
+	if (p1.z > 0)
+			p1.y -= 5;
+	x = p0.x;
+	slope = (p1.y - p0.y) / (p1.x - p0.x);
+	yintercept = p0.y;
+	while (x < p1.x)
+	{
+		y = slope * x + yintercept;
+		frame_buffer_set(fb, x, y, GREEN);
 		x++;
 	}
 }

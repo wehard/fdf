@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:53:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/12 20:14:20 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/13 13:09:02 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,16 +23,7 @@
 #include "math.h"
 #include "ft_get_next_line.h"
 
-int		on_key_down(int key, void *param)
-{
-	t_mlx_data *mlx_data;
 
-	mlx_data = (t_mlx_data*)param;
-
-	if (key == ESC)
-		exit(EXIT_SUCCESS);
-	return (0);
-}
 
 t_mlx_data *init_mlx(char *title)
 {
@@ -46,11 +37,15 @@ t_mlx_data *init_mlx(char *title)
 	mlx_data->mlx_ptr = mlx_init();
 	mlx_data->win_ptr = mlx_new_window(mlx_data->mlx_ptr, WIN_W, WIN_H, title);
 	mlx_data->f_buf = create_frame_buffer(mlx_data);
-	//mlx_data->mouse_data = (t_mouse_data*)malloc(sizeof(t_mouse_data));
-	//mlx_data->mouse_data->x = 0;
-	//mlx_data->mouse_data->y = 0;
-	//mlx_data->mouse_data->oldx = 0;
-	//mlx_data->mouse_data->oldy = 0;
+
+	mlx_data->mouse_data = (t_mouse_data*)malloc(sizeof(t_mouse_data));
+	mlx_data->mouse_data->x = 0;
+	mlx_data->mouse_data->y = 0;
+	mlx_data->mouse_data->oldx = 0;
+	mlx_data->mouse_data->oldy = 0;
+	mlx_data->mouse_data->dx = 0;
+	mlx_data->mouse_data->dy = 0;
+
 	mlx_data->m_proj = (t_mat4x4*)malloc(sizeof(t_mat4x4*));
 	*(mlx_data->m_proj) = create_proj_matrix(znear, zfar, 90.0f, WIN_W, WIN_H);
 	mlx_data->delta_time = 0.001f;
@@ -109,35 +104,48 @@ int on_render(void *param)
 	if (!mlx_data || !mlx_data->v_map)
 		return (0);
 
+	// ft_putstr("dx: ");
+	// ft_putnbr(mlx_data->mouse_data->dx);
+	// ft_putstr(" dy: ");
+	// ft_putnbr(mlx_data->mouse_data->dy);
+	// ft_putchar('\n');
+
 	clear_frame_buffer(mlx_data->f_buf);
 	int i;
 
-	float angle = mlx_data->delta_time * 0.3f;
+	mlx_data->v_map->rot.x += (mlx_data->mouse_data->dy * 0.0001f);
+	mlx_data->v_map->rot.y += (-mlx_data->mouse_data->dx * 0.0001f);
 
-	t_mat4x4 mat_trans = create_translation_matrix(mlx_data->v_map->pos);
-	t_mat4x4 mat_rot_y = create_rotation_matrix_y(angle);
-	t_mat4x4 mat_rot_x = create_rotation_matrix_x(3.14f);
-	t_mat4x4 mat_rot_z = create_rotation_matrix_z(-angle);
+	t_mat4x4 mat_rot_y = create_rotation_matrix_y(mlx_data->v_map->rot.y);
+	t_mat4x4 mat_rot_x = create_rotation_matrix_x(mlx_data->v_map->rot.x);
+	//t_mat4x4 mat_rot_z = create_rotation_matrix_z(-angle);
 	t_mat4x4 s_matrix = create_scaling_matrix(make_vec3(1.0f, 1.0f, 0.1f));
 
-	i = 0;
-	while (i < mlx_data->v_map->size)
+
+	for (size_t y = 0; y < mlx_data->v_map->h-1; y++)
 	{
-			t_vec3 p0 = mlx_data->v_map->v[i];
+		for (size_t x = 0; x < mlx_data->v_map->w; x++)
+		{
+			t_vec3 p0 = mlx_data->v_map->v[y * mlx_data->v_map->w + x];
 
-			p0 = multiply_matrix_vec3(p0, mat_rot_x);
 			p0 = multiply_matrix_vec3(p0, mat_rot_y);
-
+			p0 = multiply_matrix_vec3(p0, mat_rot_x);
 			p0.z += mlx_data->v_map->w;
-			p0.y += sinf(angle) * (mlx_data->v_map->h * 0.5f);
-			//p0 = multiply_matrix_vec3(p0, mat_trans); // TRANSLATE
 			p0 = multiply_matrix_vec3(p0, *(mlx_data->m_proj));
 			p0 = convert_to_screen_space(p0);
 
+			t_vec3 p1 = mlx_data->v_map->v[(y+1) * mlx_data->v_map->w + x];
+
+			p1 = multiply_matrix_vec3(p1, mat_rot_y);
+			p1 = multiply_matrix_vec3(p1, mat_rot_x);
+			p1.z += mlx_data->v_map->w;
+			p1 = multiply_matrix_vec3(p1, *(mlx_data->m_proj));
+			p1 = convert_to_screen_space(p1);
+
 			frame_buffer_set(mlx_data->f_buf, p0.x, p0.y, WHITE);
-			//draw_line(mlx_data->f_buf, p0, p1);
-		i++;
-	 }
+			draw_line(mlx_data->f_buf, p0, p1);
+		}
+	}
 
 	if (mlx_data->f_buf->img)
 		mlx_put_image_to_window(mlx_data->mlx_ptr, mlx_data->win_ptr, mlx_data->f_buf->img, 0, 0);
@@ -192,6 +200,7 @@ int	main(int argc, char const *argv[])
 	mlx_data->v_map->pos = make_vec3(0.0f, 0.0f, 200.0f);
 
 	mlx_hook(mlx_data->win_ptr, 2, 0, on_key_down, mlx_data);
+	mlx_mouse_hook(mlx_data->win_ptr,  mouse_event, mlx_data);
 	mlx_loop_hook (mlx_data->mlx_ptr, on_render, mlx_data);
 
 	//on_render(mlx_data);
