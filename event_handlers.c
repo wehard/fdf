@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/13 11:28:18 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/13 16:45:06 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/14 00:02:19 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@ int	on_key_down(int key, void *param)
 	if (key == SPACE)
 	{
 		mlx_data->v_map->rot = make_vec3(0.0f, 0.0f, 0.0f);
-		mlx_data->mouse_data->dy = 0;
-		mlx_data->mouse_data->dy = 0;
+		mlx_data->mouse_data.dy = 0;
+		mlx_data->mouse_data.dy = 0;
 	}
 	if (key == KEY_W)
 		mlx_data->v_map->rot.x += 0.1f;
@@ -65,14 +65,14 @@ int	mouse_event(int button, int x, int y, void *param)
 
 	mlx_data = (t_mlx_data*)param;
 
-	mlx_data->mouse_data->oldx = mlx_data->mouse_data->x;
-	mlx_data->mouse_data->oldy = mlx_data->mouse_data->y;
+	mlx_data->mouse_data.oldx = mlx_data->mouse_data.x;
+	mlx_data->mouse_data.oldy = mlx_data->mouse_data.y;
 
-	mlx_data->mouse_data->x = x;
-	mlx_data->mouse_data->y = y;
+	mlx_data->mouse_data.x = x;
+	mlx_data->mouse_data.y = y;
 
-	mlx_data->mouse_data->dx = x - mlx_data->mouse_data->oldx;
-	mlx_data->mouse_data->dy = y - mlx_data->mouse_data->oldy;
+	mlx_data->mouse_data.dx = x - mlx_data->mouse_data.oldx;
+	mlx_data->mouse_data.dy = y - mlx_data->mouse_data.oldy;
 
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:53:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/13 22:04:42 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/14 00:10:11 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,13 +36,13 @@ t_mlx_data *init_mlx(char *title)
 	mlx_data->win_ptr = mlx_new_window(mlx_data->mlx_ptr, WIN_W, WIN_H, title);
 	mlx_data->f_buf = create_frame_buffer(mlx_data);
 
-	mlx_data->mouse_data = (t_mouse_data*)malloc(sizeof(t_mouse_data));
-	mlx_data->mouse_data->x = 0;
-	mlx_data->mouse_data->y = 0;
-	mlx_data->mouse_data->oldx = 0;
-	mlx_data->mouse_data->oldy = 0;
-	mlx_data->mouse_data->dx = 0;
-	mlx_data->mouse_data->dy = 0;
+	//mlx_data->mouse_data = (t_mouse_data*)malloc(sizeof(t_mouse_data));
+	mlx_data->mouse_data.x = 0;
+	mlx_data->mouse_data.y = 0;
+	mlx_data->mouse_data.oldx = 0;
+	mlx_data->mouse_data.oldy = 0;
+	mlx_data->mouse_data.dx = 0;
+	mlx_data->mouse_data.dy = 0;
 
 	mlx_data->perspective_matrix = create_proj_matrix(znear, zfar, 90.0f, WIN_W, WIN_H);
 	mlx_data->ortho_matrix = create_ortho_matrix(-1.0f, 1.0f, -1.0f, 1.0f, zfar, znear);
@@ -117,8 +117,8 @@ int on_render(void *param)
 	clear_frame_buffer(mlx_data->f_buf);
 	int i;
 
-	mlx_data->v_map->rot.x += (mlx_data->mouse_data->dy * 0.0001f);
-	mlx_data->v_map->rot.y += (-mlx_data->mouse_data->dx * 0.0001f);
+	mlx_data->v_map->rot.x += (mlx_data->mouse_data.dy * 0.0001f);
+	mlx_data->v_map->rot.y += -(mlx_data->mouse_data.dx * 0.0001f);
 
 	t_mat4x4 mat_rot_y = create_rotation_matrix_y(mlx_data->v_map->rot.y);
 	t_mat4x4 mat_rot_x = create_rotation_matrix_x(mlx_data->v_map->rot.x);
@@ -201,9 +201,10 @@ int	main(int argc, char const *argv[])
 	mlx_data->v_map->pos = make_vec3(0.0f, 0.0f, mlx_data->v_map->w);
 	mlx_data->v_map->scale = make_vec3(1.0f, 1.0f, 1.0f);
 
-	mlx_hook(mlx_data->win_ptr, 2, 0, on_key_down, mlx_data);
-	mlx_mouse_hook(mlx_data->win_ptr,  mouse_event, mlx_data);
-	mlx_loop_hook (mlx_data->mlx_ptr, on_render, mlx_data);
+	//mlx_expose_hook(mlx_data->win_ptr, on_render, mlx_data);
+	mlx_key_hook(mlx_data->win_ptr, on_key_down, (void*)mlx_data);
+	mlx_mouse_hook(mlx_data->win_ptr,  mouse_event,(void*)mlx_data);
+	mlx_loop_hook (mlx_data->mlx_ptr, on_render, (void*)mlx_data);
 
 	//on_render(mlx_data);
 	mlx_loop(mlx_data->mlx_ptr);

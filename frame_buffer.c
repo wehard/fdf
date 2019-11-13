@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/11 10:34:47 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/13 13:58:34 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/14 00:17:22 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,14 @@ void			frame_buffer_set(t_frame_buffer *fb, int x, int y, int color)
 {
 	if (x < 0 || x >= WIN_W || y < 0 || y >= WIN_H)
 		return ;
-	*(int*)(fb->d_addr + ((y * WIN_W + x) * fb->bpp)) = color;
+	*(int*)(fb->d_addr + (((y * WIN_W) + x) * fb->bpp)) = color;
 }
 
 t_frame_buffer	*create_frame_buffer(t_mlx_data *mlx_data)
 {
 	t_frame_buffer *fb;
 
-	if (!(fb = (t_frame_buffer*)malloc(sizeof(t_frame_buffer*))))
+	if (!(fb = (t_frame_buffer*)malloc(sizeof(t_frame_buffer))))
 	{
 		throw_error("error: create frame buffer failed!");
 		return (NULL);
