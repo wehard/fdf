@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:53:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/13 17:23:50 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/13 18:13:33 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,9 +131,9 @@ int on_render(void *param)
 		{
 			t_vec3 p0 = mlx_data->v_map->v[y * mlx_data->v_map->w + x];
 
+			p0 = multiply_matrix_vec3(p0, mat_rot_z);
 			p0 = multiply_matrix_vec3(p0, mat_rot_x);
 			p0 = multiply_matrix_vec3(p0, mat_rot_y);
-			p0 = multiply_matrix_vec3(p0, mat_rot_z);
 			p0 = multiply_matrix_vec3(p0, mat_scale);
 
 			p0 = translate_point_3d(p0, mlx_data->v_map->pos);
@@ -208,6 +208,7 @@ int	main(int argc, char const *argv[])
 		ft_putendl("mlx_del failed!");
 	return (0);
 }
+
 /*
 int main(void)
 {
