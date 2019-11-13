@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/11 10:34:47 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/12 19:36:16 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/13 13:58:34 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,8 @@ t_frame_buffer	*create_frame_buffer(t_mlx_data *mlx_data)
 
 void		clear_frame_buffer(t_frame_buffer *fb)
 {
+	int bytes_per_pixel;
+
 	if (!fb || !fb->d_addr)
 		return ;
 	ft_bzero(fb->d_addr, fb->w * fb->h * fb->bpp);

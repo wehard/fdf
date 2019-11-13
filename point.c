@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/07 11:14:13 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/12 15:47:51 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/13 17:18:41 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,16 @@ t_vec3		transform_point(t_vec3 v, t_vec3 translate, t_vec3 rot, t_vec3 scale)
 	//v = multiply_matrix_vec3(v, create_rotation_matrix_xyz(rot));
 	v = multiply_matrix_vec3(v, create_translation_matrix(translate));
 	v = multiply_matrix_vec3(v, create_scaling_matrix(scale));
+	return (v);
+}
+
+t_vec3		translate_point_3d(t_vec3 p, t_vec3 translation)
+{
+	t_vec3 v;
+
+	v.x += translation.x;
+	v.y += translation.y;
+	v.z += translation.z;
 	return (v);
 }
 

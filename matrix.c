@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/07 17:20:13 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/13 12:54:13 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/13 17:03:08 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -238,6 +238,20 @@ t_mat4x4	create_proj_matrix(float znear, float zfar, float fov, float s_width, f
     mat_proj.m[3][3] = 0.0f; */
 
 	return (mat_proj);
+}
+
+t_mat4x4	create_ortho_matrix(float top, float bot, float lft, float rgt, float far, float near)
+{
+	t_mat4x4 mat;
+
+	mat = create_identity_matrix();
+	mat.m[0][0] = 2.0f / (rgt - lft);
+	mat.m[1][1] = 2.0f / (top - bot);
+	mat.m[2][2] = -2.0f / (far - near);
+	mat.m[0][3] = -((rgt + lft) / (rgt - lft));
+	mat.m[1][3] = -((top + bot) / (top - bot));
+	mat.m[2][3] =  -((far + near) / (far - near));
+	return (mat);
 }
 
 t_mat4x4	create_trs_matrix(t_vec3 pos, t_vec3 rot, t_vec3 scaale)
