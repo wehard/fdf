@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:53:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/13 18:13:33 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/13 22:04:42 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,6 @@
 #include "point.h"
 #include "math.h"
 #include "ft_get_next_line.h"
-
-
 
 t_mlx_data *init_mlx(char *title)
 {
@@ -51,6 +49,9 @@ t_mlx_data *init_mlx(char *title)
 
 	mlx_data->m_proj = (t_mat4x4*)malloc(sizeof(t_mat4x4));
 	*(mlx_data->m_proj) = mlx_data->perspective_matrix;
+
+	mlx_data->camera.pos = make_vec3(0.0f, 0.0f, 0.0f);
+	mlx_data->camera.v_matrix = create_view_matrix(); //!!
 	mlx_data->delta_time = 0.001f;
 	return (mlx_data);
 }
@@ -123,7 +124,6 @@ int on_render(void *param)
 	t_mat4x4 mat_rot_x = create_rotation_matrix_x(mlx_data->v_map->rot.x);
 	t_mat4x4 mat_rot_z = create_rotation_matrix_z(mlx_data->v_map->rot.z);
 	t_mat4x4 mat_scale = create_scaling_matrix(mlx_data->v_map->scale);
-	t_mat4x4 mat_trans = create_translation_matrix(mlx_data->v_map->pos);
 
 	for (size_t y = 0; y < mlx_data->v_map->h; y++)
 	{
@@ -131,17 +131,20 @@ int on_render(void *param)
 		{
 			t_vec3 p0 = mlx_data->v_map->v[y * mlx_data->v_map->w + x];
 
-			p0 = multiply_matrix_vec3(p0, mat_rot_z);
 			p0 = multiply_matrix_vec3(p0, mat_rot_x);
 			p0 = multiply_matrix_vec3(p0, mat_rot_y);
+			p0 = multiply_matrix_vec3(p0, mat_rot_z);
 			p0 = multiply_matrix_vec3(p0, mat_scale);
 
-			p0 = translate_point_3d(p0, mlx_data->v_map->pos);
+			//p0 = translate_point_3d(p0, mlx_data->v_map->pos);
+			p0.z += mlx_data->v_map->w;
 			p0 = multiply_matrix_vec3(p0, *(mlx_data->m_proj));
-			p0 = convert_to_screen_space(p0);
 
-			frame_buffer_set(mlx_data->f_buf, p0.x, p0.y, WHITE);
-			//draw_line(mlx_data->f_buf, p0, p1);
+			if (!(p0.x < -1.0f || p0.x > 1.0f || p0.y < -1.0f || p0.y > 1.0f || p0.z < 0.0f))
+			{
+				p0 = convert_to_screen_space(p0);
+				frame_buffer_set(mlx_data->f_buf, p0.x, p0.y, WHITE);
+			}
 		}
 	}
 

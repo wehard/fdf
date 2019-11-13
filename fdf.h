@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 15:23:29 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/13 16:42:49 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/13 21:31:46 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,13 @@ typedef struct		s_frame_buffer
 	int				h;
 }					t_frame_buffer;
 
+typedef struct		s_camera
+{
+	t_vec3			pos;
+	t_mat4x4		v_matrix;
+}					t_camera;
+
+
 typedef struct		s_mlx_data
 {
 	void			*mlx_ptr;
@@ -86,6 +93,7 @@ typedef struct		s_mlx_data
 	t_mat4x4		*m_proj;
 	t_mat4x4		perspective_matrix;
 	t_mat4x4		ortho_matrix;
+	t_camera		camera;
 	t_v_map			*v_map;
 	t_mouse_data 	*mouse_data;
 	float			delta_time;
