@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/07 17:20:13 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/13 21:45:24 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/14 12:11:19 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,18 +101,22 @@ t_mat4x4	create_identity_matrix(void)
 	mat.m[0][1] = 0.0f;
 	mat.m[0][2] = 0.0f;
 	mat.m[0][3] = 0.0f;
+
 	mat.m[1][0] = 0.0f;
 	mat.m[1][1] = 1.0f;
 	mat.m[1][2] = 0.0f;
 	mat.m[1][3] = 0.0f;
+
 	mat.m[2][0] = 0.0f;
 	mat.m[2][1] = 0.0f;
 	mat.m[2][2] = 1.0f;
 	mat.m[2][3] = 0.0f;
+
 	mat.m[3][0] = 0.0f;
 	mat.m[3][1] = 0.0f;
 	mat.m[3][2] = 0.0f;
 	mat.m[3][3] = 1.0f;
+
 	return (mat);
 }
 
@@ -217,7 +221,7 @@ t_mat4x4	create_proj_matrix(float znear, float zfar, float fov, float s_width, f
 	mat_proj = create_identity_matrix();
 
 	float a_ratio = (float)s_height / (float)s_width;
-	float fovrad = 1.0f / tanf(fov * 0.5f / 180.0f * 3.14159f); //  / 180.0f * 3.14159f
+	float fovrad = 1.0f / tanf(fov * 0.5f); //  / 180.0f * 3.14159f
 
 	mat_proj.m[0][0] = a_ratio * fovrad;
 	mat_proj.m[1][1] = fovrad;
@@ -322,6 +326,25 @@ t_vec3		multiply_matrix_vec3(t_vec3 in, t_mat4x4 m)
 	w = in.x * m.m[0][3] + in.y * m.m[1][3] + in.z * m.m[2][3] + m.m[3][3];
 
 	if (w != 1.0f)
+	{
+		out.x /= w;
+		out.y /= w;
+		out.z /= w;
+	}
+	return (out);
+}
+
+
+t_vec3		multiply_matrix_vec3_test(t_vec3 in, t_mat4x4 m)
+{
+	t_vec3 	out;
+	float w;
+	out.x = (m.m[0][0] * in.x) + (m.m[0][1] * in.y) + (m.m[0][2] * in.z) + (m.m[0][3] * in.w);
+	out.y = (m.m[1][0] * in.x) + (m.m[1][1] * in.y) + (m.m[1][2] * in.z) + (m.m[1][3] * in.w);
+	out.z = (m.m[2][0] * in.x) + (m.m[2][1] * in.y) + (m.m[2][2] * in.z) + (m.m[2][3] * in.w);
+	w = (m.m[0][3] * in.x) + (m.m[1][3] * in.y) + (m.m[2][3] * in.z) + (m.m[3][3] * in.w);
+
+	if (in.w == 1.0f)
 	{
 		out.x /= w;
 		out.y /= w;

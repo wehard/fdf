@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 15:23:29 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/14 00:01:57 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/14 12:49:56 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,22 +21,24 @@
 # define RED 0xFF0000
 # define WHITE 0xFFFFFF
 
-# define WIN_W 720
+# define WIN_W 1280
 # define WIN_H 720
 
-# define ESC 0xff1b //53
-# define SPACE 0x0020 //49
-# define KEY_W 0x0077 //13
-# define KEY_A 0x0061 //0
-# define KEY_S 0x0073 //1
-# define KEY_D 0x0064 //2
-# define KEY_Q 0x0071 //12
-# define KEY_E 0x0065 //14
-# define KEY_R 0x0072 //15
-# define KEY_F 0x0066 //3
-# define KEY_1 0x0030 //18
-# define KEY_2 0x0031 //19
-# define KEY_3 0x0033 //20
+# define ESC   53  //0xff1b 53
+# define SPACE 49  //0x0020 49
+# define KEY_W 13  //0x0077 13
+# define KEY_A 0   //0x0061 0
+# define KEY_S 1   //0x0073 1
+# define KEY_D 2   //0x0064 2
+# define KEY_Q 12  //0x0071 12
+# define KEY_E 14  //0x0065 14
+# define KEY_R 15  //0x0072 15
+# define KEY_F 3   //0x0066 3
+# define KEY_1 18  //0x0030 18
+# define KEY_2 19  //0x0031 19
+# define KEY_3 20  //0x0033 20
+# define KEY_Z 6
+# define KEY_X 7
 
 
 typedef struct 		s_line

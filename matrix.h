@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/07 17:20:25 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/13 21:47:16 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/14 10:58:56 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,5 +37,6 @@ t_mat4x4	create_model_matrix();
 t_mat4x4	create_view_matrix();
 t_mat4x4	multiply_matrix(t_mat4x4 a, t_mat4x4 b);
 t_vec3		multiply_matrix_vec3(t_vec3 in, t_mat4x4 m);
+t_vec3		multiply_matrix_vec3_test(t_vec3 in, t_mat4x4 m);
 
 #endif

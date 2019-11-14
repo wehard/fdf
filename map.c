@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/12 15:15:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/13 11:41:14 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/14 11:16:46 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ t_v_map *read_to_v_map(int w, int h, t_list *lst)
 		x = 0;
 		while (*points)
 		{
-			v_map->v[y * v_map->w + x] = make_vec3(x, y, -ft_atoi(*points));
+			v_map->v[y * v_map->w + x] = make_vec3_pos(x, y, -ft_atoi(*points));
 			points++;
 			x++;
 		}
