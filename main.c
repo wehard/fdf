@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:53:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/14 12:23:11 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/15 13:55:25 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ t_mlx_data *init_mlx(char *title)
 	float		zfar;
 
 	znear = 0.1f;
-	zfar = 100.0f;
+	zfar = 10.0f;
 	mlx_data = (t_mlx_data*)malloc(sizeof(t_mlx_data));
 	mlx_data->mlx_ptr = mlx_init();
 	mlx_data->win_ptr = mlx_new_window(mlx_data->mlx_ptr, WIN_W, WIN_H, title);
@@ -45,7 +45,8 @@ t_mlx_data *init_mlx(char *title)
 	mlx_data->mouse_data.dy = 0;
 
 	mlx_data->perspective_matrix = create_proj_matrix(znear, zfar, 90.0f, WIN_W, WIN_H);
-	mlx_data->ortho_matrix = create_ortho_matrix(0.0f, (float)WIN_H, 0.0f, (float)WIN_W, zfar, znear);
+	float a_ratio = (float)WIN_H / (float)WIN_W;
+	mlx_data->ortho_matrix = create_ortho_matrix(-a_ratio * 20.0f, a_ratio * 20.0f, -20.0f, 20.0f, 1.0f, -1.0f);
 
 	mlx_data->m_proj = (t_mat4x4*)malloc(sizeof(t_mat4x4));
 	*(mlx_data->m_proj) = mlx_data->perspective_matrix;
@@ -131,20 +132,17 @@ int on_render(void *param)
 		{
 			t_vec3 p0 = mlx_data->v_map->v[y * mlx_data->v_map->w + x];
 
-			p0 = multiply_matrix_vec3(p0, mat_rot_x);
-			p0 = multiply_matrix_vec3(p0, mat_rot_y);
-			p0 = multiply_matrix_vec3(p0, mat_rot_z);
-			p0 = multiply_matrix_vec3(p0, mat_scale);
+			p0 = multiply_matrix_vec3_test(p0, mat_rot_x);
+			p0 = multiply_matrix_vec3_test(p0, mat_rot_y);
+			p0 = multiply_matrix_vec3_test(p0, mat_rot_z);
+			p0 = multiply_matrix_vec3_test(p0, mat_scale);
 
 			p0 = translate_point_3d(p0, mlx_data->v_map->pos);
 			//p0.z += mlx_data->v_map->w;
-			p0 = multiply_matrix_vec3(p0, *(mlx_data->m_proj));
+			p0 = multiply_matrix_vec3_test(p0, *(mlx_data->m_proj));
 
-			if (!(p0.x < -1.0f || p0.x > 1.0f || p0.y < -1.0f || p0.y > 1.0f || p0.z < 0.0f))
-			{
-				p0 = convert_to_screen_space(p0);
-				frame_buffer_set(mlx_data->f_buf, p0.x, p0.y, WHITE);
-			}
+			p0 = convert_to_screen_space(p0);
+			frame_buffer_set(mlx_data->f_buf, p0.x, p0.y, WHITE);
 		}
 	}
 

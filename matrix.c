@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/07 17:20:13 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/14 12:11:19 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/15 14:07:46 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,6 +214,34 @@ t_mat4x4	create_translation_matrix(t_vec3 translation)
 	return (mat);
 }
 
+// void setProjectionMatrix(const float &angleOfView, const float &near, const float &far, Matrix44f &M)
+// {
+//     // set the basic projection matrix
+//     float scale = 1 / tan(angleOfView * 0.5 * M_PI / 180);
+//     M[0][0] = scale; // scale the x coordinates of the projected point
+//     M[1][1] = scale; // scale the y coordinates of the projected point
+//     M[2][2] = -far / (far - near); // used to remap z to [0,1]
+//     M[3][2] = -far * near / (far - near); // used to remap z [0,1]
+//     M[2][3] = -1; // set w = -z
+//     M[3][3] = 0;
+// }
+
+// void multPointMatrix(const Vec3f &in, Vec3f &out, const Matrix44f &M)
+// {
+//     //out = in * M;
+//     out.x   = in.x * M[0][0] + in.y * M[1][0] + in.z * M[2][0] + /* in.z = 1 */ M[3][0];
+//     out.y   = in.x * M[0][1] + in.y * M[1][1] + in.z * M[2][1] + /* in.z = 1 */ M[3][1];
+//     out.z   = in.x * M[0][2] + in.y * M[1][2] + in.z * M[2][2] + /* in.z = 1 */ M[3][2];
+//     float w = in.x * M[0][3] + in.y * M[1][3] + in.z * M[2][3] + /* in.z = 1 */ M[3][3];
+
+//     // normalize if w is different than 1 (convert from homogeneous to Cartesian coordinates)
+//     if (w != 1) {
+//         out.x /= w;
+//         out.y /= w;
+//         out.z /= w;
+//     }
+// }
+
 t_mat4x4	create_proj_matrix(float znear, float zfar, float fov, float s_width, float s_height)
 {
 	t_mat4x4 mat_proj;
@@ -338,17 +366,17 @@ t_vec3		multiply_matrix_vec3(t_vec3 in, t_mat4x4 m)
 t_vec3		multiply_matrix_vec3_test(t_vec3 in, t_mat4x4 m)
 {
 	t_vec3 	out;
-	float w;
+
 	out.x = (m.m[0][0] * in.x) + (m.m[0][1] * in.y) + (m.m[0][2] * in.z) + (m.m[0][3] * in.w);
 	out.y = (m.m[1][0] * in.x) + (m.m[1][1] * in.y) + (m.m[1][2] * in.z) + (m.m[1][3] * in.w);
 	out.z = (m.m[2][0] * in.x) + (m.m[2][1] * in.y) + (m.m[2][2] * in.z) + (m.m[2][3] * in.w);
-	w = (m.m[0][3] * in.x) + (m.m[1][3] * in.y) + (m.m[2][3] * in.z) + (m.m[3][3] * in.w);
+	out.w = (m.m[0][3] * in.x) + (m.m[1][3] * in.y) + (m.m[2][3] * in.z) + (m.m[3][3] * in.w);
 
 	if (in.w == 1.0f)
 	{
-		out.x /= w;
-		out.y /= w;
-		out.z /= w;
+		out.x /= out.w;
+		out.y /= out.w;
+		out.z /= out.w;
 	}
 	return (out);
 }
