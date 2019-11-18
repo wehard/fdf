@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:53:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/18 15:05:06 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/18 16:54:53 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,15 +28,15 @@ t_mlx_data *init_mlx(char *title)
 	t_mlx_data *mlx_data;
 	float		znear;
 	float		zfar;
+	float		aspect;
+	float		fov;
+	float		ortho_size;
 
-	znear = 0.1f;
-	zfar = 10.0f;
 	mlx_data = (t_mlx_data*)malloc(sizeof(t_mlx_data));
 	mlx_data->mlx_ptr = mlx_init();
 	mlx_data->win_ptr = mlx_new_window(mlx_data->mlx_ptr, WIN_W, WIN_H, title);
 	mlx_data->f_buf = create_frame_buffer(mlx_data);
 
-	//mlx_data->mouse_data = (t_mouse_data*)malloc(sizeof(t_mouse_data));
 	mlx_data->mouse_data.x = 0;
 	mlx_data->mouse_data.y = 0;
 	mlx_data->mouse_data.oldx = 0;
@@ -44,16 +44,19 @@ t_mlx_data *init_mlx(char *title)
 	mlx_data->mouse_data.dx = 0;
 	mlx_data->mouse_data.dy = 0;
 
-	mlx_data->perspective_matrix = create_proj_matrix(znear, zfar, 90.0f, WIN_W, WIN_H);
-	float a_ratio = (float)WIN_H / (float)WIN_W;
-	float ortho_size = 5.5f;
-	mlx_data->ortho_matrix = create_ortho_matrix(a_ratio * -ortho_size, a_ratio * ortho_size, -ortho_size, ortho_size, 1.0f, -1.0f);
+	znear = 0.1f;
+	zfar = 10.0f;
+	aspect = (float)WIN_H / (float)WIN_W;
+	ortho_size = 11.0f;
+	fov = 90.0f;
+	mlx_data->perspective_matrix = create_proj_matrix(znear, zfar, fov, aspect);
+	mlx_data->ortho_matrix = create_ortho_matrix(aspect * -ortho_size, aspect * ortho_size, -ortho_size, ortho_size, 1.0f, -1.0f);
 
 	mlx_data->m_proj = (t_mat4x4*)malloc(sizeof(t_mat4x4));
 	*(mlx_data->m_proj) = mlx_data->perspective_matrix;
 
-	mlx_data->camera.pos = make_vec3_pos(0.0f, 0.0f, 0.0f);
-	mlx_data->camera.v_matrix = create_view_matrix(); //!!
+	mlx_data->camera.pos = make_vec3_rot(0.0f, 0.0f, -20.0f);
+	mlx_data->camera.v_matrix = create_view_matrix(mlx_data->camera.pos);
 	mlx_data->delta_time = 0.001f;
 	return (mlx_data);
 }
@@ -126,6 +129,9 @@ int on_render(void *param)
 	t_mat4x4 mat_rot_x = create_rotation_matrix_x(mlx_data->v_map->rot.x);
 	t_mat4x4 mat_rot_z = create_rotation_matrix_z(mlx_data->v_map->rot.z);
 	t_mat4x4 mat_scale = create_scaling_matrix(mlx_data->v_map->scale);
+	t_mat4x4 mat_trans = create_translation_matrix(mlx_data->v_map->pos);
+	t_mat4x4 mat_view = create_view_matrix(mlx_data->camera.pos);
+
 
 	for (size_t y = 0; y < mlx_data->v_map->h; y++)
 	{
@@ -138,8 +144,11 @@ int on_render(void *param)
 			p0 = multiply_matrix_vec3_test(p0, mat_rot_z);
 			p0 = multiply_matrix_vec3_test(p0, mat_scale);
 
-			p0 = translate_point_3d(p0, mlx_data->v_map->pos);
-			//p0.z += mlx_data->v_map->w;
+			//p0 = translate_point_3d(p0, mlx_data->v_map->pos);
+			p0 = multiply_matrix_vec3_test(p0, mat_trans);
+
+			p0 = multiply_matrix_vec3(p0, mat_view);
+
 			p0 = multiply_matrix_vec3_test(p0, *(mlx_data->m_proj));
 
 			p0 = convert_to_screen_space(p0);
@@ -196,8 +205,9 @@ int	main(int argc, char const *argv[])
 	ft_putchar('\n');
 
 	center_map_origin(mlx_data->v_map);
-
-	mlx_data->v_map->pos = make_vec3_pos(0.0f, 0.0f, mlx_data->v_map->w);
+	// degrees × π / 180°
+	mlx_data->v_map->pos = make_vec3_pos(0.0f, 0.0f, 0.0f);
+	mlx_data->v_map->rot = make_vec3_pos(0.0f, 0.0f, 45.0f * (M_PI / 180.0f));
 	mlx_data->v_map->scale = make_vec3_rot(1.0f, 1.0f, 1.0f);
 
 	mlx_hook(mlx_data->win_ptr, 2, 0, on_key_down, (void*)mlx_data);

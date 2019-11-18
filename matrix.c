@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/07 17:20:13 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/18 15:08:39 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/18 16:54:12 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,10 +149,10 @@ t_mat4x4	create_rotation_matrix_x(float angle)
 
 	mat = create_identity_matrix();
 	mat.m[0][0] = 1.0f;
-	mat.m[1][1] = cosf(angle * 0.5f);
-	mat.m[1][2] = -sinf(angle * 0.5f);
-	mat.m[2][1] = sinf(angle * 0.5f);
-	mat.m[2][2] = cosf(angle * 0.5f);
+	mat.m[1][1] = cosf(angle);
+	mat.m[1][2] = -sinf(angle);
+	mat.m[2][1] = sinf(angle);
+	mat.m[2][2] = cosf(angle);
 	mat.m[3][3] = 1.0f;
 	return (mat);
 }
@@ -162,11 +162,11 @@ t_mat4x4	create_rotation_matrix_y(float angle)
 	t_mat4x4 mat;
 
 	mat = create_identity_matrix();
-	mat.m[0][0] = cosf(angle * 0.5f);
-	mat.m[0][2] = sinf(angle * 0.5f);
+	mat.m[0][0] = cosf(angle);
+	mat.m[0][2] = sinf(angle);
 	mat.m[1][1] = 1.0f;
-	mat.m[2][0] = -sinf(angle * 0.5f);
-	mat.m[2][2] = cosf(angle * 0.5f);
+	mat.m[2][0] = -sinf(angle);
+	mat.m[2][2] = cosf(angle);
 	return (mat);
 }
 
@@ -208,9 +208,9 @@ t_mat4x4	create_translation_matrix(t_vec3 translation)
 	t_mat4x4 mat;
 
 	mat = create_identity_matrix();
-	mat.m[0][3] = translation.x;
-	mat.m[1][3] = translation.y;
-	mat.m[2][3] = translation.z;
+	mat.m[3][0] = translation.x;
+	mat.m[3][1] = translation.y;
+	mat.m[3][2] = translation.z;
 	return (mat);
 }
 
@@ -242,13 +242,11 @@ t_mat4x4	create_translation_matrix(t_vec3 translation)
 //     }
 // }
 
-t_mat4x4	create_proj_matrix(float znear, float zfar, float fov, float s_width, float s_height)
+t_mat4x4	create_proj_matrix(float znear, float zfar, float fov, float aspect)
 {
 	t_mat4x4 mat;
-	float aspect;
 
 	mat = create_identity_matrix();
-	aspect = (float)s_height / (float)s_width;
 	mat.m[0][0] = (1.0f - tanf(fov / 2.0f)) * aspect;
 	mat.m[1][1] = 1.0f - tanf(fov / 2.0f);
 	mat.m[2][2] = -((zfar + znear) / (zfar - znear));
@@ -286,10 +284,14 @@ t_mat4x4	create_model_matrix()
 	return (mat);
 }
 
-t_mat4x4	create_view_matrix()
+t_mat4x4	create_view_matrix(t_vec3 pos)
 {
 	t_mat4x4 mat;
 
+	mat = create_identity_matrix();
+	mat.m[3][0] = -pos.x;
+	mat.m[3][1] = -pos.y;
+	mat.m[3][2] = -pos.z;
 	return (mat);
 }
 
