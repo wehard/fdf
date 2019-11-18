@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:53:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/15 13:55:25 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/18 15:05:06 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,8 @@ t_mlx_data *init_mlx(char *title)
 
 	mlx_data->perspective_matrix = create_proj_matrix(znear, zfar, 90.0f, WIN_W, WIN_H);
 	float a_ratio = (float)WIN_H / (float)WIN_W;
-	mlx_data->ortho_matrix = create_ortho_matrix(-a_ratio * 20.0f, a_ratio * 20.0f, -20.0f, 20.0f, 1.0f, -1.0f);
+	float ortho_size = 5.5f;
+	mlx_data->ortho_matrix = create_ortho_matrix(a_ratio * -ortho_size, a_ratio * ortho_size, -ortho_size, ortho_size, 1.0f, -1.0f);
 
 	mlx_data->m_proj = (t_mat4x4*)malloc(sizeof(t_mat4x4));
 	*(mlx_data->m_proj) = mlx_data->perspective_matrix;

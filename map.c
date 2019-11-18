@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/12 15:15:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/14 11:16:46 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/18 13:14:26 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ int	read_map_data(int fd, t_v_map **map)
 			return (free_map_list(lst));
 		if (ft_nwords(line, ' ') != width)
 			return (free_map_list(lst));
-		ft_lstadd(&lst, temp);
+		ft_lstappend(&lst, temp);
 		height++;
 		free(line);
 	}

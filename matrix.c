@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/07 17:20:13 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/15 14:07:46 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/18 15:08:39 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -244,45 +244,29 @@ t_mat4x4	create_translation_matrix(t_vec3 translation)
 
 t_mat4x4	create_proj_matrix(float znear, float zfar, float fov, float s_width, float s_height)
 {
-	t_mat4x4 mat_proj;
+	t_mat4x4 mat;
+	float aspect;
 
-	mat_proj = create_identity_matrix();
-
-	float a_ratio = (float)s_height / (float)s_width;
-	float fovrad = 1.0f / tanf(fov * 0.5f); //  / 180.0f * 3.14159f
-
-	mat_proj.m[0][0] = a_ratio * fovrad;
-	mat_proj.m[1][1] = fovrad;
-	mat_proj.m[2][2] = zfar / (zfar - znear);
-	mat_proj.m[3][2] = (-zfar * znear) / (zfar - znear);
-	mat_proj.m[2][3] = 1.0f;
-	mat_proj.m[3][3] = 0.0f;
-
-	/* float frustumDepth = zfar - znear;
-    float oneOverDepth = 1 / frustumDepth;
-	int lefthanded = 1;
-
-    mat_proj.m[1][1] = 1 / tan(0.5f * fov);
-    mat_proj.m[0][0] = (lefthanded ? 1 : -1 ) * mat_proj.m[1][1] / a_ratio;
-    mat_proj.m[2][2] = zfar * oneOverDepth;
-    mat_proj.m[3][2] = (-zfar * znear) * oneOverDepth;
-    mat_proj.m[2][3] = 1.0f;
-    mat_proj.m[3][3] = 0.0f; */
-
-	return (mat_proj);
+	mat = create_identity_matrix();
+	aspect = (float)s_height / (float)s_width;
+	mat.m[0][0] = (1.0f - tanf(fov / 2.0f)) * aspect;
+	mat.m[1][1] = 1.0f - tanf(fov / 2.0f);
+	mat.m[2][2] = -((zfar + znear) / (zfar - znear));
+	mat.m[2][3] = -((2.0f * (zfar * znear)) / (zfar - znear));
+	mat.m[3][2] = -1.0f;
+	mat.m[3][3] = 0.0f;
+	return (mat);
 }
 
-t_mat4x4	create_ortho_matrix(float top, float bot, float lft, float rgt, float far, float near)
+t_mat4x4	create_ortho_matrix(float top, float bot, float lft, float rgt, float zfar, float znear)
 {
 	t_mat4x4 mat;
 
 	mat = create_identity_matrix();
-	mat.m[0][0] = 2.0f / (rgt - lft);
-	mat.m[1][1] = 2.0f / (top - bot);
-	mat.m[2][2] = -2.0f / (far - near);
-	mat.m[0][3] = -((rgt + lft) / (rgt - lft));
-	mat.m[1][3] = -((top + bot) / (top - bot));
-	mat.m[2][3] =  -((far + near) / (far - near));
+	mat.m[0][0] = 1.0f / (rgt - lft); // 1.0 over width
+	mat.m[1][1] = 1.0f / (bot - top);
+	mat.m[2][2] = -(2.0f / (zfar - znear));
+	mat.m[2][3] = ((zfar + znear) / (zfar - znear));
 	return (mat);
 }
 
