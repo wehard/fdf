@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:53:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/18 16:54:53 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/18 17:48:45 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,16 +46,16 @@ t_mlx_data *init_mlx(char *title)
 
 	znear = 0.1f;
 	zfar = 10.0f;
-	aspect = (float)WIN_H / (float)WIN_W;
+	aspect = (float)WIN_W / (float)WIN_H;
 	ortho_size = 11.0f;
 	fov = 90.0f;
 	mlx_data->perspective_matrix = create_proj_matrix(znear, zfar, fov, aspect);
-	mlx_data->ortho_matrix = create_ortho_matrix(aspect * -ortho_size, aspect * ortho_size, -ortho_size, ortho_size, 1.0f, -1.0f);
+	mlx_data->ortho_matrix = create_ortho_matrix(-ortho_size, ortho_size, aspect * -ortho_size, aspect * ortho_size, 1.0f, -1.0f); //create_ortho_matrix_2((float)WIN_W, (float)WIN_H, 1.0f, -1.0f); //
 
 	mlx_data->m_proj = (t_mat4x4*)malloc(sizeof(t_mat4x4));
 	*(mlx_data->m_proj) = mlx_data->perspective_matrix;
 
-	mlx_data->camera.pos = make_vec3_rot(0.0f, 0.0f, -20.0f);
+	mlx_data->camera.pos = make_vec3_rot(0.0f, 0.0f, -50.0f);
 	mlx_data->camera.v_matrix = create_view_matrix(mlx_data->camera.pos);
 	mlx_data->delta_time = 0.001f;
 	return (mlx_data);
