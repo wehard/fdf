@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:53:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/18 17:48:45 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/19 13:21:27 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,24 +135,36 @@ int on_render(void *param)
 
 	for (size_t y = 0; y < mlx_data->v_map->h; y++)
 	{
-		for (size_t x = 0; x < mlx_data->v_map->w; x++)
+		for (size_t x = 0; x < mlx_data->v_map->w - 1; x++)
 		{
 			t_vec3 p0 = mlx_data->v_map->v[y * mlx_data->v_map->w + x];
-
 			p0 = multiply_matrix_vec3_test(p0, mat_rot_x);
 			p0 = multiply_matrix_vec3_test(p0, mat_rot_y);
 			p0 = multiply_matrix_vec3_test(p0, mat_rot_z);
 			p0 = multiply_matrix_vec3_test(p0, mat_scale);
-
-			//p0 = translate_point_3d(p0, mlx_data->v_map->pos);
 			p0 = multiply_matrix_vec3_test(p0, mat_trans);
-
 			p0 = multiply_matrix_vec3(p0, mat_view);
-
 			p0 = multiply_matrix_vec3_test(p0, *(mlx_data->m_proj));
-
 			p0 = convert_to_screen_space(p0);
-			frame_buffer_set(mlx_data->f_buf, p0.x, p0.y, WHITE);
+
+			t_vec3 p1 = mlx_data->v_map->v[y * mlx_data->v_map->w + x + 1];
+			p1 = multiply_matrix_vec3_test(p1, mat_rot_x);
+			p1 = multiply_matrix_vec3_test(p1, mat_rot_y);
+			p1 = multiply_matrix_vec3_test(p1, mat_rot_z);
+			p1 = multiply_matrix_vec3_test(p1, mat_scale);
+			p1 = multiply_matrix_vec3_test(p1, mat_trans);
+			p1 = multiply_matrix_vec3(p1, mat_view);
+			p1 = multiply_matrix_vec3_test(p1, *(mlx_data->m_proj));
+			p1 = convert_to_screen_space(p1);
+
+			t_intvec2 i0;
+			i0.x = p0.x;
+			i0.y = p0.y;
+			t_intvec2 i1;
+			i1.x = p1.x;
+			i1.y = p1.y;
+			draw_line(mlx_data->f_buf, i0, i1);
+			//frame_buffer_set(mlx_data->f_buf, p0.x, p0.y, WHITE);
 		}
 	}
 
@@ -207,7 +219,7 @@ int	main(int argc, char const *argv[])
 	center_map_origin(mlx_data->v_map);
 	// degrees × π / 180°
 	mlx_data->v_map->pos = make_vec3_pos(0.0f, 0.0f, 0.0f);
-	mlx_data->v_map->rot = make_vec3_pos(0.0f, 0.0f, 45.0f * (M_PI / 180.0f));
+	mlx_data->v_map->rot = make_vec3_pos(0.0f, 0.0f, 0.0f); //45.0f * (M_PI / 180.0f)
 	mlx_data->v_map->scale = make_vec3_rot(1.0f, 1.0f, 1.0f);
 
 	mlx_hook(mlx_data->win_ptr, 2, 0, on_key_down, (void*)mlx_data);
