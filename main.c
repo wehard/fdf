@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:53:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/19 13:21:27 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/19 15:24:38 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,39 +105,25 @@ static void	center_map_origin(t_v_map *map)
 	}
 }
 
-int on_render(void *param)
+static void transform_v_map(t_mlx_data *mlx_data, t_v_map *v_map, t_vec3 *out)
 {
-	t_mlx_data *mlx_data;
+	int x;
+	int y;
 
-	mlx_data = (t_mlx_data*)param;
-	if (!mlx_data || !mlx_data->v_map)
-		return (0);
-
-	// ft_putstr("dx: ");
-	// ft_putnbr(mlx_data->mouse_data->dx);
-	// ft_putstr(" dy: ");
-	// ft_putnbr(mlx_data->mouse_data->dy);
-	// ft_putchar('\n');
-
-	clear_frame_buffer(mlx_data->f_buf);
-	int i;
-
-	mlx_data->v_map->rot.x += (mlx_data->mouse_data.dy * 0.0001f);
-	mlx_data->v_map->rot.y += -(mlx_data->mouse_data.dx * 0.0001f);
-
-	t_mat4x4 mat_rot_y = create_rotation_matrix_y(mlx_data->v_map->rot.y);
-	t_mat4x4 mat_rot_x = create_rotation_matrix_x(mlx_data->v_map->rot.x);
-	t_mat4x4 mat_rot_z = create_rotation_matrix_z(mlx_data->v_map->rot.z);
-	t_mat4x4 mat_scale = create_scaling_matrix(mlx_data->v_map->scale);
-	t_mat4x4 mat_trans = create_translation_matrix(mlx_data->v_map->pos);
+	t_mat4x4 mat_rot_y = create_rotation_matrix_y(v_map->rot.y);
+	t_mat4x4 mat_rot_x = create_rotation_matrix_x(v_map->rot.x);
+	t_mat4x4 mat_rot_z = create_rotation_matrix_z(v_map->rot.z);
+	t_mat4x4 mat_scale = create_scaling_matrix(v_map->scale);
+	t_mat4x4 mat_trans = create_translation_matrix(v_map->pos);
 	t_mat4x4 mat_view = create_view_matrix(mlx_data->camera.pos);
 
-
-	for (size_t y = 0; y < mlx_data->v_map->h; y++)
+	y = 0;
+	while (y < v_map->h)
 	{
-		for (size_t x = 0; x < mlx_data->v_map->w - 1; x++)
+		x = 0;
+		while (x < v_map->w)
 		{
-			t_vec3 p0 = mlx_data->v_map->v[y * mlx_data->v_map->w + x];
+			t_vec3 p0 = v_map->v[y * v_map->w + x];
 			p0 = multiply_matrix_vec3_test(p0, mat_rot_x);
 			p0 = multiply_matrix_vec3_test(p0, mat_rot_y);
 			p0 = multiply_matrix_vec3_test(p0, mat_rot_z);
@@ -146,25 +132,40 @@ int on_render(void *param)
 			p0 = multiply_matrix_vec3(p0, mat_view);
 			p0 = multiply_matrix_vec3_test(p0, *(mlx_data->m_proj));
 			p0 = convert_to_screen_space(p0);
+			out[y * v_map->w + x] = p0;
+			x++;
+		}
+		y++;
+	}
+}
 
-			t_vec3 p1 = mlx_data->v_map->v[y * mlx_data->v_map->w + x + 1];
-			p1 = multiply_matrix_vec3_test(p1, mat_rot_x);
-			p1 = multiply_matrix_vec3_test(p1, mat_rot_y);
-			p1 = multiply_matrix_vec3_test(p1, mat_rot_z);
-			p1 = multiply_matrix_vec3_test(p1, mat_scale);
-			p1 = multiply_matrix_vec3_test(p1, mat_trans);
-			p1 = multiply_matrix_vec3(p1, mat_view);
-			p1 = multiply_matrix_vec3_test(p1, *(mlx_data->m_proj));
-			p1 = convert_to_screen_space(p1);
+int on_render(void *param)
+{
+	t_mlx_data *mlx_data;
+	mlx_data = (t_mlx_data*)param;
+	if (!mlx_data || !mlx_data->v_map)
+		return (0);
 
-			t_intvec2 i0;
-			i0.x = p0.x;
-			i0.y = p0.y;
-			t_intvec2 i1;
-			i1.x = p1.x;
-			i1.y = p1.y;
-			draw_line(mlx_data->f_buf, i0, i1);
-			//frame_buffer_set(mlx_data->f_buf, p0.x, p0.y, WHITE);
+	t_vec3 points[mlx_data->v_map->size];
+	clear_frame_buffer(mlx_data->f_buf);
+
+	mlx_data->v_map->rot.x += (mlx_data->mouse_data.dy * 0.0001f);
+	mlx_data->v_map->rot.y += -(mlx_data->mouse_data.dx * 0.0001f);
+
+	transform_v_map(mlx_data, mlx_data->v_map, points);
+
+	for (size_t y = 0; y < mlx_data->v_map->h - 1; y++)
+	{
+		for (size_t x = 0; x < mlx_data->v_map->w - 1; x++)
+		{
+			t_vec3 p0 = points[y * mlx_data->v_map->w + x];
+			t_vec3 p1 = points[y * mlx_data->v_map->w + x + 1];
+			t_vec3 p2 = points[(y + 1) * mlx_data->v_map->w + x];
+
+			draw_line(mlx_data->f_buf, make_intvec2(p0.x, p0.y), make_intvec2(p1.x, p1.y));
+			draw_line(mlx_data->f_buf, make_intvec2(p0.x, p0.y), make_intvec2(p2.x, p2.y));
+			//draw_line(mlx_data->f_buf, make_intvec2(p1.x, p1.y), make_intvec2(p2.x, p2.y));
+
 		}
 	}
 
@@ -219,7 +220,7 @@ int	main(int argc, char const *argv[])
 	center_map_origin(mlx_data->v_map);
 	// degrees × π / 180°
 	mlx_data->v_map->pos = make_vec3_pos(0.0f, 0.0f, 0.0f);
-	mlx_data->v_map->rot = make_vec3_pos(0.0f, 0.0f, 0.0f); //45.0f * (M_PI / 180.0f)
+	mlx_data->v_map->rot = make_vec3_rot(0.0f, 0.0f, -45.0f * (M_PI / 180.0f)); //45.0f * (M_PI / 180.0f)
 	mlx_data->v_map->scale = make_vec3_rot(1.0f, 1.0f, 1.0f);
 
 	mlx_hook(mlx_data->win_ptr, 2, 0, on_key_down, (void*)mlx_data);

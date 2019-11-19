@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/11 13:06:16 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/19 13:16:34 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/19 13:48:02 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@
 **     D = D + 2*dy
 */
 
-void	draw_line_low(t_frame_buffer *fb, int x0, int y0, int x1, int y1)
+void	draw_line_low(t_frame_buffer *fb, t_intvec2 p0, t_intvec2 p1)
 {
 	t_intvec2 p;
 	int dx;
@@ -41,8 +41,8 @@ void	draw_line_low(t_frame_buffer *fb, int x0, int y0, int x1, int y1)
 	int yi;
 	int d;
 
-	dx = x1 - x0;
-	dy = y1 - y0;
+	dx = p1.x - p0.x;
+	dy = p1.y - p0.y;
 	yi = 1;
 	if (dy < 0)
 	{
@@ -50,9 +50,9 @@ void	draw_line_low(t_frame_buffer *fb, int x0, int y0, int x1, int y1)
 		dy = -dy;
 	}
 	d = 2 * dy - dx;
-	p.y = y0;
-	p.x = x0;
-	while (p.x < x1)
+	p.y = p0.y;
+	p.x = p0.x;
+	while (p.x < p1.x)
 	{
 		frame_buffer_set(fb, p.x, p.y, GREEN);
 		if (d > 0)
@@ -86,7 +86,7 @@ void	draw_line_low(t_frame_buffer *fb, int x0, int y0, int x1, int y1)
 **     D = D + 2*dx
 */
 
-void	draw_line_high(t_frame_buffer *fb, int x0, int y0, int x1, int y1)
+void	draw_line_high(t_frame_buffer *fb, t_intvec2 p0, t_intvec2 p1)
 {
 	t_intvec2 p;
 	int dx;
@@ -94,8 +94,8 @@ void	draw_line_high(t_frame_buffer *fb, int x0, int y0, int x1, int y1)
 	int xi;
 	int d;
 
-	dx = x1 - x0;
-	dy = y1 - y0;
+	dx = p1.x - p0.x;
+	dy = p1.y - p0.y;
 	xi = 1;
 	if (dx < 0)
 	{
@@ -103,9 +103,9 @@ void	draw_line_high(t_frame_buffer *fb, int x0, int y0, int x1, int y1)
 		dx = -dx;
 	}
 	d = 2 * dx - dy;
-	p.x = x0;
-	p.y = y0;
-	while (p.y < y1)
+	p.x = p0.x;
+	p.y = p0.y;
+	while (p.y < p1.y)
 	{
 		frame_buffer_set(fb, p.x, p.y, GREEN);
 		if (d > 0)
@@ -114,7 +114,7 @@ void	draw_line_high(t_frame_buffer *fb, int x0, int y0, int x1, int y1)
 			d = d - (2 * dy);
 		}
 		d = d + (2 * dx);
-		p.x++;
+		p.y++;
 	}
 }
 
@@ -123,16 +123,16 @@ void	draw_line(t_frame_buffer *fb, t_intvec2 p0, t_intvec2 p1)
 	if (abs(p1.y - p0.y) < abs(p1.x - p0.x))
 	{
 		if (p0.x > p1.x)
-			draw_line_low(fb, p1.x, p1.y, p0.x, p1.y);
+			draw_line_low(fb, p1, p0);
 		else
-			draw_line_low(fb, p0.x, p0.y, p1.x, p1.y);
+			draw_line_low(fb, p0, p1);
 	}
 	else
 	{
 		if (p0.y > p1.y)
-			draw_line_high(fb, p1.x, p1.y, p0.x, p1.y);
+			draw_line_high(fb, p1, p0);
 		else
-			draw_line_high(fb, p0.x, p0.y, p1.x, p1.y);
+			draw_line_high(fb, p0, p1);
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/07 11:14:13 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/14 11:16:30 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/19 13:31:49 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,14 @@ t_vec3	make_vec3_rot(float x, float y, float z)
 	v.y = y;
 	v.z = z;
 	v.w	= 0.0f;
+	return (v);
+}
+
+t_intvec2 make_intvec2(int x, int y)
+{
+	t_intvec2 v;
+	v.x = x;
+	v.y = y;
 	return (v);
 }
 

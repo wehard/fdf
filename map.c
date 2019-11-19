@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/12 15:15:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/18 13:14:26 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/19 14:09:36 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ t_v_map *read_to_v_map(int w, int h, t_list *lst)
 	char **points;
 	int x;
 	int y;
-
 
 	if (!(v_map = create_v_map(w, h)))
 		return (NULL);

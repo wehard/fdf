@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/07 11:14:55 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/19 12:59:21 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/19 13:29:55 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ typedef struct		s_intvec2
 }					t_intvec2;
 
 t_vec2				make_vec2(float x, float y);
+t_intvec2			make_intvec2(int x, int y);
 t_vec3				make_vec3_pos(float x, float y, float z);
 t_vec3				make_vec3_rot(float x, float y, float z);
 t_vec3				transform_point(t_vec3 v, t_vec3 translate, t_vec3 rot, t_vec3 scale);
