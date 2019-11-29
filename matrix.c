@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/07 17:20:13 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/19 13:57:46 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/29 23:39:05 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -262,12 +262,12 @@ t_mat4x4	create_ortho_matrix(float top, float bot, float lft, float rgt, float z
 
 	mat = create_identity_matrix();
 	mat.m[0][0] = 2.0f / (rgt - lft); //1.0f / (rgt - lft); // 1.0 over width
-	mat.m[1][1] = 2.0f / (bot - top); //1.0f / (bot - top);
-	mat.m[2][2] = 2.0f / (znear - zfar); //-(2.0f / (zfar - znear));
-	mat.m[2][3] = (zfar + znear) / (zfar - znear); //((zfar + znear) / (zfar - znear));
+	mat.m[1][1] = 2.0f / (top - bot); //1.0f / (bot - top);
+	mat.m[2][2] = -2.0f / (zfar - znear); //-(2.0f / (zfar - znear));
+	mat.m[2][3] = (-(zfar + znear) / (zfar - znear)); //((zfar + znear) / (zfar - znear));
 
-	//mat.m[0][3] =  (lft + rgt) / (lft -  rgt);
-	//mat.m[1][3] =  (bot + top) / (bot -  top);
+	mat.m[0][3] =  (-(rgt + lft) / (rgt - lft));
+	mat.m[1][3] =  (-(top + bot) / (top - bot));
 	return (mat);
 }
 
@@ -287,9 +287,30 @@ t_mat4x4	create_ortho_matrix_2(float s_w, float s_h, float zfar, float znear)
 // gl_Position = projection * view * model * vec4(aPos, 1.0);
 
 /*
-** A model matrix transforms a point from its local space into world space coordinates
+** A model TRS matrix transforms a point from its local space into world space coordinates
 ** It also applies rotation and scale to the point.
 ** Scaling is performed first, then rotation and lastly, translation.
+**
+**	Translation
+**
+**	[1	0	0	x]
+**	[0	1	0	y]
+**	[0	0	1	z]
+**	[0	0	0	1]
+**
+**	Rotation
+**
+**	[1	  0		   0    0]	[cos(a)	0	-sin(a) 0]	[cos(a)	-sin(a)	0	0]
+**	[0	cos(a)	-sin(a) 0]	[  0	1		0	0]	[sin(a)	 cos(a)	0	0]
+**	[0	sin(a)	 cos(a) 0]	[sin(a)	0	 cos(a) 0]	[	0		0	1	0]
+**	[0	  0		   0	1]	[  0	0	 	0 	1]	[	0		0	0	1]
+**
+**	Scaling
+**
+**	[Sx	0	0	0]
+**	[0	Sy	0	0]
+**	[0	0	Sz	0]
+**	[0	0	0	1]
 */
 
 t_mat4x4	create_model_matrix()

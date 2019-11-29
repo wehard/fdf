@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:53:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/19 15:24:38 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/30 00:01:48 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ t_mlx_data *init_mlx(char *title)
 	ortho_size = 11.0f;
 	fov = 90.0f;
 	mlx_data->perspective_matrix = create_proj_matrix(znear, zfar, fov, aspect);
-	mlx_data->ortho_matrix = create_ortho_matrix(-ortho_size, ortho_size, aspect * -ortho_size, aspect * ortho_size, 1.0f, -1.0f); //create_ortho_matrix_2((float)WIN_W, (float)WIN_H, 1.0f, -1.0f); //
+	mlx_data->ortho_matrix = create_ortho_matrix(-ortho_size, ortho_size, aspect * -ortho_size, aspect * ortho_size, -1.0f, 1.0f); //create_ortho_matrix_2((float)WIN_W, (float)WIN_H, 1.0f, -1.0f); //
 
 	mlx_data->m_proj = (t_mat4x4*)malloc(sizeof(t_mat4x4));
 	*(mlx_data->m_proj) = mlx_data->perspective_matrix;
@@ -162,8 +162,9 @@ int on_render(void *param)
 			t_vec3 p1 = points[y * mlx_data->v_map->w + x + 1];
 			t_vec3 p2 = points[(y + 1) * mlx_data->v_map->w + x];
 
-			draw_line(mlx_data->f_buf, make_intvec2(p0.x, p0.y), make_intvec2(p1.x, p1.y));
-			draw_line(mlx_data->f_buf, make_intvec2(p0.x, p0.y), make_intvec2(p2.x, p2.y));
+			int color = p0.z > 0.02 ? WHITE : RED;
+			draw_line(mlx_data->f_buf, make_intvec2(p0.x, p0.y), make_intvec2(p1.x, p1.y), color);
+			draw_line(mlx_data->f_buf, make_intvec2(p0.x, p0.y), make_intvec2(p2.x, p2.y), color);
 			//draw_line(mlx_data->f_buf, make_intvec2(p1.x, p1.y), make_intvec2(p2.x, p2.y));
 
 		}
@@ -217,12 +218,16 @@ int	main(int argc, char const *argv[])
 	ft_putnbr(mlx_data->v_map->h);
 	ft_putchar('\n');
 
+	t_mat4x4 idm = create_identity_matrix();
+	ft_print_matrix(mlx_data->ortho_matrix, 3);
+
 	center_map_origin(mlx_data->v_map);
 	// degrees × π / 180°
 	mlx_data->v_map->pos = make_vec3_pos(0.0f, 0.0f, 0.0f);
 	mlx_data->v_map->rot = make_vec3_rot(0.0f, 0.0f, -45.0f * (M_PI / 180.0f)); //45.0f * (M_PI / 180.0f)
 	mlx_data->v_map->scale = make_vec3_rot(1.0f, 1.0f, 1.0f);
 
+	mlx_key_hook(mlx_data->win_ptr, on_key_down, (void*)mlx_data);
 	mlx_hook(mlx_data->win_ptr, 2, 0, on_key_down, (void*)mlx_data);
 	mlx_mouse_hook(mlx_data->win_ptr,  mouse_event,(void*)mlx_data);
 	mlx_loop_hook (mlx_data->mlx_ptr, on_render, (void*)mlx_data);

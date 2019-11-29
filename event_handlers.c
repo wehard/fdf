@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/13 11:28:18 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/18 16:57:12 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/11/19 19:56:27 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	on_key_down(int key, void *param)
 	mlx_data = (t_mlx_data*)param;
 	ft_putnbr(key);
 	ft_putchar('\n');
-	if (key == ESC)
+	if (key == ESC || key == 65307)
 		exit(EXIT_SUCCESS);
 	if (key == SPACE)
 	{
