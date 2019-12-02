@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 15:23:29 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/29 23:45:59 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/02 16:53:37 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,9 @@
 # include "matrix.h"
 # include "point.h"
 
-# define GREEN 0x00FF00
 # define RED 0xFF0000
+# define GREEN 0x00FF00
+# define BLUE 0x0000FF
 # define WHITE 0xFFFFFF
 
 # define WIN_W 1280
@@ -123,5 +124,6 @@ int				on_key_down(int key, void *param);
 int				mouse_event(int button, int x, int y, void *param);
 
 void			ft_print_matrix(t_mat4x4 m, int precision);
+void			ft_print_vec3(t_vec3 v, int precision);
 
 #endif

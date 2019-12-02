@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/07 17:20:13 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/29 23:39:05 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/02 18:30:32 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -242,17 +242,39 @@ t_mat4x4	create_translation_matrix(t_vec3 translation)
 //     }
 // }
 
-t_mat4x4	create_proj_matrix(float znear, float zfar, float fov, float aspect)
+t_mat4x4	create_proj_matrix(float fov, float aspect, float znear, float zfar)
 {
 	t_mat4x4 mat;
 
 	mat = create_identity_matrix();
-	mat.m[0][0] = 1.0f / (tan(fov / 2.0f) * aspect); //(1.0f - tanf(fov / 2.0f)) * aspect;
-	mat.m[1][1] = 1.0f / tan(fov / 2.0f); //1.0f - tanf(fov / 2.0f);
-	mat.m[2][2] = (-znear - zfar) / (znear - zfar);  //-((zfar + znear) / (zfar - znear));
-	mat.m[2][3] = -((2.0f * znear * zfar) / (znear - zfar)); // -((2.0f * (zfar * znear)) / (zfar - znear));
-	mat.m[3][2] = 1.0f;
-	mat.m[3][3] = 0.0f;
+	// mat.m[0][0] = 1.0f / (tan(fov / 2.0f * M_PI / 180) * aspect); //(1.0f - tanf(fov / 2.0f)) * aspect;
+	// mat.m[1][1] = -1.0f / tan(fov / 2.0f * M_PI / 180); //1.0f - tanf(fov / 2.0f);
+	// mat.m[2][2] = (-znear - zfar) / (znear - zfar);  //-((zfar + znear) / (zfar - znear));
+	// mat.m[2][3] = ((2.0f * znear * zfar) / (znear - zfar)); // -((2.0f * (zfar * znear)) / (zfar - znear));
+	// mat.m[3][2] = 1.0f;
+	// mat.m[3][3] = 0.0f;
+
+	double xmax;
+	double xmin;
+	double ymin;
+	double ymax;
+
+	xmax = znear * tan(fov * M_PI / 360.0);
+	xmin = -xmax;
+
+	ymin = xmin / aspect;
+	ymax = xmax / aspect;
+
+	mat.m[0][0] = (2.0 * znear) / (xmax - xmin);
+	mat.m[1][1] = (2.0 * znear) / (ymax - ymin);
+	mat.m[2][2] = -(zfar + znear) / (zfar - znear);
+
+	mat.m[0][2] = (xmax + xmin) / (xmax - xmin);
+	mat.m[1][2] = (ymax + ymin) / (ymax - ymin);
+	mat.m[3][2] = -1.0;
+
+	mat.m[2][3] = -(2.0 * zfar * znear) / (zfar - znear);
+
 	return (mat);
 }
 
@@ -261,13 +283,25 @@ t_mat4x4	create_ortho_matrix(float top, float bot, float lft, float rgt, float z
 	t_mat4x4 mat;
 
 	mat = create_identity_matrix();
-	mat.m[0][0] = 2.0f / (rgt - lft); //1.0f / (rgt - lft); // 1.0 over width
-	mat.m[1][1] = 2.0f / (top - bot); //1.0f / (bot - top);
-	mat.m[2][2] = -2.0f / (zfar - znear); //-(2.0f / (zfar - znear));
-	mat.m[2][3] = (-(zfar + znear) / (zfar - znear)); //((zfar + znear) / (zfar - znear));
+	mat.m[0][0] = 2 / (rgt - lft);
+    mat.m[0][1] = 0;
+    mat.m[0][2] = 0;
+    mat.m[0][3] = 0;
 
-	mat.m[0][3] =  (-(rgt + lft) / (rgt - lft));
-	mat.m[1][3] =  (-(top + bot) / (top - bot));
+	mat.m[1][0] = 0;
+	mat.m[1][1] = 2 / (top - bot);
+	mat.m[1][2] = 0;
+	mat.m[1][3] = 0;
+
+	mat.m[2][0] = 0;
+	mat.m[2][1] = 0;
+	mat.m[2][2] = -2 / (zfar - znear);
+	mat.m[2][3] = 0;
+
+	mat.m[3][0] = -(rgt + lft) / (rgt - lft);
+	mat.m[3][1] = -(top + bot) / (top - bot);
+	mat.m[3][2] = -(zfar + znear) / (zfar - znear);
+	mat.m[3][3] = 1;
 	return (mat);
 }
 

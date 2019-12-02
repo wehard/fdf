@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/29 23:10:19 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/29 23:17:00 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/02 16:43:47 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,5 +30,12 @@ void	ft_print_matrix(t_mat4x4 m, int precision)
 		printf("\n");
 		y++;
 	}
+}
 
+void	ft_print_vec3(t_vec3 v, int precision)
+{
+	printf("%5.*f, ", precision, v.x);
+	printf("%5.*f, ", precision, v.y);
+	printf("%5.*f, ", precision, v.z);
+	printf("%5.*f\n", precision, v.w);
 }
