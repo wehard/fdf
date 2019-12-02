@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:53:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/02 18:42:40 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/02 20:45:26 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,9 +53,9 @@ t_mlx_data *init_mlx(char *title)
 	mlx_data->ortho_matrix = create_ortho_matrix(-ortho_size, ortho_size, aspect * -ortho_size, aspect * ortho_size, 1.0f, -1.0f); //create_ortho_matrix_2((float)WIN_W, (float)WIN_H, 1.0f, -1.0f); //
 
 	mlx_data->m_proj = (t_mat4x4*)malloc(sizeof(t_mat4x4));
-	*(mlx_data->m_proj) = mlx_data->ortho_matrix;
+	*(mlx_data->m_proj) = mlx_data->perspective_matrix;
 
-	mlx_data->camera.pos = make_vec3_pos(0.0f, 0.0f, 0.0f);
+	mlx_data->camera.pos = make_vec3_pos(0.0f, 0.0f, 150.0f);
 	mlx_data->camera.v_matrix = create_view_matrix(mlx_data->camera.pos);
 	mlx_data->delta_time = 0.001f;
 	return (mlx_data);
@@ -110,11 +110,7 @@ static void transform_v_map(t_mlx_data *mlx_data, t_v_map *v_map, t_vec3 *out)
 	int x;
 	int y;
 
-	t_mat4x4 mat_rot_y = create_rotation_matrix_y(v_map->rot.y);
-	t_mat4x4 mat_rot_x = create_rotation_matrix_x(v_map->rot.x);
-	t_mat4x4 mat_rot_z = create_rotation_matrix_z(v_map->rot.z);
-	t_mat4x4 mat_scale = create_scaling_matrix(v_map->scale);
-	t_mat4x4 mat_trans = create_translation_matrix(v_map->pos);
+	t_mat4x4 trs = create_trs_matrix(v_map->pos, v_map->rot, v_map->scale);
 	t_mat4x4 mat_view = create_view_matrix(mlx_data->camera.pos);
 
 	y = 0;
@@ -124,13 +120,9 @@ static void transform_v_map(t_mlx_data *mlx_data, t_v_map *v_map, t_vec3 *out)
 		while (x < v_map->w)
 		{
 			t_vec3 p0 = v_map->v[y * v_map->w + x];
-			p0 = multiply_matrix_vec3_test(p0, mat_rot_y);
-			p0 = multiply_matrix_vec3_test(p0, mat_rot_x);
-			p0 = multiply_matrix_vec3_test(p0, mat_rot_z);
-			p0 = multiply_matrix_vec3_test(p0, mat_scale);
-			p0 = multiply_matrix_vec3_test(p0, mat_trans);
+			p0 = multiply_matrix_vec3(p0, trs);
 			p0 = multiply_matrix_vec3(p0, mat_view);
-			p0 = multiply_matrix_vec3_test(p0, *(mlx_data->m_proj));
+			p0 = multiply_matrix_vec3(p0, *(mlx_data->m_proj));
 			p0 = convert_to_screen_space(p0);
 			out[y * v_map->w + x] = p0;
 			x++;
@@ -247,12 +239,34 @@ int	main(int argc, char const *argv[])
 	ft_putchar('\n');
 
 	t_mat4x4 idm = create_identity_matrix();
-	ft_print_matrix(mlx_data->ortho_matrix, 3);
+	t_mat4x4 m;
+
+	m.m[0][0] = 0.0f;
+	m.m[0][1] = 1.0f;
+	m.m[0][2] = 2.0f;
+	m.m[0][3] = 3.0f;
+
+	m.m[1][0] = 4.0f;
+	m.m[1][1] = 5.0f;
+	m.m[1][2] = 6.0f;
+	m.m[1][3] = 7.0f;
+
+	m.m[2][0] = 8.0f;
+	m.m[2][1] = 9.0f;
+	m.m[2][2] = 10.0f;
+	m.m[2][3] = 11.0f;
+
+	m.m[3][0] = 12.0f;
+	m.m[3][1] = 13.0f;
+	m.m[3][2] = 14.0f;
+	m.m[3][3] = 15.0f;
+
+	ft_print_matrix(multiply_matrix(m, idm), 3);
 
 	center_map_origin(mlx_data->v_map);
 	// degrees × π / 180°
 	mlx_data->v_map->pos = make_vec3_pos(0.0f, 0.0f, 0.0f);
-	mlx_data->v_map->rot = make_vec3_rot(0.0f, -45.0f * (M_PI / 180.0f), -35.264 * (M_PI / 180.0f));
+	mlx_data->v_map->rot = make_vec3_rot(0.0f, 0.0f, 0.0f);
 	mlx_data->v_map->scale = make_vec3_rot(1.0f, 1.0f, 1.0f);
 
 	mlx_key_hook(mlx_data->win_ptr, on_key_down, (void*)mlx_data);

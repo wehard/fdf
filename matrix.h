@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/07 17:20:25 by wkorande          #+#    #+#             */
-/*   Updated: 2019/11/18 17:27:30 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/02 20:24:33 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ t_mat4x4	create_rotation_matrix_z(float angle);
 t_mat4x4	create_rotation_matrix_xyz(t_vec3 rad_angle);
 t_mat4x4	create_scaling_matrix(t_vec3 scale);
 t_mat4x4	create_translation_matrix(t_vec3 translation);
+t_mat4x4	create_trs_matrix(t_vec3 pos, t_vec3 rot, t_vec3 scale);
 t_mat4x4	create_proj_matrix(float znear, float zfar, float fov, float aspect);
 t_mat4x4	create_ortho_matrix(float top, float bot, float lft, float rgt, float far, float near);
 t_mat4x4	create_ortho_matrix_2(float s_w, float s_h, float zfar, float znear);
