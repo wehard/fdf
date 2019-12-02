@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/13 11:28:18 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/02 16:43:14 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/02 22:30:52 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,10 +54,10 @@ int	on_key_down(int key, void *param)
 		mlx_data->v_map->scale.y -= 0.01f;
 		mlx_data->v_map->scale.z -= 0.01f;
 	}
-	if (key == KEY_Z)
-		mlx_data->camera.pos.z += 1.0f;
-	if (key == KEY_X)
-		mlx_data->camera.pos.z -= 1.0f;
+	if (key == KEY_Z || key == 122)
+		mlx_data->v_map->pos.z += 1.0f;
+	if (key == KEY_X || key == 120)
+		mlx_data->v_map->pos.z -= 1.0f;
 
 	if (key == KEY_UP)
 		mlx_data->camera.pos.y -= 0.1f;
@@ -67,7 +67,7 @@ int	on_key_down(int key, void *param)
 		mlx_data->camera.pos.x -= 0.1f;
 	if (key == KEY_RIGHT)
 		mlx_data->camera.pos.x += 0.1f;
-	ft_print_vec3(mlx_data->v_map->rot, 3);
+	//ft_print_vec3(mlx_data->v_map->pos, 3);
 	return (0);
 }
 

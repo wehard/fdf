@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/07 17:20:13 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/02 20:37:24 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/02 22:41:06 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,8 +186,8 @@ t_mat4x4	create_rotation_matrix_xyz(t_vec3 rad_angle)
 {
 	t_mat4x4 mat;
 
-	mat = multiply_matrix(create_identity_matrix(), create_rotation_matrix_y(rad_angle.y));
-	mat = multiply_matrix(mat, create_rotation_matrix_x(rad_angle.x));
+	mat = multiply_matrix(create_identity_matrix(), create_rotation_matrix_x(rad_angle.x));
+	mat = multiply_matrix(mat, create_rotation_matrix_y(rad_angle.y));
 	mat = multiply_matrix(mat, create_rotation_matrix_z(rad_angle.z));
 	return (mat);
 }
@@ -247,38 +247,38 @@ t_mat4x4	create_proj_matrix(float fov, float aspect, float znear, float zfar)
 	t_mat4x4 mat;
 
 	mat = create_identity_matrix();
-	// mat.m[0][0] = 1.0f / (tan(fov / 2.0f * M_PI / 180) * aspect); //(1.0f - tanf(fov / 2.0f)) * aspect;
-	// mat.m[1][1] = -1.0f / tan(fov / 2.0f * M_PI / 180); //1.0f - tanf(fov / 2.0f);
-	// mat.m[2][2] = (-znear - zfar) / (znear - zfar);  //-((zfar + znear) / (zfar - znear));
-	// mat.m[2][3] = ((2.0f * znear * zfar) / (znear - zfar)); // -((2.0f * (zfar * znear)) / (zfar - znear));
-	// mat.m[3][2] = 1.0f;
-	// mat.m[3][3] = 0.0f;
+	mat.m[0][0] = 1.0f / (tan(fov / 2.0f * M_PI / 180) * aspect); //(1.0f - tanf(fov / 2.0f)) * aspect;
+	mat.m[1][1] = -1.0f / tan(fov / 2.0f * M_PI / 180); //1.0f - tanf(fov / 2.0f);
+	mat.m[2][2] = (-znear - zfar) / (znear - zfar);  //-((zfar + znear) / (zfar - znear));
+	mat.m[2][3] = ((2.0f * znear * zfar) / (znear - zfar)); // -((2.0f * (zfar * znear)) / (zfar - znear));
+	mat.m[3][2] = 1.0f;
+	mat.m[3][3] = 0.0f;
 
-	double xmax;
-	double xmin;
-	double ymin;
-	double ymax;
+	// double xmax;
+	// double xmin;
+	// double ymin;
+	// double ymax;
 
-	xmax = znear * tan(fov * M_PI / 360.0);
-	xmin = -xmax;
+	// xmax = znear * tan(fov);
+	// xmin = -xmax;
 
-	ymin = xmin / aspect;
-	ymax = xmax / aspect;
+	// ymin = xmin / aspect;
+	// ymax = xmax / aspect;
 
-	mat.m[0][0] = (2.0 * znear) / (xmax - xmin);
-	mat.m[1][1] = (2.0 * znear) / (ymax - ymin);
-	mat.m[2][2] = -(zfar + znear) / (zfar - znear);
+	// mat.m[0][0] = (2.0 * znear) / (xmax - xmin);
+	// mat.m[1][1] = (2.0 * znear) / (ymax - ymin);
+	// mat.m[2][2] = -(zfar + znear) / (zfar - znear);
 
-	mat.m[0][2] = (xmax + xmin) / (xmax - xmin);
-	mat.m[1][2] = (ymax + ymin) / (ymax - ymin);
-	mat.m[3][2] = -1.0;
+	// mat.m[0][2] = (xmax + xmin) / (xmax - xmin);
+	// mat.m[1][2] = (ymax + ymin) / (ymax - ymin);
+	// mat.m[3][2] = -1.0;
 
-	mat.m[2][3] = -(2.0 * zfar * znear) / (zfar - znear);
+	// mat.m[2][3] = -(2.0 * zfar * znear) / (zfar - znear);
 
 	return (mat);
 }
 
-t_mat4x4	create_ortho_matrix(float top, float bot, float lft, float rgt, float zfar, float znear)
+t_mat4x4	create_ortho_matrix(float top, float bot, float lft, float rgt, float znear, float zfar)
 {
 	t_mat4x4 mat;
 
@@ -377,6 +377,18 @@ t_mat4x4	create_trs_matrix(t_vec3 pos, t_vec3 rot, t_vec3 scale)
 	return (trs);
 }
 
+t_mat4x4	create_trs_matrix2(t_vec3 pos, t_vec3 rot, t_vec3 scale)
+{
+	t_mat4x4 trs;
+	t_mat4x4 s = create_scaling_matrix(scale);
+	t_mat4x4 r = create_rotation_matrix_xyz(rot);
+	t_mat4x4 t = create_translation_matrix(pos);
+
+	trs = multiply_matrix(t, r);
+	trs = multiply_matrix(trs, s);
+	return (trs);
+}
+
 t_mat4x4	multiply_matrix(t_mat4x4 a, t_mat4x4 b)
 {
 	t_mat4x4 c;
@@ -424,20 +436,21 @@ t_vec3		multiply_matrix_vec3(t_vec3 in, t_mat4x4 m)
 	return (out);
 }
 
-t_vec3		multiply_matrix_vec3_test(t_vec3 in, t_mat4x4 m)
+t_vec3		multiply_matrix_vec3_2(t_vec3 in, t_mat4x4 m)
 {
 	t_vec3 	out;
 
 	out.x = (m.m[0][0] * in.x) + (m.m[0][1] * in.y) + (m.m[0][2] * in.z) + (m.m[0][3] * in.w);
 	out.y = (m.m[1][0] * in.x) + (m.m[1][1] * in.y) + (m.m[1][2] * in.z) + (m.m[1][3] * in.w);
 	out.z = (m.m[2][0] * in.x) + (m.m[2][1] * in.y) + (m.m[2][2] * in.z) + (m.m[2][3] * in.w);
-	out.w = (m.m[0][3] * in.x) + (m.m[1][3] * in.y) + (m.m[2][3] * in.z) + (m.m[3][3] * in.w);
+	out.w = (m.m[3][0] * in.x) + (m.m[3][1] * in.y) + (m.m[3][2] * in.z) + (m.m[3][3] * in.w);
 
-	if (in.w == 1.0f)
+	if (in.w != 1.0)
 	{
 		out.x /= out.w;
 		out.y /= out.w;
 		out.z /= out.w;
 	}
+
 	return (out);
 }
