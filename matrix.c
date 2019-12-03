@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/07 17:20:13 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/03 17:07:02 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/03 18:02:37 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,7 +201,6 @@ t_mat4x4	create_view_matrix(t_vec3 pos)
 	mat.m[3][2] = -pos.z;
 	return (mat);
 }
-
 
 t_mat4x4	multiply_matrix(t_mat4x4 a, t_mat4x4 b)
 {

@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/13 11:28:18 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/03 16:43:33 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/03 17:45:39 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,9 @@ int	on_key_down(int key, void *param)
 
 
 	if (key == KEY_Z || key == 122)
-		mlx_data->camera.pos.z += 0.1f;
+		mlx_data->camera.pos.z += 0.5f;
 	if (key == KEY_X || key == 120)
-		mlx_data->camera.pos.z -= 0.1f;
+		mlx_data->camera.pos.z -= 0.5f;
 	if (key == KEY_UP)
 		mlx_data->camera.pos.y -= 0.1f;
 	if (key == KEY_DOWN)
