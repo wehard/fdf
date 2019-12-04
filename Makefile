@@ -6,7 +6,7 @@
 #    By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/05 13:58:13 by wkorande          #+#    #+#              #
-#    Updated: 2019/12/01 17:46:42 by wkorande         ###   ########.fr        #
+#    Updated: 2019/12/04 13:38:32 by wkorande         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,7 +35,7 @@ MLXDIR=./minilibx
 all: $(NAME)
 
 $(NAME):
-	@make -C $(LIBFT)
+	#@make -C $(LIBFT)
 	gcc -o $(NAME) -I $(LIBFT)/includes -I $(MLXDIR) $(SRC) -L$(LIBFT) -lft -L$(MLXDIR) -l$(MLXLIB) -framework OpenGL -framework AppKit
 
 debug:
@@ -50,12 +50,12 @@ libft:
 	@make -C $(LIBFT)
 
 clean:
-	@make clean -C $(LIBFT)
+	#@make clean -C $(LIBFT)
 	@echo "Removing object files ..."
 	@rm -f $(OBJ)
 
 fclean : clean
-	@make fclean -C $(LIBFT)
+	#@make fclean -C $(LIBFT)
 	@echo "Removing $(NAME) ..."
 	@rm -f $(NAME)
 
