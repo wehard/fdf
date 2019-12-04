@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/13 11:28:18 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/03 17:45:39 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/04 16:48:36 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,21 +27,21 @@ int	on_key_down(int key, void *param)
 		mlx_data->mouse_data.dy = 0;
 	}
 	if (key == KEY_W)
-		mlx_data->v_map->rot.x += 0.01f;
+		mlx_data->v_map->rot.x += 1.0f;
 	if (key == KEY_A)
-		mlx_data->v_map->rot.y -= 0.01f;
+		mlx_data->v_map->rot.y -= 1.0f;
 	if (key == KEY_S)
-		mlx_data->v_map->rot.x -= 0.01f;
+		mlx_data->v_map->rot.x -= 1.0f;
 	if (key == KEY_D)
-		mlx_data->v_map->rot.y += 0.01f;
+		mlx_data->v_map->rot.y += 1.0f;
 	if (key == KEY_Q)
-		mlx_data->v_map->rot.z += 0.01f;
+		mlx_data->v_map->rot.z += 1.0f;
 	if (key == KEY_E)
-		mlx_data->v_map->rot.z -= 0.01f;
+		mlx_data->v_map->rot.z -= 1.0f;
 	if (key == KEY_1)
-		*(mlx_data->m_proj) = mlx_data->perspective_matrix;
+		ft_set_ortho(mlx_data);
 	if (key == KEY_2)
-		*(mlx_data->m_proj) = mlx_data->ortho_matrix;
+		ft_set_perspective(mlx_data);
 	if (key == KEY_R)
 	{
 		mlx_data->v_map->scale.x += 0.01f;
@@ -61,13 +61,13 @@ int	on_key_down(int key, void *param)
 	if (key == KEY_X || key == 120)
 		mlx_data->camera.pos.z -= 0.5f;
 	if (key == KEY_UP)
-		mlx_data->camera.pos.y -= 0.1f;
+		mlx_data->camera.pos.y -= 1.0f;
 	if (key == KEY_DOWN)
-		mlx_data->camera.pos.y += 0.1f;
+		mlx_data->camera.pos.y += 1.0f;
 	if (key == KEY_LEFT)
-		mlx_data->camera.pos.x -= 0.1f;
+		mlx_data->camera.pos.x -= 1.0f;
 	if (key == KEY_RIGHT)
-		mlx_data->camera.pos.x += 0.1f;
+		mlx_data->camera.pos.x += 1.0f;
 
 	return (0);
 }

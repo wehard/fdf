@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/07 17:20:13 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/04 14:58:23 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/04 16:39:56 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,13 +94,13 @@ t_mat4x4	create_rotation_matrix_z(float angle)
 	return (mat);
 }
 
-t_mat4x4	create_rotation_matrix_xyz(t_vec3 rad_angle)
+t_mat4x4	create_rotation_matrix_xyz(t_vec3 deg_angle)
 {
 	t_mat4x4 mat;
 
-	mat = create_rotation_matrix_x(rad_angle.x);
-	mat = multiply_matrix(mat, create_rotation_matrix_y(rad_angle.y));
-	mat = multiply_matrix(mat, create_rotation_matrix_z(rad_angle.z));
+	mat = create_rotation_matrix_y(deg_angle.y * (M_PI / 180.0f));
+	mat = multiply_matrix(mat, create_rotation_matrix_x(deg_angle.x * (M_PI / 180.0f)));
+	mat = multiply_matrix(mat, create_rotation_matrix_z(deg_angle.z * (M_PI / 180.0f)));
 	return (mat);
 }
 

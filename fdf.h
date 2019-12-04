@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 15:23:29 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/02 16:53:37 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/04 16:52:53 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,9 @@ typedef struct		s_mlx_data
 void			frame_buffer_set(t_frame_buffer *fb, int x, int y, int color);
 void			clear_frame_buffer(t_frame_buffer *fb);
 t_frame_buffer	*create_frame_buffer(t_mlx_data *mlx_data);
+
+void			ft_set_ortho(t_mlx_data *mlx_data);
+void			ft_set_perspective(t_mlx_data *mlx_data);
 
 void			draw_line(t_frame_buffer *fb, t_intvec2 p0, t_intvec2 p1, int color);
 void			draw_line_simple(t_frame_buffer *fb, t_vec3 p0, t_vec3 p1);

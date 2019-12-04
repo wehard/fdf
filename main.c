@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:53:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/04 14:56:46 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/04 16:56:10 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,9 +53,9 @@ t_mlx_data *init_mlx(char *title)
 	mlx_data->ortho_matrix = create_ortho_matrix(-ortho_size, ortho_size, aspect * -ortho_size, aspect * ortho_size, znear, zfar); //create_ortho_matrix_2((float)WIN_W, (float)WIN_H, 1.0f, -1.0f); //
 
 	mlx_data->m_proj = (t_mat4x4*)malloc(sizeof(t_mat4x4));
-	*(mlx_data->m_proj) = mlx_data->perspective_matrix;
+	*(mlx_data->m_proj) = mlx_data->ortho_matrix;
 
-	mlx_data->camera.pos = make_vec3_pos(0.0f, 3.0f, 55.0f);
+	mlx_data->camera.pos = make_vec3_pos(0.0f, 0.0f, 0.0f);
 	mlx_data->camera.v_matrix = create_view_matrix(mlx_data->camera.pos);
 	mlx_data->delta_time = 0.001f;
 	return (mlx_data);
@@ -70,6 +70,26 @@ int	del_mlx(t_mlx_data *mlx_data)
 	mlx_destroy_image(mlx_data->mlx_ptr, mlx_data->f_buf->img);
 	free(mlx_data);
 	return (1);
+}
+
+void	ft_set_ortho(t_mlx_data *mlx_data)
+{
+	*(mlx_data->m_proj) = mlx_data->ortho_matrix;
+	mlx_data->v_map->pos = make_vec3_pos(0.0f, 0.0f, 0.0f);
+	mlx_data->v_map->rot = make_vec3_rot(-35.264f, 45.0f, 0.0f);
+	mlx_data->v_map->scale = make_vec3_rot(1.0f, 1.0f, 1.0f);
+
+	mlx_data->camera.pos = make_vec3_pos(0.0f, 0.0f, 20.0f);
+}
+
+void	ft_set_perspective(t_mlx_data *mlx_data)
+{
+	*(mlx_data->m_proj) = mlx_data->perspective_matrix;
+	mlx_data->v_map->pos = make_vec3_pos(0.0f, 0.0f, 0.0f);
+	mlx_data->v_map->rot = make_vec3_rot(-35.264f, 45.0f, 0.0f);
+	mlx_data->v_map->scale = make_vec3_rot(1.0f, 1.0f, 1.0f);
+
+	mlx_data->camera.pos = make_vec3_pos(0.0f, 0.0f, 20.0f);
 }
 
 t_vec3 convert_to_screen_space(t_vec3 p)
@@ -138,8 +158,8 @@ void	draw_axis(t_mlx_data *mlx_data, t_vec3 pos, t_vec3 rot, float scale)
 	t_vec3 zaxis = make_vec3_pos(0.0f, 0.0f, 1.0f * scale);
 
 	t_mat4x4 m2w = create_trs_matrix(pos, rot, make_vec3_rot(1.0f, 1.0f, 1.0f));
-	//t_mat4x4 w2v = multiply_matrix(m2w, create_view_matrix(mlx_data->camera.pos));
-	t_mat4x4 mvp = multiply_matrix(m2w, *(mlx_data->m_proj));
+	t_mat4x4 w2v = multiply_matrix(m2w, create_view_matrix(mlx_data->camera.pos));
+	t_mat4x4 mvp = multiply_matrix(w2v, *(mlx_data->m_proj));
 
 	origin = multiply_matrix_vec3(origin, mvp);
 	xaxis = multiply_matrix_vec3(xaxis, mvp);
@@ -169,6 +189,21 @@ int		discard_point(t_vec3 p)
 	return (0);
 }
 
+static void	ft_display_info(t_mlx_data *mlx_data)
+{
+	char pos[50];
+	char rot[50];
+
+	sprintf(pos, "%.3f, %.3f, %.3f", mlx_data->v_map->pos.x, mlx_data->v_map->pos.y, mlx_data->v_map->pos.z);
+	mlx_string_put(mlx_data->mlx_ptr, mlx_data->win_ptr, 10, 10, WHITE, "pos: ");
+	mlx_string_put(mlx_data->mlx_ptr, mlx_data->win_ptr, 50, 10, WHITE, pos);
+
+	sprintf(rot, "%.3f, %.3f, %.3f", mlx_data->v_map->rot.x, mlx_data->v_map->rot.y, mlx_data->v_map->rot.z);
+	mlx_string_put(mlx_data->mlx_ptr, mlx_data->win_ptr, 10, 25, WHITE, "rot: ");
+	mlx_string_put(mlx_data->mlx_ptr, mlx_data->win_ptr, 50, 25, WHITE, rot);
+}
+
+
 int on_render(void *param)
 {
 	t_mlx_data *mlx_data;
@@ -183,8 +218,8 @@ int on_render(void *param)
 	mlx_data->v_map->rot.y += -(mlx_data->mouse_data.dx * 0.0001f);
 
 	t_mat4x4 m2w = create_trs_matrix(mlx_data->v_map->pos, mlx_data->v_map->rot, mlx_data->v_map->scale);
-	//t_mat4x4 w2v = multiply_matrix(m2w, create_view_matrix(mlx_data->camera.pos));
-	t_mat4x4 mvp = multiply_matrix(m2w, *(mlx_data->m_proj));
+	t_mat4x4 w2v = multiply_matrix(m2w, create_view_matrix(mlx_data->camera.pos));
+	t_mat4x4 mvp = multiply_matrix(w2v, *(mlx_data->m_proj));
 	//transform_v_map(mlx_data, mlx_data->v_map, points);
 
 	for (size_t y = 0; y < mlx_data->v_map->h - 1; y++)
@@ -218,12 +253,16 @@ int on_render(void *param)
 		}
 	}
 	draw_axis(mlx_data, mlx_data->v_map->pos, mlx_data->v_map->rot, 10.0f);
-	draw_axis(mlx_data, make_vec3_pos(-7.0f, -3.0f, -10.0f), make_vec3_rot(0.0f, 0.0f, 0.0f), 1.0f);
+	draw_axis(mlx_data, make_vec3_pos(0.0f, 0.0f, 0.0f), make_vec3_rot(0.0f, 0.0f, 0.0f), 1.0f);
 	if (mlx_data->f_buf->img)
 		mlx_put_image_to_window(mlx_data->mlx_ptr, mlx_data->win_ptr, mlx_data->f_buf->img, 0, 0);
+
+	ft_display_info(mlx_data);
+
 	mlx_data->delta_time += 0.1f;
 	return (0);
 }
+
 
 int	main(int argc, char const *argv[])
 {
@@ -269,9 +308,11 @@ int	main(int argc, char const *argv[])
 
 	center_map_origin(mlx_data->v_map);
 	// degrees × π / 180°
-	mlx_data->v_map->pos = make_vec3_pos(0.0f, 0.0f, -50.0f);
-	mlx_data->v_map->rot = make_vec3_rot(0.0f, 0.0f, 0.0f);
+	mlx_data->v_map->pos = make_vec3_pos(0.0f, 0.0f, 0.0f);
+	mlx_data->v_map->rot = make_vec3_rot(-35.264f, 45.0f, 0.0f);
 	mlx_data->v_map->scale = make_vec3_rot(1.0f, 1.0f, 1.0f);
+
+	mlx_data->camera.pos = make_vec3_pos(0.0f, 0.0f, 20.0f);
 
 	ft_print_matrix(mlx_data->perspective_matrix, 3);
 	ft_print_matrix(mlx_data->ortho_matrix, 3);
