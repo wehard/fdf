@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/04 18:03:59 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/04 18:43:53 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/04 19:17:30 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,5 +21,5 @@ float	ft_convert_range(float oldvalue, float oldmin, float oldmax, float newmin,
 
 int	ft_color_lerp(int c1, int c2, float t)
 {
-	return (ft_max(c1, c2) + (ft_max(c1, c2) - ft_min(c1, c2)) * t);
+	return (((float)ft_max(c1, c2) + ((float)ft_max(c1, c2) - (float)ft_min(c1, c2)) * t));
 }
