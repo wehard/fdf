@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/13 11:28:18 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/04 16:48:36 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/04 17:22:05 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,8 +84,8 @@ int	mouse_event(int button, int x, int y, void *param)
 	mlx_data->mouse_data.x = x;
 	mlx_data->mouse_data.y = y;
 
-	mlx_data->mouse_data.dx = x - mlx_data->mouse_data.oldx;
-	mlx_data->mouse_data.dy = y - mlx_data->mouse_data.oldy;
+	mlx_data->mouse_data.dx = (x - mlx_data->mouse_data.oldx) * 10.0f;
+	mlx_data->mouse_data.dy = (y - mlx_data->mouse_data.oldy) * 10.0f;
 
 	return (0);
 }
