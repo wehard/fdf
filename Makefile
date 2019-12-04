@@ -6,7 +6,7 @@
 #    By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/05 13:58:13 by wkorande          #+#    #+#              #
-#    Updated: 2019/12/04 13:38:32 by wkorande         ###   ########.fr        #
+#    Updated: 2019/12/04 18:09:02 by wkorande         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,8 @@ SRC = main.c\
 	frame_buffer.c\
 	event_handlers.c\
 	error.c\
-	ft_print_matrix.c
+	ft_print_matrix.c\
+	color.c
 
 OBJ =
 

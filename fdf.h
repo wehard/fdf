@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 15:23:29 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/04 16:52:53 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/04 18:48:04 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,8 +114,7 @@ t_frame_buffer	*create_frame_buffer(t_mlx_data *mlx_data);
 void			ft_set_ortho(t_mlx_data *mlx_data);
 void			ft_set_perspective(t_mlx_data *mlx_data);
 
-void			draw_line(t_frame_buffer *fb, t_intvec2 p0, t_intvec2 p1, int color);
-void			draw_line_simple(t_frame_buffer *fb, t_vec3 p0, t_vec3 p1);
+void			draw_line(t_frame_buffer *fb, t_intvec2 p0, t_intvec2 p1, int c1, int c2);
 void			draw_tri(t_frame_buffer *fb, t_vec3 p0, t_vec3 p1, t_vec3 p2);
 void			draw_quad(t_frame_buffer *fb, t_vec3 p0, t_vec3 p1, t_vec3 p2, t_vec3 p3);
 
@@ -128,5 +127,8 @@ int				mouse_event(int button, int x, int y, void *param);
 
 void			ft_print_matrix(t_mat4x4 m, int precision);
 void			ft_print_vec3(t_vec3 v, int precision);
+
+int				ft_color_lerp(int c1, int c2, float t);
+float			ft_convert_range(float oldvalue, float oldmin, float oldmax, float newmin, float newmax);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:53:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/04 17:34:47 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/04 18:56:35 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,9 +171,9 @@ void	draw_axis(t_mlx_data *mlx_data, t_vec3 pos, t_vec3 rot, float scale)
 	yaxis = convert_to_screen_space(yaxis);
 	zaxis = convert_to_screen_space(zaxis);
 
-	draw_line(mlx_data->f_buf, make_intvec2(origin.x, origin.y), make_intvec2(xaxis.x, xaxis.y), RED);
-	draw_line(mlx_data->f_buf, make_intvec2(origin.x, origin.y), make_intvec2(yaxis.x, yaxis.y), GREEN);
-	draw_line(mlx_data->f_buf, make_intvec2(origin.x, origin.y), make_intvec2(zaxis.x, zaxis.y), BLUE);
+	draw_line(mlx_data->f_buf, make_intvec2(origin.x, origin.y), make_intvec2(xaxis.x, xaxis.y), RED, RED);
+	draw_line(mlx_data->f_buf, make_intvec2(origin.x, origin.y), make_intvec2(yaxis.x, yaxis.y), GREEN, GREEN);
+	draw_line(mlx_data->f_buf, make_intvec2(origin.x, origin.y), make_intvec2(zaxis.x, zaxis.y), BLUE, BLUE);
 }
 
 int		discard_point(t_vec3 p)
@@ -233,18 +233,17 @@ int on_render(void *param)
 	{
 		for (size_t x = 0; x < mlx_data->v_map->w - 1; x++)
 		{
-			t_vec3 tp = mlx_data->v_map->v[0];
 			t_vec3 p0 = mlx_data->v_map->v[y * mlx_data->v_map->w + x];
 			t_vec3 p1 = mlx_data->v_map->v[y * mlx_data->v_map->w + x + 1];
 			t_vec3 p2 = mlx_data->v_map->v[(y + 1) * mlx_data->v_map->w + x];
 
+			int c0 = ft_color_lerp(WHITE, RED, ft_convert_range(p0.y, 0.0f, 10.0f, 0.0f, 1.0f));
+			int c1 = ft_color_lerp(WHITE, RED, ft_convert_range(p1.y, 0.0f, 10.0f, 0.0f, 1.0f));
+			int c2 = ft_color_lerp(WHITE, RED, ft_convert_range(p2.y, 0.0f, 10.0f, 0.0f, 1.0f));
+
 			p0 = multiply_matrix_vec3(p0, mvp);
 			p1 = multiply_matrix_vec3(p1, mvp);
 			p2 = multiply_matrix_vec3(p2, mvp);
-
-			tp = multiply_matrix_vec3(tp, mvp);
-
-			//ft_print_vec3(tp, 3);
 
 			if (discard_point(p0) || discard_point(p1) ||discard_point(p2))
 				continue ;
@@ -252,9 +251,8 @@ int on_render(void *param)
 			p0 = convert_to_screen_space(p0);
 			p1 = convert_to_screen_space(p1);
 			p2 = convert_to_screen_space(p2);
-
-			draw_line(mlx_data->f_buf, make_intvec2(p0.x, p0.y), make_intvec2(p1.x, p1.y), WHITE);
-			draw_line(mlx_data->f_buf, make_intvec2(p0.x, p0.y), make_intvec2(p2.x, p2.y), WHITE);
+			draw_line(mlx_data->f_buf, make_intvec2(p0.x, p0.y), make_intvec2(p1.x, p1.y), c0, c1);
+			draw_line(mlx_data->f_buf, make_intvec2(p0.x, p0.y), make_intvec2(p2.x, p2.y), c0, c2);
 			//draw_line(mlx_data->f_buf, make_intvec2(p1.x, p1.y), make_intvec2(p2.x, p2.y));
 
 		}
@@ -307,7 +305,7 @@ int	main(int argc, char const *argv[])
 	mlx_data->v_map = map;
 
 	ft_putstr("map width: ");
-	ft_putnbr(mlx_data->v_map->h);
+	ft_putnbr(mlx_data->v_map->w);
 	ft_putchar('\n');
 	ft_putstr("map height: ");
 	ft_putnbr(mlx_data->v_map->h);
