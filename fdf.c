@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   fdf.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:53:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/05 16:21:45 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/05 18:21:49 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ t_mlx_data *init_mlx(char *title)
 	ortho_size = 11.0f;
 	fov = 30.0f;
 	mlx_data->perspective_matrix = create_perspective_matrix(fov, aspect, znear, zfar);
-	mlx_data->ortho_matrix = create_ortho_matrix(-ortho_size, ortho_size, aspect * -ortho_size, aspect * ortho_size, znear, zfar); //create_ortho_matrix_2((float)WIN_W, (float)WIN_H, 1.0f, -1.0f); //
+	mlx_data->ortho_matrix = create_ortho_matrix(-ortho_size, ortho_size, aspect * -ortho_size, aspect * ortho_size, znear, zfar);
 
 	mlx_data->m_proj = (t_mat4x4*)malloc(sizeof(t_mat4x4));
 	*(mlx_data->m_proj) = mlx_data->ortho_matrix;
@@ -99,55 +99,6 @@ t_vec3 convert_to_screen_space(t_vec3 p)
 	p.x *= 0.5f * (float)WIN_W;
 	p.y *= 0.5f * (float)WIN_H;
 	return (p);
-}
-
-static void	center_map_origin(t_v_map *map)
-{
-	int x;
-	int y;
-	double half_w;
-	double half_h;
-
-	half_w = (float)map->w * 0.5f;
-	half_h = (float)map->h * 0.5f;
-
-	y = 0;
-	while (y < map->h)
-	{
-		x = 0;
-		while (x < map->w)
-		{
-			map->v[y * map->w + x].x -= half_w;
-			map->v[y * map->w + x].z -= half_h;
-			x++;
-		}
-		y++;
-	}
-}
-
-static void transform_v_map(t_mlx_data *mlx_data, t_v_map *v_map, t_vec3 *out)
-{
-	int x;
-	int y;
-
-	t_mat4x4 m2w = create_trs_matrix(v_map->pos, v_map->rot, v_map->scale);
-	t_mat4x4 w2v = multiply_matrix(m2w, create_view_matrix(mlx_data->camera.pos));
-	t_mat4x4 mvp = multiply_matrix(w2v, *(mlx_data->m_proj));
-
-	y = 0;
-	while (y < v_map->h)
-	{
-		x = 0;
-		while (x < v_map->w)
-		{
-			t_vec3 p0 = v_map->v[y * v_map->w + x];
-			p0 = multiply_matrix_vec3(p0, mvp);
-			p0 = convert_to_screen_space(p0);
-			out[y * v_map->w + x] = p0;
-			x++;
-		}
-		y++;
-	}
 }
 
 void	draw_axis(t_mlx_data *mlx_data, t_vec3 pos, t_vec3 rot, float scale)
@@ -314,27 +265,19 @@ int	main(int argc, char const *argv[])
 	ft_putchar('\n');
 
 	center_map_origin(mlx_data->v_map);
-	// degrees × π / 180°
+
 	mlx_data->v_map->pos = make_vec3_pos(0.0f, 0.0f, 0.0f);
 	mlx_data->v_map->rot = make_vec3_rot(-35.264f, -45.0f, 0.0f);
 	mlx_data->v_map->scale = make_vec3_rot(1.0f, 1.0f, 1.0f);
 
 	mlx_data->camera.pos = make_vec3_pos(0.0f, 0.0f, mlx_data->v_map->w);
-	//ft_set_perspective(mlx_data);
 
 	ft_print_matrix(mlx_data->perspective_matrix, 3);
 	ft_print_matrix(mlx_data->ortho_matrix, 3);
-	//t_vec3 t = make_vec3_pos(10.0f, 10.0f, 10.0f);
-	//t_mat4x4 m = create_translation_matrix(make_vec3_pos(10.0f, 0.0f, 0.0f));
-	//ft_print_matrix(m, 3);
-	//t = multiply_matrix_vec3_2(t, m);
-	//ft_print_vec3(t, 3);
 
-	t_rgba col = ft_make_rgba(1.0f, 0.0f, 1.0f, 1.0f);
-	printf("col: %#x\n", ft_get_color(col));
 	printf("mapmax: %i mapmin: %i\n", mlx_data->v_map->h_max, mlx_data->v_map->h_min);
 
-	mlx_key_hook(mlx_data->win_ptr, on_key_down, (void*)mlx_data);
+	//mlx_key_hook(mlx_data->win_ptr, on_key_down, (void*)mlx_data);
 	mlx_hook(mlx_data->win_ptr, 2, 0, on_key_down, (void*)mlx_data);
 	mlx_mouse_hook(mlx_data->win_ptr,  mouse_event,(void*)mlx_data);
 	mlx_loop_hook (mlx_data->mlx_ptr, on_render, (void*)mlx_data);

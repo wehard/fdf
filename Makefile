@@ -6,7 +6,7 @@
 #    By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/05 13:58:13 by wkorande          #+#    #+#              #
-#    Updated: 2019/12/04 18:09:02 by wkorande         ###   ########.fr        #
+#    Updated: 2019/12/05 17:11:40 by wkorande         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME = fdf
 
 CFLAGS = -Wall -Wextra -Werror
 
-SRC = main.c\
+SRC = fdf.c\
 	point.c\
 	matrix.c\
 	draw.c\

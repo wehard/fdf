@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 15:23:29 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/05 14:41:47 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/05 16:50:40 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,6 +129,7 @@ void			draw_quad(t_frame_buffer *fb, t_vec3 p0, t_vec3 p1, t_vec3 p2, t_vec3 p3)
 
 int				read_map_data(int fd, t_v_map **map);
 t_v_map			*create_v_map(int w, int h);
+void			center_map_origin(t_v_map *map);
 int				throw_error(char *e);
 
 int				on_key_down(int key, void *param);

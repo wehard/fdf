@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/12 15:15:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/05 14:47:53 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/05 17:09:36 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,4 +111,27 @@ int	read_map_data(int fd, t_v_map **map)
 	}
 	*map = read_to_v_map(width, height, lst);
 	return (1);
+}
+
+void	center_map_origin(t_v_map *map)
+{
+	int x;
+	int y;
+	float x_offset;
+	float z_offset;
+
+	x_offset = ((float)map->w / 2) - 0.5f;
+	z_offset = ((float)map->h / 2) - 0.5f;
+	y = 0;
+	while (y < map->h)
+	{
+		x = 0;
+		while (x < map->w)
+		{
+			map->v[y * map->w + x].x -= x_offset;
+			map->v[y * map->w + x].z -= z_offset;
+			x++;
+		}
+		y++;
+	}
 }
