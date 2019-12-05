@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 15:23:29 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/04 18:48:04 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/05 14:41:47 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,10 @@
 # include "matrix.h"
 # include "point.h"
 
-# define RED 0xFF0000
-# define GREEN 0x00FF00
-# define BLUE 0x0000FF
-# define WHITE 0xFFFFFF
+# define RED ft_make_rgba(1.0f, 0.0f, 0.0f, 1.0f)
+# define GREEN ft_make_rgba(0.0f, 1.0f, 0.0f, 1.0f)
+# define BLUE ft_make_rgba(0.0f, 0.0f, 1.0f, 1.0f)
+# define WHITE ft_make_rgba(1.0f, 1.0f, 1.0f, 1.0f)
 
 # define WIN_W 1280
 # define WIN_H 720
@@ -46,6 +46,13 @@
 # define KEY_LEFT 123
 # define KEY_RIGHT 124
 
+typedef struct 		s_rgba
+{
+	float			r;
+	float			g;
+	float			b;
+	float			a;
+}					t_rgba;
 
 typedef struct 		s_line
 {
@@ -73,6 +80,8 @@ typedef struct		s_v_map
 	int				size;
 	int				w;
 	int				h;
+	int				h_min;
+	int				h_max;
 }					t_v_map;
 
 typedef struct		s_frame_buffer
@@ -114,7 +123,7 @@ t_frame_buffer	*create_frame_buffer(t_mlx_data *mlx_data);
 void			ft_set_ortho(t_mlx_data *mlx_data);
 void			ft_set_perspective(t_mlx_data *mlx_data);
 
-void			draw_line(t_frame_buffer *fb, t_intvec2 p0, t_intvec2 p1, int c1, int c2);
+void			draw_line(t_frame_buffer *fb, t_intvec2 p0, t_intvec2 p1, t_rgba c1, t_rgba c2);
 void			draw_tri(t_frame_buffer *fb, t_vec3 p0, t_vec3 p1, t_vec3 p2);
 void			draw_quad(t_frame_buffer *fb, t_vec3 p0, t_vec3 p1, t_vec3 p2, t_vec3 p3);
 
@@ -130,5 +139,12 @@ void			ft_print_vec3(t_vec3 v, int precision);
 
 int				ft_color_lerp(int c1, int c2, float t);
 float			ft_convert_range(float oldvalue, float oldmin, float oldmax, float newmin, float newmax);
+
+float			ft_lerp_f(float n1, float n2, float t);
+t_rgba 			ft_make_rgba(float r, float g, float b, float a);
+t_rgba			ft_lerp_rgba(t_rgba c1, t_rgba c2, float t);
+int				ft_get_color(t_rgba c);
+
+
 
 #endif

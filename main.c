@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:53:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/04 19:21:59 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/05 16:21:45 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,21 +193,19 @@ static void	ft_display_info(t_mlx_data *mlx_data)
 {
 	char pos[50];
 	char rot[50];
+	char campos[50];
 
 	sprintf(pos, "%.3f, %.3f, %.3f", mlx_data->v_map->pos.x, mlx_data->v_map->pos.y, mlx_data->v_map->pos.z);
-	mlx_string_put(mlx_data->mlx_ptr, mlx_data->win_ptr, 10, 10, WHITE, "pos: ");
-	mlx_string_put(mlx_data->mlx_ptr, mlx_data->win_ptr, 50, 10, WHITE, pos);
+	mlx_string_put(mlx_data->mlx_ptr, mlx_data->win_ptr, 10, 10, ft_get_color(WHITE), "pos: ");
+	mlx_string_put(mlx_data->mlx_ptr, mlx_data->win_ptr, 50, 10, ft_get_color(WHITE), pos);
 
 	sprintf(rot, "%.3f, %.3f, %.3f", mlx_data->v_map->rot.x, mlx_data->v_map->rot.y, mlx_data->v_map->rot.z);
-	mlx_string_put(mlx_data->mlx_ptr, mlx_data->win_ptr, 10, 25, WHITE, "rot: ");
-	mlx_string_put(mlx_data->mlx_ptr, mlx_data->win_ptr, 50, 25, WHITE, rot);
-
-	char campos[50];
-	//char camrot[50];
+	mlx_string_put(mlx_data->mlx_ptr, mlx_data->win_ptr, 10, 25, ft_get_color(WHITE), "rot: ");
+	mlx_string_put(mlx_data->mlx_ptr, mlx_data->win_ptr, 50, 25, ft_get_color(WHITE), rot);
 
 	sprintf(campos, "%.3f, %.3f, %.3f", mlx_data->camera.pos.x, mlx_data->camera.pos.y, mlx_data->camera.pos.z);
-	mlx_string_put(mlx_data->mlx_ptr, mlx_data->win_ptr, 970, 10, WHITE, "cam pos: ");
-	mlx_string_put(mlx_data->mlx_ptr, mlx_data->win_ptr, 1060, 10, WHITE, campos);
+	mlx_string_put(mlx_data->mlx_ptr, mlx_data->win_ptr, 970, 10, ft_get_color(WHITE), "cam pos: ");
+	mlx_string_put(mlx_data->mlx_ptr, mlx_data->win_ptr, 1060, 10, ft_get_color(WHITE), campos);
 }
 
 
@@ -237,9 +235,13 @@ int on_render(void *param)
 			t_vec3 p1 = mlx_data->v_map->v[y * mlx_data->v_map->w + x + 1];
 			t_vec3 p2 = mlx_data->v_map->v[(y + 1) * mlx_data->v_map->w + x];
 
-			int c0 = ft_color_lerp(WHITE, RED, ft_convert_range(p0.y, 0.0f, 10.0f, 0.0f, 1.0f));
-			int c1 = ft_color_lerp(WHITE, RED, ft_convert_range(p1.y, 0.0f, 10.0f, 0.0f, 1.0f));
-			int c2 = ft_color_lerp(WHITE, RED, ft_convert_range(p2.y, 0.0f, 10.0f, 0.0f, 1.0f));
+			//
+			t_rgba c0 = ft_lerp_rgba(BLUE, WHITE, ft_convert_range(p0.y, mlx_data->v_map->h_min, mlx_data->v_map->h_max, 0.0f, 1.0f));
+			t_rgba c1 = ft_lerp_rgba(BLUE, WHITE, ft_convert_range(p1.y, mlx_data->v_map->h_min, mlx_data->v_map->h_max, 0.0f, 1.0f));
+			t_rgba c2 = ft_lerp_rgba(BLUE, WHITE, ft_convert_range(p2.y, mlx_data->v_map->h_min, mlx_data->v_map->h_max, 0.0f, 1.0f));
+			float p0y = p0.y;
+			float p1y = p1.y;
+			float p2y = p2.y;
 
 			p0 = multiply_matrix_vec3(p0, mvp);
 			p1 = multiply_matrix_vec3(p1, mvp);
@@ -327,6 +329,10 @@ int	main(int argc, char const *argv[])
 	//ft_print_matrix(m, 3);
 	//t = multiply_matrix_vec3_2(t, m);
 	//ft_print_vec3(t, 3);
+
+	t_rgba col = ft_make_rgba(1.0f, 0.0f, 1.0f, 1.0f);
+	printf("col: %#x\n", ft_get_color(col));
+	printf("mapmax: %i mapmin: %i\n", mlx_data->v_map->h_max, mlx_data->v_map->h_min);
 
 	mlx_key_hook(mlx_data->win_ptr, on_key_down, (void*)mlx_data);
 	mlx_hook(mlx_data->win_ptr, 2, 0, on_key_down, (void*)mlx_data);

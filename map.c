@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/12 15:15:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/02 21:16:02 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/05 14:47:53 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,10 @@ t_v_map *create_v_map(int w, int h)
 	v_map->size = size;
 	v_map->w = w;
 	v_map->h = h;
-	v_map->pos.x = 0.0f;
-	v_map->pos.y = 0.0f;
-	v_map->pos.z = 0.0f;
-	v_map->rot.x = 0.0f;
-	v_map->rot.y = 0.0f;
-	v_map->rot.z = 0.0f;
+	v_map->pos = make_vec3_pos(0.0f, 0.0f, 0.0f);
+	v_map->rot = make_vec3_rot(0.0f, 0.0f, 0.0f);
+	v_map->h_max = INT32_MIN;
+	v_map->h_min = INT32_MAX;
 	if (!(v_map->v = (t_vec3*)malloc(sizeof(t_vec3) * size)))
 		return (NULL);
 	ft_bzero(v_map->v, sizeof(t_vec3) * size);
@@ -45,6 +43,7 @@ t_v_map *read_to_v_map(int w, int h, t_list *lst)
 	char **points;
 	int x;
 	int y;
+	int ch;
 
 	if (!(v_map = create_v_map(w, h)))
 		return (NULL);
@@ -56,7 +55,12 @@ t_v_map *read_to_v_map(int w, int h, t_list *lst)
 		x = 0;
 		while (*points)
 		{
-			v_map->v[y * v_map->w + x] = make_vec3_pos(x, ft_atoi(*points), y);
+			ch = ft_atoi(*points);
+			if (ch > v_map->h_max)
+				v_map->h_max = ch;
+			if (ch < v_map->h_min)
+				v_map->h_min = ch;
+			v_map->v[y * v_map->w + x] = make_vec3_pos(x, ch, y);
 			points++;
 			x++;
 		}
