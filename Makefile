@@ -6,7 +6,7 @@
 #    By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/05 13:58:13 by wkorande          #+#    #+#              #
-#    Updated: 2019/12/05 17:11:40 by wkorande         ###   ########.fr        #
+#    Updated: 2019/12/06 14:24:14 by wkorande         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,15 +15,18 @@ NAME = fdf
 CFLAGS = -Wall -Wextra -Werror
 
 SRC = fdf.c\
-	point.c\
 	matrix.c\
 	draw.c\
 	map.c\
 	frame_buffer.c\
+	depth_buffer.c\
 	event_handlers.c\
 	error.c\
 	ft_print_matrix.c\
-	color.c
+	color.c\
+	vertex.c\
+	vec2.c\
+	vec3.c
 
 OBJ =
 

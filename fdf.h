@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 15:23:29 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/05 16:50:40 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/06 14:23:56 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 
 # include <stdlib.h>
 # include "matrix.h"
-# include "point.h"
 
 # define RED ft_make_rgba(1.0f, 0.0f, 0.0f, 1.0f)
 # define GREEN ft_make_rgba(0.0f, 1.0f, 0.0f, 1.0f)
@@ -46,6 +45,26 @@
 # define KEY_LEFT 123
 # define KEY_RIGHT 124
 
+typedef struct 		s_vec3
+{
+	float			x;
+	float			y;
+	float			z;
+	float			w;
+}					t_vec3;
+
+typedef struct 		s_vec2
+{
+	float			x;
+	float			y;
+}					t_vec2;
+
+typedef struct		s_intvec2
+{
+	int				x;
+	int				y;
+}					t_intvec2;
+
 typedef struct 		s_rgba
 {
 	float			r;
@@ -53,6 +72,12 @@ typedef struct 		s_rgba
 	float			b;
 	float			a;
 }					t_rgba;
+
+typedef struct		s_vertex
+{
+	t_vec3			pos;
+	t_rgba			col;
+}					t_vertex;
 
 typedef struct 		s_line
 {
@@ -95,6 +120,13 @@ typedef struct		s_frame_buffer
 	int				h;
 }					t_frame_buffer;
 
+typedef struct		s_depth_buffer
+{
+	float			*data;
+	int				width;
+	int				height;
+}					t_depth_buffer;
+
 typedef struct		s_camera
 {
 	t_vec3			pos;
@@ -107,6 +139,7 @@ typedef struct		s_mlx_data
 	void			*mlx_ptr;
 	void			*win_ptr;
 	t_frame_buffer	*f_buf;
+	t_depth_buffer	*db;
 	t_mat4x4		*m_proj;
 	t_mat4x4		perspective_matrix;
 	t_mat4x4		ortho_matrix;
@@ -120,10 +153,15 @@ void			frame_buffer_set(t_frame_buffer *fb, int x, int y, int color);
 void			clear_frame_buffer(t_frame_buffer *fb);
 t_frame_buffer	*create_frame_buffer(t_mlx_data *mlx_data);
 
+void			depth_buffer_set(t_depth_buffer *db, int x, int y, float f);
+t_depth_buffer	*create_depth_buffer(int width, int height);
+void			clear_depth_buffer(t_depth_buffer *db, float value);
+float			depth_buffer_sample(t_depth_buffer *db, int x, int y);
+
 void			ft_set_ortho(t_mlx_data *mlx_data);
 void			ft_set_perspective(t_mlx_data *mlx_data);
 
-void			draw_line(t_frame_buffer *fb, t_intvec2 p0, t_intvec2 p1, t_rgba c1, t_rgba c2);
+void			draw_line(t_frame_buffer *fb, t_depth_buffer *db, t_vertex p0, t_vertex p1);
 void			draw_tri(t_frame_buffer *fb, t_vec3 p0, t_vec3 p1, t_vec3 p2);
 void			draw_quad(t_frame_buffer *fb, t_vec3 p0, t_vec3 p1, t_vec3 p2, t_vec3 p3);
 
@@ -146,6 +184,14 @@ t_rgba 			ft_make_rgba(float r, float g, float b, float a);
 t_rgba			ft_lerp_rgba(t_rgba c1, t_rgba c2, float t);
 int				ft_get_color(t_rgba c);
 
+t_vertex		make_vertex(float x, float y, float z, t_rgba c);
 
+t_vec2			make_vec2(float x, float y);
+t_intvec2		make_intvec2(int x, int y);
+t_vec3			make_vec3_pos(float x, float y, float z);
+t_vec3			make_vec3_rot(float x, float y, float z);
+t_vec3			transform_point(t_vec3 v, t_vec3 translate, t_vec3 rot, t_vec3 scale);
+t_vec3			translate_point_3d(t_vec3 p, t_vec3 translation);
+t_vec3			*make_unit_cube();
 
 #endif

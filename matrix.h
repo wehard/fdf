@@ -6,14 +6,14 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/07 17:20:25 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/04 16:33:49 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/06 14:25:49 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MATRIX_H
 # define MATRIX_H
 
-#include "point.h"
+#include "fdf.h"
 
 typedef struct	s_mat4x4
 {

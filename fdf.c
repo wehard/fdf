@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:53:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/05 18:21:49 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/06 14:08:51 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ t_mlx_data *init_mlx(char *title)
 	mlx_data->mlx_ptr = mlx_init();
 	mlx_data->win_ptr = mlx_new_window(mlx_data->mlx_ptr, WIN_W, WIN_H, title);
 	mlx_data->f_buf = create_frame_buffer(mlx_data);
+	mlx_data->db = create_depth_buffer(WIN_W, WIN_H);
 
 	mlx_data->mouse_data.x = 0;
 	mlx_data->mouse_data.y = 0;
@@ -65,6 +66,8 @@ int	del_mlx(t_mlx_data *mlx_data)
 {
 	free(mlx_data->f_buf->d_addr);
 	free(mlx_data->m_proj);
+	free(mlx_data->db->data);
+	free(mlx_data->db);
 
 	mlx_destroy_window(mlx_data->mlx_ptr, mlx_data->win_ptr);
 	mlx_destroy_image(mlx_data->mlx_ptr, mlx_data->f_buf->img);
@@ -122,9 +125,9 @@ void	draw_axis(t_mlx_data *mlx_data, t_vec3 pos, t_vec3 rot, float scale)
 	yaxis = convert_to_screen_space(yaxis);
 	zaxis = convert_to_screen_space(zaxis);
 
-	draw_line(mlx_data->f_buf, make_intvec2(origin.x, origin.y), make_intvec2(xaxis.x, xaxis.y), RED, RED);
-	draw_line(mlx_data->f_buf, make_intvec2(origin.x, origin.y), make_intvec2(yaxis.x, yaxis.y), GREEN, GREEN);
-	draw_line(mlx_data->f_buf, make_intvec2(origin.x, origin.y), make_intvec2(zaxis.x, zaxis.y), BLUE, BLUE);
+	draw_line(mlx_data->f_buf, mlx_data->db, make_vertex(origin.x, origin.y, origin.z, RED), make_vertex(xaxis.x, xaxis.y, xaxis.z, RED));
+	draw_line(mlx_data->f_buf, mlx_data->db, make_vertex(origin.x, origin.y, origin.z, GREEN), make_vertex(yaxis.x, yaxis.y, yaxis.z, GREEN));
+	draw_line(mlx_data->f_buf, mlx_data->db, make_vertex(origin.x, origin.y, origin.z, BLUE), make_vertex(zaxis.x, zaxis.y, zaxis.z, BLUE));
 }
 
 int		discard_point(t_vec3 p)
@@ -169,6 +172,7 @@ int on_render(void *param)
 
 	//t_vec3 points[mlx_data->v_map->size];
 	clear_frame_buffer(mlx_data->f_buf);
+	clear_depth_buffer(mlx_data->db, 1000.0f);
 
 	mlx_data->v_map->rot.x += (mlx_data->mouse_data.dy * 0.0001f);
 	mlx_data->v_map->rot.y += -(mlx_data->mouse_data.dx * 0.0001f);
@@ -204,8 +208,8 @@ int on_render(void *param)
 			p0 = convert_to_screen_space(p0);
 			p1 = convert_to_screen_space(p1);
 			p2 = convert_to_screen_space(p2);
-			draw_line(mlx_data->f_buf, make_intvec2(p0.x, p0.y), make_intvec2(p1.x, p1.y), c0, c1);
-			draw_line(mlx_data->f_buf, make_intvec2(p0.x, p0.y), make_intvec2(p2.x, p2.y), c0, c2);
+			draw_line(mlx_data->f_buf, mlx_data->db, make_vertex(p0.x, p0.y, p0.z, c0), make_vertex(p1.x, p1.y, p1.z, c1));
+			draw_line(mlx_data->f_buf, mlx_data->db, make_vertex(p0.x, p0.y, p0.z, c0), make_vertex(p2.x, p2.y, p2.z, c2));
 			//draw_line(mlx_data->f_buf, make_intvec2(p1.x, p1.y), make_intvec2(p2.x, p2.y));
 
 		}

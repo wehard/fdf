@@ -6,13 +6,13 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/11 13:06:16 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/05 16:13:35 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/06 14:10:46 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-static void	draw_line_low(t_frame_buffer *fb, t_intvec2 p0, t_intvec2 p1, t_rgba c1, t_rgba c2)
+static void	draw_line_low(t_frame_buffer *fb, t_depth_buffer *db, t_vertex p0, t_vertex p1)
 {
 	t_intvec2 p;
 	int dx;
@@ -20,8 +20,8 @@ static void	draw_line_low(t_frame_buffer *fb, t_intvec2 p0, t_intvec2 p1, t_rgba
 	int yi;
 	int d;
 
-	dx = p1.x - p0.x;
-	dy = p1.y - p0.y;
+	dx = p1.pos.x - p0.pos.x;
+	dy = p1.pos.y - p0.pos.y;
 	yi = 1;
 	if (dy < 0)
 	{
@@ -29,12 +29,12 @@ static void	draw_line_low(t_frame_buffer *fb, t_intvec2 p0, t_intvec2 p1, t_rgba
 		dy = -dy;
 	}
 	d = 2 * dy - dx;
-	p.y = p0.y;
-	p.x = p0.x;
-	while (p.x < p1.x)
+	p.y = p0.pos.y;
+	p.x = p0.pos.x;
+	while (p.x < p1.pos.x)
 	{
-		float t = ft_convert_range(p.x, p0.x, p1.x, 0.0f, 1.0f);
-		int c = ft_get_color(ft_lerp_rgba(c1, c2, t));
+		float t = ft_convert_range(p.x, p0.pos.x, p1.pos.x, 0.0f, 1.0f);
+		int c = ft_get_color(ft_lerp_rgba(p0.col, p1.col, t));
 		frame_buffer_set(fb, p.x, p.y, c);
 		if (d > 0)
 		{
@@ -46,7 +46,7 @@ static void	draw_line_low(t_frame_buffer *fb, t_intvec2 p0, t_intvec2 p1, t_rgba
 	}
 }
 
-static void	draw_line_high(t_frame_buffer *fb, t_intvec2 p0, t_intvec2 p1, t_rgba c1, t_rgba c2)
+static void	draw_line_high(t_frame_buffer *fb, t_depth_buffer *db, t_vertex p0, t_vertex p1)
 {
 	t_intvec2 p;
 	int dx;
@@ -54,8 +54,8 @@ static void	draw_line_high(t_frame_buffer *fb, t_intvec2 p0, t_intvec2 p1, t_rgb
 	int xi;
 	int d;
 
-	dx = p1.x - p0.x;
-	dy = p1.y - p0.y;
+	dx = p1.pos.x - p0.pos.x;
+	dy = p1.pos.y - p0.pos.y;
 	xi = 1;
 	if (dx < 0)
 	{
@@ -63,12 +63,12 @@ static void	draw_line_high(t_frame_buffer *fb, t_intvec2 p0, t_intvec2 p1, t_rgb
 		dx = -dx;
 	}
 	d = 2 * dx - dy;
-	p.x = p0.x;
-	p.y = p0.y;
-	while (p.y < p1.y)
+	p.x = p0.pos.x;
+	p.y = p0.pos.y;
+	while (p.y < p1.pos.y)
 	{
-		float t = ft_convert_range(p.y, p0.y, p1.y, 0.0f, 1.0f);
-		int c = ft_get_color(ft_lerp_rgba(c1, c2, t));
+		float t = ft_convert_range(p.y, p0.pos.y, p1.pos.y, 0.0f, 1.0f);
+		int c = ft_get_color(ft_lerp_rgba(p0.col, p1.col, t));
 		frame_buffer_set(fb, p.x, p.y, c);
 		if (d > 0)
 		{
@@ -80,21 +80,21 @@ static void	draw_line_high(t_frame_buffer *fb, t_intvec2 p0, t_intvec2 p1, t_rgb
 	}
 }
 
-void	draw_line(t_frame_buffer *fb, t_intvec2 p0, t_intvec2 p1, t_rgba c1, t_rgba c2)
+void	draw_line(t_frame_buffer *fb, t_depth_buffer *db, t_vertex p0, t_vertex p1)
 {
-	if (abs(p1.y - p0.y) < abs(p1.x - p0.x))
+	if (abs((int)p1.pos.y - (int)p0.pos.y) < abs((int)p1.pos.x - (int)p0.pos.x)) /// remove this forbidden function!!
 	{
-		if (p0.x > p1.x)
-			draw_line_low(fb, p1, p0, c2, c1);
+		if (p0.pos.x > p1.pos.x)
+			draw_line_low(fb, db, p1, p0);
 		else
-			draw_line_low(fb, p0, p1, c1, c2);
+			draw_line_low(fb, db, p0, p1);
 	}
 	else
 	{
-		if (p0.y > p1.y)
-			draw_line_high(fb, p1, p0, c2, c1);
+		if (p0.pos.y > p1.pos.y)
+			draw_line_high(fb, db, p1, p0);
 		else
-			draw_line_high(fb, p0, p1, c1, c2);
+			draw_line_high(fb, db, p0, p1);
 	}
 }
 
