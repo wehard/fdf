@@ -6,12 +6,12 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/29 23:10:19 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/03 17:50:02 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/06 14:33:11 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
-#include "matrix.h"
+#include "fdf.h"
 
 void	ft_print_matrix(t_mat4x4 m, int precision)
 {

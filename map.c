@@ -6,14 +6,13 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/12 15:15:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/05 17:09:36 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/06 14:28:03 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "ft_get_next_line.h"
 #include "fdf.h"
-#include "point.h"
 
 t_v_map *create_v_map(int w, int h)
 {

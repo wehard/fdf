@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:53:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/06 14:08:51 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/06 14:32:38 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,6 @@
 #include "libft.h"
 #include "mlx.h"
 #include "fdf.h"
-#include "matrix.h"
-#include "point.h"
 #include "math.h"
 #include "ft_get_next_line.h"
 

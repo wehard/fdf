@@ -6,13 +6,12 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/07 17:20:13 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/06 14:25:03 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/06 14:32:54 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 #include "libft.h"
-#include "matrix.h"
 #include "math.h"
 
 t_mat4x4	init_matrix(void)
