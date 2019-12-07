@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:53:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/07 09:45:38 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/07 22:19:35 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,9 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <fcntl.h>
-
+#include "fdf.h"
 #include "libft.h"
 #include "mlx.h"
-#include "fdf.h"
 #include "math.h"
 #include "ft_get_next_line.h"
 
@@ -167,10 +166,8 @@ int on_render(void *param)
 	mlx_data = (t_mlx_data*)param;
 	if (!mlx_data || !mlx_data->v_map)
 		return (0);
-
-	//t_vec3 points[mlx_data->v_map->size];
 	clear_frame_buffer(mlx_data->f_buf);
-	clear_depth_buffer(mlx_data->db, 1000.0f);
+	clear_depth_buffer(mlx_data->db, -1000.0f);
 
 	mlx_data->v_map->rot.x += (mlx_data->mouse_data.dy * 0.0001f);
 	mlx_data->v_map->rot.y += -(mlx_data->mouse_data.dx * 0.0001f);
@@ -209,16 +206,29 @@ int on_render(void *param)
 			draw_line(mlx_data->f_buf, mlx_data->db, make_vertex(p0.x, p0.y, p0.z, c0), make_vertex(p1.x, p1.y, p1.z, c1));
 			draw_line(mlx_data->f_buf, mlx_data->db, make_vertex(p0.x, p0.y, p0.z, c0), make_vertex(p2.x, p2.y, p2.z, c2));
 			//draw_line(mlx_data->f_buf, make_intvec2(p1.x, p1.y), make_intvec2(p2.x, p2.y));
-
 		}
 	}
-	draw_axis(mlx_data, mlx_data->v_map->pos, mlx_data->v_map->rot, 10.0f);
-	draw_axis(mlx_data, make_vec3_pos(0.0f, 0.0f, 0.0f), make_vec3_rot(0.0f, 0.0f, 0.0f), 1.0f);
-	if (mlx_data->f_buf->img)
-		mlx_put_image_to_window(mlx_data->mlx_ptr, mlx_data->win_ptr, mlx_data->f_buf->img, 0, 0);
+	//draw_axis(mlx_data, mlx_data->v_map->pos, mlx_data->v_map->rot, 10.0f);
+	//draw_axis(mlx_data, make_vec3_pos(0.0f, 0.0f, 0.0f), make_vec3_rot(0.0f, 0.0f, 0.0f), 1.0f);
+	//if (mlx_data->f_buf->img)
+	//	mlx_put_image_to_window(mlx_data->mlx_ptr, mlx_data->win_ptr, mlx_data->f_buf->img, 0, 0);
+
+	for (size_t i = 0; i < WIN_H ; i++)
+	{
+		for (size_t j = 0; j < WIN_W; j++)
+		{
+			float z = depth_buffer_sample(mlx_data->db, j, i);
+			if (z < 0.0f)
+				z = -z;
+			if (z > 1.0f)
+				z = 1.0f;
+
+			t_rgba c = ft_make_rgba(z, z, z, 1.0f);
+			mlx_pixel_put(mlx_data->mlx_ptr, mlx_data->win_ptr, j, i, ft_get_color(c));
+		}
+	}
 
 	ft_display_info(mlx_data);
-
 	mlx_data->delta_time += 0.1f;
 	return (0);
 }

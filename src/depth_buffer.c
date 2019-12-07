@@ -6,11 +6,12 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/06 13:02:05 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/06 13:48:52 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/07 22:19:17 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
+#include "libft.h"
 
 void	depth_buffer_set(t_depth_buffer *db, int x, int y, float f)
 {
@@ -45,8 +46,14 @@ void			clear_depth_buffer(t_depth_buffer *db, float value)
 	int i;
 
 	size = db->width * db->height;
+	ft_putnbr(size);
+	ft_putchar('\n');
 	while (i < size)
-		db->data[i++] = value;
+	{
+		db->data[i] = 0.0f;
+		i++;
+	}
+	ft_bzero(db->data, size * sizeof(float));
 }
 
 float			depth_buffer_sample(t_depth_buffer *db, int x, int y)

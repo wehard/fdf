@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/06 14:18:40 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/06 14:48:50 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/07 21:11:04 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,4 +57,13 @@ t_vec3	multiply_vec3(t_vec3 v, float f)
 	v.y *= f;
 	v.z *= f;
 	return (v);
+}
+
+t_vec3	add_vec3(t_vec3 a, t_vec3 b)
+{
+	t_vec3 c;
+
+	c.x = a.x + b.x;
+	c.y = a.y + b.y;
+	c.z = a.z + b.z;
 }
