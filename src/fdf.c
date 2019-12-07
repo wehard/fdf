@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:53:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/06 14:32:38 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/07 09:45:38 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -259,12 +259,7 @@ int	main(int argc, char const *argv[])
 
 	mlx_data->v_map = map;
 
-	ft_putstr("map width: ");
-	ft_putnbr(mlx_data->v_map->w);
-	ft_putchar('\n');
-	ft_putstr("map height: ");
-	ft_putnbr(mlx_data->v_map->h);
-	ft_putchar('\n');
+	printf("map: %d, %d, %d\n", mlx_data->v_map->w, mlx_data->v_map->h, mlx_data->v_map->h_max);
 
 	center_map_origin(mlx_data->v_map);
 
