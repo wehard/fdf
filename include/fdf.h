@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 15:23:29 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/10 16:59:54 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/10 17:10:05 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,6 +155,8 @@ typedef struct		s_fdf_data
 	int				show_info;
 	float			delta_time;
 }					t_fdf_data;
+
+int				del_fdf(t_fdf_data *fdf_data);
 
 void			frame_buffer_set(t_frame_buffer *fb, int x, int y, int color);
 void			clear_frame_buffer(t_frame_buffer *fb);

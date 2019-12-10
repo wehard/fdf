@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:53:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/10 16:46:39 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/10 17:29:48 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,13 +62,15 @@ t_fdf_data *init_fdf(char *title, t_map *map)
 
 int	del_fdf(t_fdf_data *fdf_data)
 {
-	free(fdf_data->f_buf->d_addr);
+	mlx_destroy_window(fdf_data->mlx_ptr, fdf_data->win_ptr);
+	mlx_destroy_image(fdf_data->mlx_ptr, fdf_data->f_buf->img);
 	free(fdf_data->m_proj);
 	free(fdf_data->db->data);
 	free(fdf_data->db);
-	mlx_destroy_window(fdf_data->mlx_ptr, fdf_data->win_ptr);
-	mlx_destroy_image(fdf_data->mlx_ptr, fdf_data->f_buf->img);
+	free(fdf_data->map->verts);
+	free(fdf_data->map);
 	free(fdf_data);
+	exit(EXIT_SUCCESS);
 	return (1);
 }
 
@@ -252,32 +254,25 @@ int	main(int argc, char const *argv[])
 		if (fd < 3)
 		{
 			close(fd);
-			return (1);
+			return (throw_error("error: check filename"));
 		}
 		if (!(read_map_data(fd, &map)))
 		{
-			ft_putstr("error: map data read failed!");
 			close(fd);
-			return (1);
+			return (throw_error("error: map data read failed!"));
 		}
 	}
 	else
-	{
-		ft_putendl("usage: ./fdf mapfile");
-		return (1);
-	}
-
+		return (throw_error("usage: ./fdf mapfile"));
 	if (!(fdf_data = init_fdf("fdf", map)))
-	{
-		ft_putendl("mlx failed to init!");
-		return (1);
-	}
+		return (throw_error("mlx failed to init!"));
 
 	mlx_hook(fdf_data->win_ptr, 2, 0, on_key_down, (void*)fdf_data);
 	mlx_mouse_hook(fdf_data->win_ptr,  mouse_event,(void*)fdf_data);
 	mlx_loop_hook (fdf_data->mlx_ptr, on_render, (void*)fdf_data);
 	mlx_loop(fdf_data->mlx_ptr);
 	if (!del_fdf(fdf_data))
-		ft_putendl("mlx_del failed!");
+		throw_error("error: del_fdf failed!");
+	while (1);
 	return (0);
 }

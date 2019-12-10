@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/12 15:15:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/10 15:15:56 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/10 17:29:15 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,16 +37,19 @@ t_map *create_map(int w, int h)
 
 static int	free_map_list(t_list *list)
 {
-	ft_putendl("destroying map list");
+	t_list *tmp;
+	ft_putendl("map: done with list. deleting.");
 	if (!list)
 	{
-		ft_putendl("list was null!");
+		ft_putendl("map: list was null!");
 		return (0);
 	}
 	while (list)
 	{
-		free(list->content);
-		list = list->next;
+		tmp = list;
+		free(tmp->content);
+		list = tmp->next;
+		free(tmp);
 	}
 	return (0);
 }
@@ -92,17 +95,18 @@ t_map *read_to_map(int w, int h, t_list *lst)
 	{
 		points = ft_strsplit((char*)current->content, ' ');
 		x = 0;
-		while (*points)
+		while (x < map->w)
 		{
-			ch = ft_atoi(*points);
+			ch = ft_atoi(points[x]);
 			if (ch > map->h_max)
 				map->h_max = ch;
 			if (ch < map->h_min)
 				map->h_min = ch;
 			map->verts[y * map->w + x] = make_vertex(x, ch, y, ft_make_rgba(1.0f, 1.0f, 1.0f, 1.0f));
-			points++;
+			free(points[x]);
 			x++;
 		}
+		free(points);
 		y++;
 		current = current->next;
 	}

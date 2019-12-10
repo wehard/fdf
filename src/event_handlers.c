@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/13 11:28:18 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/10 16:57:55 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/10 17:10:50 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,10 @@ int	on_key_down(int key, void *param)
 	t_fdf_data *fdf_data;
 	fdf_data = (t_fdf_data*)param;
 	if (key == ESC)
-		exit(EXIT_SUCCESS);
+	{
+		del_fdf(fdf_data);
+		//exit(EXIT_SUCCESS);
+	}
 	if (key == KEY_1)
 		ft_set_isometric(fdf_data);
 	if (key == KEY_2)
