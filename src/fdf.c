@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:53:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/10 13:13:03 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/10 13:41:41 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,7 +184,10 @@ void	draw_map(t_mlx_data *mlx_data)
 			v[2].pos = multiply_matrix_vec3(v[2].pos, mvp);
 
 			if (discard_point(v[0].pos) || discard_point(v[1].pos) ||discard_point(v[2].pos))
+			{
+				x++;
 				continue ;
+			}
 
 			v[0].pos = convert_to_screen_space(v[0].pos);
 			v[1].pos = convert_to_screen_space(v[1].pos);
@@ -258,8 +261,6 @@ int	main(int argc, char const *argv[])
 
 	printf("map: %d, %d, %d\n", mlx_data->v_map->w, mlx_data->v_map->h, mlx_data->v_map->h_max);
 
-	center_map_origin(mlx_data->v_map);
-
 	mlx_data->v_map->pos = make_vec3_pos(0.0f, 0.0f, 0.0f);
 	mlx_data->v_map->rot = make_vec3_rot(-35.264f, -45.0f, 0.0f);
 	mlx_data->v_map->scale = make_vec3_rot(1.0f, 1.0f, 1.0f);
@@ -271,11 +272,9 @@ int	main(int argc, char const *argv[])
 
 	printf("mapmax: %i mapmin: %i\n", mlx_data->v_map->h_max, mlx_data->v_map->h_min);
 
-	//mlx_key_hook(mlx_data->win_ptr, on_key_down, (void*)mlx_data);
 	mlx_hook(mlx_data->win_ptr, 2, 0, on_key_down, (void*)mlx_data);
 	mlx_mouse_hook(mlx_data->win_ptr,  mouse_event,(void*)mlx_data);
 	mlx_loop_hook (mlx_data->mlx_ptr, on_render, (void*)mlx_data);
-
 	mlx_loop(mlx_data->mlx_ptr);
 	if (!del_mlx(mlx_data))
 		ft_putendl("mlx_del failed!");

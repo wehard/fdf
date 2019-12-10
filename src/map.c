@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/12 15:15:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/10 12:31:34 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/10 13:50:17 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,20 +35,40 @@ t_v_map *create_v_map(int w, int h)
 	return (v_map);
 }
 
-static	void	set_map_colors(t_v_map *map, t_rgba low, t_rgba high)
+static int	free_map_list(t_list *list)
+{
+	ft_putendl("destroying map list");
+	if (!list)
+	{
+		ft_putendl("list was null!");
+		return (0);
+	}
+	while (list)
+	{
+		free(list->content);
+		list = list->next;
+	}
+	return (0);
+}
+
+void	init_map(t_v_map *map, t_rgba low, t_rgba high)
 {
 	int x;
 	int y;
-	t_vertex v;
+	float x_offset;
+	float z_offset;
 
+	x_offset = ((float)map->w / 2) - 0.5f;
+	z_offset = ((float)map->h / 2) - 0.5f;
 	y = 0;
 	while (y < map->h)
 	{
 		x = 0;
 		while (x < map->w)
 		{
-			v = map->verts[y * map->w + x];
-			map->verts[y * map->w + x].col = ft_lerp_rgba(low, high, ft_convert_range(v.pos.y, map->h_min, map->h_max, 0.0f, 1.0f));
+			map->verts[y * map->w + x].pos.x -= x_offset;
+			map->verts[y * map->w + x].pos.z -= z_offset;
+			map->verts[y * map->w + x].col = ft_lerp_rgba(low, high, ft_convert_range(map->verts[y * map->w + x].pos.y, map->h_min, map->h_max, 0.0f, 1.0f));
 			x++;
 		}
 		y++;
@@ -86,24 +106,9 @@ t_v_map *read_to_v_map(int w, int h, t_list *lst)
 		y++;
 		current = current->next;
 	}
-	set_map_colors(v_map, RED, WHITE);
+	init_map(v_map, RED, WHITE);
+	free_map_list(lst);
 	return (v_map);
-}
-
-static int	free_map_list(t_list *list)
-{
-	ft_putendl("destroying map list");
-	if (!list)
-	{
-		ft_putendl("list was null!");
-		return (0);
-	}
-	while (list)
-	{
-		free(list->content);
-		list = list->next;
-	}
-	return (0);
 }
 
 int	read_map_data(int fd, t_v_map **map)
@@ -133,25 +138,4 @@ int	read_map_data(int fd, t_v_map **map)
 	return (1);
 }
 
-void	center_map_origin(t_v_map *map)
-{
-	int x;
-	int y;
-	float x_offset;
-	float z_offset;
 
-	x_offset = ((float)map->w / 2) - 0.5f;
-	z_offset = ((float)map->h / 2) - 0.5f;
-	y = 0;
-	while (y < map->h)
-	{
-		x = 0;
-		while (x < map->w)
-		{
-			map->verts[y * map->w + x].pos.x -= x_offset;
-			map->verts[y * map->w + x].pos.z -= z_offset;
-			x++;
-		}
-		y++;
-	}
-}
