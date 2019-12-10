@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:53:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/10 18:46:39 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/10 19:04:33 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,8 @@ int			discard_point(t_vec3 p)
 		return (1);
 	if (p.y < -1.0 || p.y > 1.0f)
 		return (1);
-	if (p.z < -1.0 || p.z > 1.0)
-		return (1);
+	//if (p.z < -1.0 || p.z > 1.0)
+	//	return (1);
 	return (0);
 }
 

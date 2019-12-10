@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 15:23:29 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/10 18:54:23 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/10 19:13:32 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@
 # define PARALLEL "parallel"
 # define PERSPECTIVE "perspective"
 
-typedef struct 		s_vec3
+typedef struct		s_vec3
 {
 	float			x;
 	float			y;
@@ -53,7 +53,7 @@ typedef struct 		s_vec3
 	float			w;
 }					t_vec3;
 
-typedef struct 		s_vec2
+typedef struct		s_vec2
 {
 	float			x;
 	float			y;
@@ -65,7 +65,7 @@ typedef struct		s_intvec2
 	int				y;
 }					t_intvec2;
 
-typedef struct 		s_rgba
+typedef struct		s_rgba
 {
 	float			r;
 	float			g;
@@ -79,17 +79,10 @@ typedef struct		s_vertex
 	t_rgba			col;
 }					t_vertex;
 
-typedef struct	s_mat4x4
+typedef struct		s_mat4x4
 {
-	float		m[4][4];
-}				t_mat4x4;
-
-typedef struct 		s_line
-{
-	t_vec3			p0;
-	t_vec3			p1;
-	int				color;
-}					t_line;
+	float			m[4][4];
+}					t_mat4x4;
 
 typedef struct		s_v_map
 {
@@ -148,65 +141,62 @@ typedef struct		s_fdf_data
 	int				show_info;
 }					t_fdf_data;
 
-t_fdf_data		*init_fdf_data(char *title, t_map *map);
-int				del_fdf_data(t_fdf_data *fdf_data);
+t_fdf_data			*init_fdf_data(char *title, t_map *map);
+int					del_fdf_data(t_fdf_data *fdf_data);
 
-int				read_map_file(int fd, t_map **map, t_rgba low, t_rgba high);
+int					read_map_file(int fd, t_map **map, t_rgba low, t_rgba high);
 
-void			frame_buffer_set(t_frame_buffer *fb, int x, int y, int color);
-void			clear_frame_buffer(t_frame_buffer *fb);
-t_frame_buffer	*create_frame_buffer(t_fdf_data *fdf_data);
+void				frame_buffer_set(t_frame_buffer *fb, int x, int y, int color);
+void				clear_frame_buffer(t_frame_buffer *fb);
+t_frame_buffer		*create_frame_buffer(t_fdf_data *fdf_data);
 
-void			depth_buffer_set(t_depth_buffer *db, int x, int y, float f);
-t_depth_buffer	*create_depth_buffer(int width, int height);
-void			clear_depth_buffer(t_depth_buffer *db, float value);
-float			depth_buffer_sample(t_depth_buffer *db, int x, int y);
+void				depth_buffer_set(t_depth_buffer *db, int x, int y, float f);
+t_depth_buffer		*create_depth_buffer(int width, int height);
+void				clear_depth_buffer(t_depth_buffer *db, float value);
+float				depth_buffer_sample(t_depth_buffer *db, int x, int y);
 
-void			ft_set_parallel(t_fdf_data *fdf_data);
-void			ft_set_isometric(t_fdf_data *fdf_data);
-void			ft_set_perspective(t_fdf_data *fdf_data);
+void				ft_set_parallel(t_fdf_data *fdf_data);
+void				ft_set_isometric(t_fdf_data *fdf_data);
+void				ft_set_perspective(t_fdf_data *fdf_data);
 
-void			draw_line(t_frame_buffer *fb, t_depth_buffer *db, t_vertex p0, t_vertex p1);
+void				draw_line(t_frame_buffer *fb, t_depth_buffer *db, t_vertex p0, t_vertex p1);
 
-t_vec3 			convert_to_screen_space(t_vec3 p);
+t_vec3				convert_to_screen_space(t_vec3 p);
 
-int				throw_error(char *e);
+int					throw_error(char *e);
 
-int				on_key_down(int key, void *param);
-int				mouse_event(int button, int x, int y, void *param);
+int					on_key_down(int key, void *param);
 
-void			ft_print_matrix(t_mat4x4 m, int precision);
-void			ft_print_vec3(t_vec3 v, int precision);
+void				ft_print_matrix(t_mat4x4 m, int precision);
+void				ft_print_vec3(t_vec3 v, int precision);
 
-int				ft_color_lerp(int c1, int c2, float t);
-float			ft_convert_range(float oldvalue, float oldmin, float oldmax, float newmin, float newmax);
+float				ft_convert_range(float oldvalue, float oldmin, float oldmax, float newmin, float newmax);
+float				ft_lerp_f(float n1, float n2, float t);
+t_rgba				ft_make_rgba(float r, float g, float b, float a);
+t_rgba				ft_lerp_rgba(t_rgba c1, t_rgba c2, float t);
+int					ft_get_color(t_rgba c);
 
-float			ft_lerp_f(float n1, float n2, float t);
-t_rgba 			ft_make_rgba(float r, float g, float b, float a);
-t_rgba			ft_lerp_rgba(t_rgba c1, t_rgba c2, float t);
-int				ft_get_color(t_rgba c);
+t_vertex			make_vertex(float x, float y, float z, t_rgba c);
 
-t_vertex		make_vertex(float x, float y, float z, t_rgba c);
+t_vec2				make_vec2(float x, float y);
+t_intvec2			make_intvec2(int x, int y);
+t_vec3				make_vec3_pos(float x, float y, float z);
+t_vec3				make_vec3_rot(float x, float y, float z);
+t_vec3				add_vec3(t_vec3 a, t_vec3 b);
 
-t_vec2			make_vec2(float x, float y);
-t_intvec2		make_intvec2(int x, int y);
-t_vec3			make_vec3_pos(float x, float y, float z);
-t_vec3			make_vec3_rot(float x, float y, float z);
-t_vec3			add_vec3(t_vec3 a, t_vec3 b);
+t_mat4x4			init_matrix(void);
+t_mat4x4			create_identity_matrix(void);
+t_mat4x4			create_rotation_matrix_xyz(t_vec3 deg_angle);
+t_mat4x4			create_scaling_matrix(t_vec3 scale);
+t_mat4x4			create_translation_matrix(t_vec3 translation);
 
-t_mat4x4		init_matrix(void);
-t_mat4x4		create_identity_matrix(void);
-t_mat4x4		create_rotation_matrix_xyz(t_vec3 deg_angle);
-t_mat4x4		create_scaling_matrix(t_vec3 scale);
-t_mat4x4		create_translation_matrix(t_vec3 translation);
+t_mat4x4			create_trs_matrix(t_vec3 pos, t_vec3 rot, t_vec3 scale);
+t_mat4x4			create_perspective_matrix(float fov, float aspect, float znear, float zfar);
+t_mat4x4			create_ortho_matrix(float top, float bot, float lft, float rgt, float znear, float zfar);
+t_mat4x4			create_view_matrix(t_vec3 pos);
 
-t_mat4x4		create_trs_matrix(t_vec3 pos, t_vec3 rot, t_vec3 scale);
-t_mat4x4		create_perspective_matrix(float fov, float aspect, float znear, float zfar);
-t_mat4x4		create_ortho_matrix(float top, float bot, float lft, float rgt, float znear, float zfar);
-t_mat4x4		create_view_matrix(t_vec3 pos);
-
-t_mat4x4		multiply_matrix(t_mat4x4 a, t_mat4x4 b);
-t_vec3			multiply_matrix_vec3(t_vec3 in, t_mat4x4 m);
-t_vec3			multiply_matrix_vec3_2(t_vec3 in, t_mat4x4 m);
+t_mat4x4			multiply_matrix(t_mat4x4 a, t_mat4x4 b);
+t_vec3				multiply_matrix_vec3(t_vec3 in, t_mat4x4 m);
+t_vec3				multiply_matrix_vec3_2(t_vec3 in, t_mat4x4 m);
 
 #endif
