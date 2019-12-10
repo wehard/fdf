@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 15:23:29 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/06 14:32:26 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/10 11:50:54 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ typedef struct		s_mouse_data
 
 typedef struct		s_v_map
 {
-	t_vec3			*v;
+	t_vertex		*verts;
 	t_vec3			pos;
 	t_vec3			rot;
 	t_vec3			scale;

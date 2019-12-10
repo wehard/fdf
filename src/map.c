@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/12 15:15:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/06 14:28:03 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/10 12:31:34 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,30 @@ t_v_map *create_v_map(int w, int h)
 	v_map->rot = make_vec3_rot(0.0f, 0.0f, 0.0f);
 	v_map->h_max = INT32_MIN;
 	v_map->h_min = INT32_MAX;
-	if (!(v_map->v = (t_vec3*)malloc(sizeof(t_vec3) * size)))
+	if (!(v_map->verts = (t_vertex*)malloc(sizeof(t_vertex) * size)))
 		return (NULL);
-	ft_bzero(v_map->v, sizeof(t_vec3) * size);
+	ft_bzero(v_map->verts, sizeof(t_vertex) * size);
 	return (v_map);
+}
+
+static	void	set_map_colors(t_v_map *map, t_rgba low, t_rgba high)
+{
+	int x;
+	int y;
+	t_vertex v;
+
+	y = 0;
+	while (y < map->h)
+	{
+		x = 0;
+		while (x < map->w)
+		{
+			v = map->verts[y * map->w + x];
+			map->verts[y * map->w + x].col = ft_lerp_rgba(low, high, ft_convert_range(v.pos.y, map->h_min, map->h_max, 0.0f, 1.0f));
+			x++;
+		}
+		y++;
+	}
 }
 
 t_v_map *read_to_v_map(int w, int h, t_list *lst)
@@ -59,13 +79,14 @@ t_v_map *read_to_v_map(int w, int h, t_list *lst)
 				v_map->h_max = ch;
 			if (ch < v_map->h_min)
 				v_map->h_min = ch;
-			v_map->v[y * v_map->w + x] = make_vec3_pos(x, ch, y);
+			v_map->verts[y * v_map->w + x] = make_vertex(x, ch, y, ft_make_rgba(1.0f, 1.0f, 1.0f, 1.0f));
 			points++;
 			x++;
 		}
 		y++;
 		current = current->next;
 	}
+	set_map_colors(v_map, RED, WHITE);
 	return (v_map);
 }
 
@@ -127,8 +148,8 @@ void	center_map_origin(t_v_map *map)
 		x = 0;
 		while (x < map->w)
 		{
-			map->v[y * map->w + x].x -= x_offset;
-			map->v[y * map->w + x].z -= z_offset;
+			map->verts[y * map->w + x].pos.x -= x_offset;
+			map->verts[y * map->w + x].pos.z -= z_offset;
 			x++;
 		}
 		y++;

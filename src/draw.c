@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/11 13:06:16 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/08 13:08:44 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/10 11:41:54 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ static void	draw_line_low(t_frame_buffer *fb, t_depth_buffer *db, t_vertex p0, t
 	int yi;
 	int d;
 
-	float dz = p1.pos.z - p0.pos.z;
-	float cz = dz = p0.pos.z;
+	//float dz = p1.pos.z - p0.pos.z;
+	//float cz = dz = p0.pos.z;
 
 	dx = p1.pos.x - p0.pos.x;
 	dy = p1.pos.y - p0.pos.y;
@@ -36,14 +36,9 @@ static void	draw_line_low(t_frame_buffer *fb, t_depth_buffer *db, t_vertex p0, t
 	p.x = p0.pos.x;
 	while (p.x < p1.pos.x)
 	{
-		cz += dz / dx;
-		if (cz > depth_buffer_sample(db, p.x, p.y))
-		{
-			float t = ft_convert_range(p.x, p0.pos.x, p1.pos.x, 0.0f, 1.0f);
-			int c = ft_get_color(ft_lerp_rgba(p0.col, p1.col, t));
-			frame_buffer_set(fb, p.x, p.y, c);
-			depth_buffer_set(db, p.x, p.y, cz);
-		}
+		float t = ft_convert_range(p.x, p0.pos.x, p1.pos.x, 0.0f, 1.0f);
+		int c = ft_get_color(ft_lerp_rgba(p0.col, p1.col, t));
+		frame_buffer_set(fb, p.x, p.y, c);
 		if (d > 0)
 		{
 			p.y = p.y + yi;
@@ -62,8 +57,8 @@ static void	draw_line_high(t_frame_buffer *fb, t_depth_buffer *db, t_vertex p0, 
 	int xi;
 	int d;
 
-	float dz = p1.pos.z - p0.pos.z;
-	float cz = dz = p0.pos.z;
+	//float dz = p1.pos.z - p0.pos.z;
+	//float cz = dz = p0.pos.z;
 
 	dx = p1.pos.x - p0.pos.x;
 	dy = p1.pos.y - p0.pos.y;
@@ -78,14 +73,9 @@ static void	draw_line_high(t_frame_buffer *fb, t_depth_buffer *db, t_vertex p0, 
 	p.y = p0.pos.y;
 	while (p.y < p1.pos.y)
 	{
-		cz += dz / dy;
-		if (cz > depth_buffer_sample(db, p.x, p.y))
-		{
-			float t = ft_convert_range(p.y, p0.pos.y, p1.pos.y, 0.0f, 1.0f);
-			int c = ft_get_color(ft_lerp_rgba(p0.col, p1.col, t));
-			frame_buffer_set(fb, p.x, p.y, c);
-			depth_buffer_set(db, p.x, p.y, cz);
-		}
+		float t = ft_convert_range(p.y, p0.pos.y, p1.pos.y, 0.0f, 1.0f);
+		int c = ft_get_color(ft_lerp_rgba(p0.col, p1.col, t));
+		frame_buffer_set(fb, p.x, p.y, c);
 		if (d > 0)
 		{
 			p.x = p.x + xi;
