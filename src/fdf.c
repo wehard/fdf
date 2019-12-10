@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:53:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/10 12:28:59 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/10 13:13:03 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,6 +159,43 @@ static void	ft_display_info(t_mlx_data *mlx_data)
 	mlx_string_put(mlx_data->mlx_ptr, mlx_data->win_ptr, 1060, 10, ft_get_color(WHITE), campos);
 }
 
+void	draw_map(t_mlx_data *mlx_data)
+{
+	int x;
+	int y;
+	t_vertex v[3];
+
+	t_mat4x4 m2w = create_trs_matrix(mlx_data->v_map->pos, mlx_data->v_map->rot, mlx_data->v_map->scale);
+	t_mat4x4 w2v = multiply_matrix(m2w, create_view_matrix(mlx_data->camera.pos));
+	t_mat4x4 mvp = multiply_matrix(w2v, *(mlx_data->m_proj));
+
+	y = 0;
+	while (y < mlx_data->v_map->h - 1)
+	{
+		x = 0;
+		while (x < mlx_data->v_map->w - 1)
+		{
+			v[0] = mlx_data->v_map->verts[y * mlx_data->v_map->w + x];
+			v[1] = mlx_data->v_map->verts[y * mlx_data->v_map->w + x + 1];
+			v[2] = mlx_data->v_map->verts[(y + 1) * mlx_data->v_map->w + x];
+
+			v[0].pos = multiply_matrix_vec3(v[0].pos, mvp);
+			v[1].pos = multiply_matrix_vec3(v[1].pos, mvp);
+			v[2].pos = multiply_matrix_vec3(v[2].pos, mvp);
+
+			if (discard_point(v[0].pos) || discard_point(v[1].pos) ||discard_point(v[2].pos))
+				continue ;
+
+			v[0].pos = convert_to_screen_space(v[0].pos);
+			v[1].pos = convert_to_screen_space(v[1].pos);
+			v[2].pos = convert_to_screen_space(v[2].pos);
+			draw_line(mlx_data->f_buf, mlx_data->db, v[0], v[1]);
+			draw_line(mlx_data->f_buf, mlx_data->db, v[0], v[2]);
+			x++;
+		}
+		y++;
+	}
+}
 
 int on_render(void *param)
 {
@@ -171,36 +208,8 @@ int on_render(void *param)
 	mlx_data->v_map->rot.x += (mlx_data->mouse_data.dy * 0.0001f);
 	mlx_data->v_map->rot.y += -(mlx_data->mouse_data.dx * 0.0001f);
 
-	t_mat4x4 m2w = create_trs_matrix(mlx_data->v_map->pos, mlx_data->v_map->rot, mlx_data->v_map->scale);
-	t_mat4x4 w2v = multiply_matrix(m2w, create_view_matrix(mlx_data->camera.pos));
-	t_mat4x4 mvp = multiply_matrix(w2v, *(mlx_data->m_proj));
+	draw_map(mlx_data);
 
-	for (size_t y = 0; y < mlx_data->v_map->h - 1; y++)
-	{
-		for (size_t x = 0; x < mlx_data->v_map->w - 1; x++)
-		{
-			t_vertex v0 = mlx_data->v_map->verts[y * mlx_data->v_map->w + x];
-			t_vertex v1 = mlx_data->v_map->verts[y * mlx_data->v_map->w + x + 1];
-			t_vertex v2 = mlx_data->v_map->verts[(y + 1) * mlx_data->v_map->w + x];
-
-			float p0y = v0.pos.y;
-			float p1y = v1.pos.y;
-			float p2y = v2.pos.y;
-
-			v0.pos = multiply_matrix_vec3(v0.pos, mvp);
-			v1.pos = multiply_matrix_vec3(v1.pos, mvp);
-			v2.pos = multiply_matrix_vec3(v2.pos, mvp);
-
-			if (discard_point(v0.pos) || discard_point(v1.pos) ||discard_point(v2.pos))
-				continue ;
-
-			v0.pos = convert_to_screen_space(v0.pos);
-			v1.pos = convert_to_screen_space(v1.pos);
-			v2.pos = convert_to_screen_space(v2.pos);
-			draw_line(mlx_data->f_buf, mlx_data->db, v0, v1);
-			draw_line(mlx_data->f_buf, mlx_data->db, v0, v2);
-		}
-	}
 	draw_axis(mlx_data, mlx_data->v_map->pos, mlx_data->v_map->rot, 10.0f);
 	draw_axis(mlx_data, make_vec3_pos(0.0f, 0.0f, 0.0f), make_vec3_rot(0.0f, 0.0f, 0.0f), 1.0f);
 	if (mlx_data->f_buf->img)
