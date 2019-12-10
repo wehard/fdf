@@ -6,7 +6,7 @@
 #    By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/05 13:58:13 by wkorande          #+#    #+#              #
-#    Updated: 2019/12/07 09:27:00 by wkorande         ###   ########.fr        #
+#    Updated: 2019/12/10 18:41:06 by wkorande         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,7 +26,10 @@ SRCS = fdf.c\
 	color.c\
 	vertex.c\
 	vec2.c\
-	vec3.c
+	vec3.c\
+	control.c\
+	project.c\
+	fdf_data.c
 
 SRCDIR = src
 

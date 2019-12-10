@@ -1,42 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_print_matrix.c                                  :+:      :+:    :+:   */
+/*   project.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/11/29 23:10:19 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/10 18:59:48 by wkorande         ###   ########.fr       */
+/*   Created: 2019/12/10 18:31:15 by wkorande          #+#    #+#             */
+/*   Updated: 2019/12/10 18:50:38 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
 #include "fdf.h"
 
-void	ft_print_matrix(t_mat4x4 m, int precision)
+t_vec3	convert_to_screen_space(t_vec3 p)
 {
-	int x;
-	int y;
-
-	y = 0;
-	while (y < 4)
-	{
-		x = 0;
-		while (x < 4)
-		{
-			printf("%10.*f", precision, m.m[y][x]);
-			x++;
-		}
-		y++;
-		printf("\n");
-	}
-	printf("\n");
-}
-
-void	ft_print_vec3(t_vec3 v, int precision)
-{
-	printf("%5.*f, ", precision, v.x);
-	printf("%5.*f, ", precision, v.y);
-	printf("%5.*f, ", precision, v.z);
-	printf("%5.*f\n", precision, v.w);
+	p.x += 1.0f;
+	p.y += 1.0f;
+	p.x *= 0.5f * (float)WIN_W;
+	p.y *= 0.5f * (float)WIN_H;
+	return (p);
 }

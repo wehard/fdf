@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/12 15:15:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/10 17:29:15 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/10 17:40:59 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 #include "ft_get_next_line.h"
 #include "fdf.h"
 
-t_map *create_map(int w, int h)
+static t_map *create_map(int w, int h)
 {
-	t_map *map;
+	t_map	*map;
 	int		size;
 
 	size = w * h;
@@ -31,7 +31,7 @@ t_map *create_map(int w, int h)
 	map->h_min = INT32_MAX;
 	if (!(map->verts = (t_vertex*)malloc(sizeof(t_vertex) * size)))
 		return (NULL);
-	ft_bzero(map->verts, sizeof(t_vertex) * size);
+	//ft_bzero(map->verts, sizeof(t_vertex) * size);
 	return (map);
 }
 
@@ -54,7 +54,7 @@ static int	free_map_list(t_list *list)
 	return (0);
 }
 
-void	init_map(t_map *map, t_rgba low, t_rgba high)
+static void	init_map(t_map *map, t_rgba low, t_rgba high)
 {
 	int x;
 	int y;
@@ -78,7 +78,7 @@ void	init_map(t_map *map, t_rgba low, t_rgba high)
 	}
 }
 
-t_map *read_to_map(int w, int h, t_list *lst)
+static t_map *convert_map_from_list(int w, int h, t_list *lst, t_rgba low, t_rgba high)
 {
 	t_list *current;
 	t_map *map;
@@ -110,12 +110,12 @@ t_map *read_to_map(int w, int h, t_list *lst)
 		y++;
 		current = current->next;
 	}
-	init_map(map, RED, WHITE);
+	init_map(map, low, high);
 	free_map_list(lst);
 	return (map);
 }
 
-int	read_map_data(int fd, t_map **map)
+int	read_map_file(int fd, t_map **map, t_rgba low, t_rgba high)
 {
 	t_list *lst;
 	t_list *temp;
@@ -138,7 +138,7 @@ int	read_map_data(int fd, t_map **map)
 		height++;
 		free(line);
 	}
-	*map = read_to_map(width, height, lst);
+	*map = convert_map_from_list(width, height, lst, low, high);
 	return (1);
 }
 

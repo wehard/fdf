@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:53:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/10 17:29:48 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/10 18:46:39 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,97 +20,7 @@
 #include "math.h"
 #include "ft_get_next_line.h"
 
-t_fdf_data *init_fdf(char *title, t_map *map)
-{
-	t_fdf_data *fdf_data;
-	float		znear;
-	float		zfar;
-	float		aspect;
-	float		fov;
-	float		ortho_size;
-
-	fdf_data = (t_fdf_data*)malloc(sizeof(t_fdf_data));
-	fdf_data->mlx_ptr = mlx_init();
-	fdf_data->win_ptr = mlx_new_window(fdf_data->mlx_ptr, WIN_W, WIN_H, title);
-	fdf_data->f_buf = create_frame_buffer(fdf_data);
-	fdf_data->db = create_depth_buffer(WIN_W, WIN_H);
-
-	fdf_data->mouse_data.x = 0;
-	fdf_data->mouse_data.y = 0;
-	fdf_data->mouse_data.oldx = 0;
-	fdf_data->mouse_data.oldy = 0;
-	fdf_data->mouse_data.dx = 0;
-	fdf_data->mouse_data.dy = 0;
-
-	fdf_data->show_info = 1;
-	znear = 1.0f;
-	zfar = 100.0f;
-	aspect = (float)WIN_W / (float)WIN_H;
-	ortho_size = map->h;
-	fov = 30.0f;
-	fdf_data->perspective_matrix = create_perspective_matrix(fov, aspect, znear, zfar);
-	fdf_data->ortho_matrix = create_ortho_matrix(-ortho_size, ortho_size, aspect * -ortho_size, aspect * ortho_size, znear, zfar);
-
-	fdf_data->m_proj = (t_mat4x4*)malloc(sizeof(t_mat4x4));
-	fdf_data->map = map;
-	fdf_data->camera.pos = make_vec3_pos(0.0f, 0.0f, map->w);
-	fdf_data->camera.v_matrix = create_view_matrix(fdf_data->camera.pos);
-	fdf_data->delta_time = 0.001f;
-	ft_set_isometric(fdf_data);
-	return (fdf_data);
-}
-
-int	del_fdf(t_fdf_data *fdf_data)
-{
-	mlx_destroy_window(fdf_data->mlx_ptr, fdf_data->win_ptr);
-	mlx_destroy_image(fdf_data->mlx_ptr, fdf_data->f_buf->img);
-	free(fdf_data->m_proj);
-	free(fdf_data->db->data);
-	free(fdf_data->db);
-	free(fdf_data->map->verts);
-	free(fdf_data->map);
-	free(fdf_data);
-	exit(EXIT_SUCCESS);
-	return (1);
-}
-
-void	ft_set_parallel(t_fdf_data *fdf_data)
-{
-	fdf_data->view_state = PARALLEL;
-	*(fdf_data->m_proj) = fdf_data->ortho_matrix;
-	fdf_data->map->pos = make_vec3_pos(0.0f, 0.0f, 0.0f);
-	fdf_data->map->rot = make_vec3_rot(-45.0f, 0.0f, 0.0f);
-	fdf_data->map->scale = make_vec3_rot(1.0f, 1.0f, 1.0f);
-}
-
-void	ft_set_isometric(t_fdf_data *fdf_data)
-{
-	fdf_data->view_state = ISOMETRIC;
-	*(fdf_data->m_proj) = fdf_data->ortho_matrix;
-	fdf_data->map->pos = make_vec3_pos(0.0f, 0.0f, 0.0f);
-	fdf_data->map->rot = make_vec3_rot(-35.264f, -45.0f, 0.0f);
-	fdf_data->map->scale = make_vec3_rot(1.0f, 1.0f, 1.0f);
-}
-
-void	ft_set_perspective(t_fdf_data *fdf_data)
-{
-	fdf_data->view_state = PERSPECTIVE;
-	*(fdf_data->m_proj) = fdf_data->perspective_matrix;
-	fdf_data->map->pos = make_vec3_pos(0.0f, 0.0f, 0.0f);
-	fdf_data->map->rot = make_vec3_rot(-45.0f, 0.0f, 0.0f);
-	fdf_data->map->scale = make_vec3_rot(1.0f, 1.0f, 1.0f);
-}
-
-t_vec3 convert_to_screen_space(t_vec3 p)
-{
-	p.x += 1.0f;
-	p.y += 1.0f;
-	p.x *= 0.5f * (float)WIN_W;
-	p.y *= 0.5f * (float)WIN_H;
-	return (p);
-}
-
-void	draw_axis(t_fdf_data *fdf_data, t_vec3 pos, t_vec3 rot, float scale)
+void		draw_axis(t_fdf_data *fdf_data, t_vec3 pos, t_vec3 rot, float scale)
 {
 	t_vec3 origin = make_vec3_pos(0.0f, 0.0f, 0.0f);
 	t_vec3 xaxis = make_vec3_pos(1.0f * scale, 0.0f, 0.0f);
@@ -136,7 +46,7 @@ void	draw_axis(t_fdf_data *fdf_data, t_vec3 pos, t_vec3 rot, float scale)
 	draw_line(fdf_data->f_buf, fdf_data->db, make_vertex(origin.x, origin.y, origin.z, BLUE), make_vertex(zaxis.x, zaxis.y, zaxis.z, BLUE));
 }
 
-int		discard_point(t_vec3 p)
+int			discard_point(t_vec3 p)
 {
 	float zfar = -5.0f;
 	float znear = -4.5f;
@@ -144,8 +54,8 @@ int		discard_point(t_vec3 p)
 		return (1);
 	if (p.y < -1.0 || p.y > 1.0f)
 		return (1);
-	//if (p.z < -1.0 || p.z > 1.0)
-	//	return (1);
+	if (p.z < -1.0 || p.z > 1.0)
+		return (1);
 	return (0);
 }
 
@@ -170,7 +80,7 @@ static void	ft_display_info(t_fdf_data *fdf_data)
 	mlx_string_put(fdf_data->mlx_ptr, fdf_data->win_ptr, 1060, 10, ft_get_color(WHITE), campos);
 }
 
-void	draw_map(t_fdf_data *fdf_data)
+void		draw_map(t_fdf_data *fdf_data)
 {
 	int x;
 	int y;
@@ -196,7 +106,7 @@ void	draw_map(t_fdf_data *fdf_data)
 			v[2].pos = multiply_matrix_vec3(v[2].pos, mvp);
 			v[3].pos = multiply_matrix_vec3(v[3].pos, mvp);
 
-			if (discard_point(v[0].pos) && discard_point(v[1].pos) && discard_point(v[2].pos) && discard_point(v[2].pos))
+			if (discard_point(v[0].pos) && discard_point(v[1].pos) && discard_point(v[2].pos) && discard_point(v[3].pos))
 			{
 				x++;
 				continue;
@@ -218,61 +128,45 @@ void	draw_map(t_fdf_data *fdf_data)
 	}
 }
 
-int on_render(void *param)
+int		on_render(void *param)
 {
 	t_fdf_data *fdf_data;
+
 	fdf_data = (t_fdf_data*)param;
 	if (!fdf_data || !fdf_data->map)
 		return (0);
 	clear_frame_buffer(fdf_data->f_buf);
-
-	fdf_data->map->rot.x += (fdf_data->mouse_data.dy * 0.0001f);
-	fdf_data->map->rot.y += -(fdf_data->mouse_data.dx * 0.0001f);
-
 	draw_map(fdf_data);
-
 	if (fdf_data->show_info)
 		draw_axis(fdf_data, fdf_data->map->pos, fdf_data->map->rot, 10.0f);
 	if (fdf_data->f_buf->img)
 		mlx_put_image_to_window(fdf_data->mlx_ptr, fdf_data->win_ptr, fdf_data->f_buf->img, 0, 0);
 	if (fdf_data->show_info)
 		ft_display_info(fdf_data);
-	fdf_data->delta_time += 0.1f;
 	return (0);
 }
 
-
-int	main(int argc, char const *argv[])
+int		main(int argc, char const *argv[])
 {
-	t_fdf_data *fdf_data;
-	t_map *map;
-	int	fd;
+	t_fdf_data	*fdf_data;
+	t_map		*map;
+	int			fd;
 
 	if (argc == 2)
 	{
 		fd = open(argv[1], O_RDONLY);
-		if (fd < 3)
+		if (fd < 3 || !read_map_file(fd, &map, BLUE, WHITE))
 		{
 			close(fd);
-			return (throw_error("error: check filename"));
-		}
-		if (!(read_map_data(fd, &map)))
-		{
-			close(fd);
-			return (throw_error("error: map data read failed!"));
+			return (throw_error("error: map error"));
 		}
 	}
 	else
 		return (throw_error("usage: ./fdf mapfile"));
-	if (!(fdf_data = init_fdf("fdf", map)))
-		return (throw_error("mlx failed to init!"));
-
+	if (!(fdf_data = init_fdf_data("fdf", map)))
+		return (throw_error("fdf: failed to init!"));
 	mlx_hook(fdf_data->win_ptr, 2, 0, on_key_down, (void*)fdf_data);
-	mlx_mouse_hook(fdf_data->win_ptr,  mouse_event,(void*)fdf_data);
-	mlx_loop_hook (fdf_data->mlx_ptr, on_render, (void*)fdf_data);
+	mlx_loop_hook(fdf_data->mlx_ptr, on_render, (void*)fdf_data);
 	mlx_loop(fdf_data->mlx_ptr);
-	if (!del_fdf(fdf_data))
-		throw_error("error: del_fdf failed!");
-	while (1);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/13 11:28:18 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/10 17:10:50 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/10 18:45:48 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,7 @@ int	on_key_down(int key, void *param)
 	t_fdf_data *fdf_data;
 	fdf_data = (t_fdf_data*)param;
 	if (key == ESC)
-	{
-		del_fdf(fdf_data);
-		//exit(EXIT_SUCCESS);
-	}
+		del_fdf_data(fdf_data);
 	if (key == KEY_1)
 		ft_set_isometric(fdf_data);
 	if (key == KEY_2)
@@ -50,24 +47,6 @@ int	on_key_down(int key, void *param)
 		fdf_data->camera.pos.x -= 1.0f;
 	if (key == KEY_RIGHT)
 		fdf_data->camera.pos.x += 1.0f;
-
-	return (0);
-}
-
-int	mouse_event(int button, int x, int y, void *param)
-{
-	t_fdf_data *fdf_data;
-
-	fdf_data = (t_fdf_data*)param;
-
-	fdf_data->mouse_data.oldx = fdf_data->mouse_data.x;
-	fdf_data->mouse_data.oldy = fdf_data->mouse_data.y;
-
-	fdf_data->mouse_data.x = x;
-	fdf_data->mouse_data.y = y;
-
-	fdf_data->mouse_data.dx = (x - fdf_data->mouse_data.oldx) * 10.0f;
-	fdf_data->mouse_data.dy = (y - fdf_data->mouse_data.oldy) * 10.0f;
 
 	return (0);
 }

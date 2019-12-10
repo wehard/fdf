@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 15:23:29 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/10 17:10:05 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/10 18:54:23 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,16 +91,6 @@ typedef struct 		s_line
 	int				color;
 }					t_line;
 
-typedef struct		s_mouse_data
-{
-	int				x;
-	int				y;
-	int				oldx;
-	int				oldy;
-	int				dx;
-	int				dy;
-}					t_mouse_data;
-
 typedef struct		s_v_map
 {
 	t_vertex		*verts;
@@ -138,7 +128,6 @@ typedef struct		s_camera
 	t_mat4x4		v_matrix;
 }					t_camera;
 
-
 typedef struct		s_fdf_data
 {
 	void			*mlx_ptr;
@@ -150,13 +139,19 @@ typedef struct		s_fdf_data
 	t_mat4x4		ortho_matrix;
 	t_camera		camera;
 	t_map			*map;
-	t_mouse_data 	mouse_data;
+	float			znear;
+	float			zfar;
+	float			aspect;
+	float			fov;
+	float			ortho_size;
 	char			*view_state;
 	int				show_info;
-	float			delta_time;
 }					t_fdf_data;
 
-int				del_fdf(t_fdf_data *fdf_data);
+t_fdf_data		*init_fdf_data(char *title, t_map *map);
+int				del_fdf_data(t_fdf_data *fdf_data);
+
+int				read_map_file(int fd, t_map **map, t_rgba low, t_rgba high);
 
 void			frame_buffer_set(t_frame_buffer *fb, int x, int y, int color);
 void			clear_frame_buffer(t_frame_buffer *fb);
@@ -172,12 +167,9 @@ void			ft_set_isometric(t_fdf_data *fdf_data);
 void			ft_set_perspective(t_fdf_data *fdf_data);
 
 void			draw_line(t_frame_buffer *fb, t_depth_buffer *db, t_vertex p0, t_vertex p1);
-void			draw_tri(t_frame_buffer *fb, t_vec3 p0, t_vec3 p1, t_vec3 p2);
-void			draw_quad(t_frame_buffer *fb, t_vec3 p0, t_vec3 p1, t_vec3 p2, t_vec3 p3);
 
-int				read_map_data(int fd, t_map **map);
-t_map			*create_map(int w, int h);
-void			center_map_origin(t_map *map);
+t_vec3 			convert_to_screen_space(t_vec3 p);
+
 int				throw_error(char *e);
 
 int				on_key_down(int key, void *param);
@@ -200,8 +192,6 @@ t_vec2			make_vec2(float x, float y);
 t_intvec2		make_intvec2(int x, int y);
 t_vec3			make_vec3_pos(float x, float y, float z);
 t_vec3			make_vec3_rot(float x, float y, float z);
-t_vec3			transform_point(t_vec3 v, t_vec3 translate, t_vec3 rot, t_vec3 scale);
-t_vec3			translate_point_3d(t_vec3 p, t_vec3 translation);
 t_vec3			add_vec3(t_vec3 a, t_vec3 b);
 
 t_mat4x4		init_matrix(void);
