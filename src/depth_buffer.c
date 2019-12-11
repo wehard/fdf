@@ -6,14 +6,14 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/06 13:02:05 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/10 15:07:39 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/11 17:14:54 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 #include "libft.h"
 
-void	depth_buffer_set(t_depth_buffer *db, int x, int y, float f)
+void			depth_buffer_set(t_depth_buffer *db, int x, int y, float f)
 {
 	if (x < 0 || x >= db->width || y < 0 || y >= db->height)
 		return ;
@@ -31,7 +31,6 @@ t_depth_buffer	*create_depth_buffer(int width, int height)
 	}
 	db->width = width;
 	db->height = height;
-
 	if (!(db->data = (float*)malloc(sizeof(float) * (db->width * db->height))))
 	{
 		throw_error("error: create depth buffer data failed!");
@@ -56,6 +55,6 @@ void			clear_depth_buffer(t_depth_buffer *db, float value)
 float			depth_buffer_sample(t_depth_buffer *db, int x, int y)
 {
 	if (x < 0 || x >= db->width || y < 0 || y >= db->height)
-		return 0.0f;
+		return (0.0f);
 	return (db->data[y * db->width + x]);
 }

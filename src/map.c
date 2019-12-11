@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/12 15:15:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/11 13:44:02 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/11 18:39:03 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,27 +56,30 @@ static int		free_map_list(t_list *list)
 
 static void		init_map(t_map *map, t_rgba c1, t_rgba c2)
 {
-	int		x;
-	int		y;
-	float	x_offset;
-	float	z_offset;
+	t_intvec2	c;
+	float		x_offset;
+	float		z_offset;
 
 	x_offset = ((float)map->w / 2) - 0.5f;
 	z_offset = ((float)map->h / 2) - 0.5f;
-	y = 0;
-	while (y < map->h)
+	c.y = 0;
+	while (c.y < map->h)
 	{
-		x = 0;
-		while (x < map->w)
+		c.x = 0;
+		while (c.x < map->w)
 		{
-			map->verts[y * map->w + x].pos.x -= x_offset;
-			map->verts[y * map->w + x].pos.z -= z_offset;
-			map->verts[y * map->w + x].col = ft_lerp_rgba(c1, c2,
-				ft_convert_range(map->verts[y * map->w + x].pos.y,
-				map->h_min, map->h_max, 0.0f, 1.0f));
-			x++;
+			map->verts[c.y * map->w + c.x].pos.x -= x_offset;
+			map->verts[c.y * map->w + c.x].pos.z -= z_offset;
+			map->verts[c.y * map->w + c.x].col = ft_lerp_rgba(c1, c2,
+				ft_inverse_lerp(map->verts[c.y * map->w + c.x].pos.y,
+				map->h_min, map->h_max));
+			if (map->verts[c.y * map->w + c.x].pos.y > map->h_max)
+				map->h_max = map->verts[c.y * map->w + c.x].pos.y;
+			if (map->verts[c.y * map->w + c.x].pos.y < map->h_min)
+				map->h_min = map->verts[c.y * map->w + c.x].pos.y;
+			c.x++;
 		}
-		y++;
+		c.y++;
 	}
 }
 
@@ -86,24 +89,18 @@ static t_map	*list_to_map(t_intvec2 size, t_list *lst, t_rgba c1, t_rgba c2)
 	t_map		*map;
 	char		**points;
 	t_intvec2	cur;
-	int			ch;
 
 	if (!(map = create_map(size.x, size.y)))
 		return (NULL);
 	cur.y = 0;
 	current = lst;
-	while (cur.y < size.y)
+	while (cur.y < map->h)
 	{
 		points = ft_strsplit((char*)current->content, ' ');
 		cur.x = 0;
 		while (cur.x < map->w)
 		{
-			ch = ft_atoi(points[cur.x]);
-			if (ch > map->h_max)
-				map->h_max = ch;
-			if (ch < map->h_min)
-				map->h_min = ch;
-			map->verts[cur.y * map->w + cur.x] = make_vertex(cur.x, ch, cur.y, WHITE);
+			map->verts[cur.y * map->w + cur.x] = make_vertex(cur.x, ft_atoi(points[cur.x]), cur.y, WHITE);
 			free(points[cur.x]);
 			cur.x++;
 		}

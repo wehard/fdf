@@ -6,22 +6,20 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/04 18:03:59 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/10 19:09:46 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/11 17:01:48 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "fdf.h"
 
-float	ft_convert_range(float oldvalue, float oldmin, float oldmax, float newmin, float newmax)
+float	ft_inverse_lerp(float value, float a, float b)
 {
-	if (oldmin == oldmax)
-		return (newmin);
-	if (oldvalue == oldmin)
-		return (newmin);
-	if (oldvalue == oldmax)
-		return (newmax);
-	return ((((oldvalue - oldmin) * (newmax - newmin)) / (oldmax - oldmin)) + newmin);
+	if ((a == b) || (value == a))
+		return (0.0f);
+	if (value == b)
+		return (1.0f);
+	return (((value - a) * 1.0f) / (b - a));
 }
 
 float	ft_lerp_f(float n1, float n2, float t)

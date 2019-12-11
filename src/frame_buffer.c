@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/11 10:34:47 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/10 18:51:46 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/11 18:42:44 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,11 @@
 #include "fdf.h"
 #include "libft.h"
 
-void			frame_buffer_set(t_frame_buffer *fb, int x, int y, int color)
+void			frame_buffer_set(t_frame_buffer *fb, int x, int y, int c)
 {
 	if (x < 0 || x >= WIN_W || y < 0 || y >= WIN_H)
 		return ;
-	*(int*)(fb->d_addr + (((y * WIN_W) + x) * fb->bpp)) = color;
+	*(int*)(fb->d_addr + (((y * WIN_W) + x) * fb->bpp)) = c;
 }
 
 t_frame_buffer	*create_frame_buffer(t_fdf_data *fdf_data)

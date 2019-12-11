@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/10 18:31:15 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/11 13:18:25 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/11 17:15:51 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,13 +42,9 @@ t_mat4x4	ft_create_mvp(t_fdf_data *fdf_data, t_vec3 p, t_vec3 r, t_vec3 s)
 
 int			ft_discard_point(t_vec3 p)
 {
-	float zfar = -5.0f;
-	float znear = -4.5f;
 	if (p.x < -1.0 || p.x > 1.0f)
 		return (1);
 	if (p.y < -1.0 || p.y > 1.0f)
 		return (1);
-	//if (p.z < -1.0 || p.z > 1.0)
-	//	return (1);
 	return (0);
 }

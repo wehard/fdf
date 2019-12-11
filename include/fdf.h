@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 15:23:29 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/11 14:10:53 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/11 18:43:27 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,14 @@ typedef struct		s_vertex
 	t_rgba			col;
 }					t_vertex;
 
+typedef struct		s_quad
+{
+	t_vertex		a;
+	t_vertex		b;
+	t_vertex		c;
+	t_vertex		d;
+}					t_quad;
+
 typedef struct		s_mat4x4
 {
 	float			m[4][4];
@@ -146,7 +154,7 @@ int					del_fdf_data(t_fdf_data *fdf_data);
 
 int					read_map_file(int fd, t_map **map, t_rgba c1, t_rgba c2);
 
-void				frame_buffer_set(t_frame_buffer *fb, int x, int y, int color);
+void				frame_buffer_set(t_frame_buffer *fb, int x, int y, int c);
 void				clear_frame_buffer(t_frame_buffer *fb);
 t_frame_buffer		*create_frame_buffer(t_fdf_data *fdf_data);
 
@@ -173,7 +181,7 @@ int					on_key_down(int key, void *param);
 void				ft_print_matrix(t_mat4x4 m, int precision);
 void				ft_print_vec3(t_vec3 v, int precision);
 
-float				ft_convert_range(float oldvalue, float oldmin, float oldmax, float newmin, float newmax);
+float				ft_inverse_lerp(float value, float a, float b);
 float				ft_lerp_f(float n1, float n2, float t);
 t_rgba				ft_make_rgba(float r, float g, float b, float a);
 t_rgba				ft_lerp_rgba(t_rgba c1, t_rgba c2, float t);
@@ -195,8 +203,8 @@ t_mat4x4			create_scaling_matrix(t_vec3 scale);
 t_mat4x4			create_translation_matrix(t_vec3 translation);
 
 t_mat4x4			create_trs_matrix(t_vec3 pos, t_vec3 rot, t_vec3 scale);
-t_mat4x4			create_perspective_matrix(float fov, float aspect, float znear, float zfar);
-t_mat4x4			create_ortho_matrix(float top, float bot, float lft, float rgt, float znear, float zfar);
+t_mat4x4			create_perspective_matrix(float fov, float ar, float zn, float zf);
+t_mat4x4			create_ortho_matrix(float s_w, float s_h, float zn, float zf);
 t_mat4x4			create_view_matrix(t_vec3 pos);
 
 t_mat4x4			multiply_matrix(t_mat4x4 a, t_mat4x4 b);

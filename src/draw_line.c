@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/11 13:06:16 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/11 14:29:25 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/11 16:59:37 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static int	col_x(int i, t_vertex p0, t_vertex p1)
 	t_rgba	rgb;
 	int		c;
 
-	t = ft_convert_range(i, p0.pos.x, p1.pos.x, 0.0f, 1.0f);
+	t = ft_inverse_lerp(i, p0.pos.x, p1.pos.x);
 	rgb = ft_lerp_rgba(p0.col, p1.col, t);
 	c = ft_get_color(rgb);
 	return (c);
@@ -31,7 +31,7 @@ static int	col_y(int i, t_vertex p0, t_vertex p1)
 	t_rgba	rgb;
 	int		c;
 
-	t = ft_convert_range(i, p0.pos.y, p1.pos.y, 0.0f, 1.0f);
+	t = ft_inverse_lerp(i, p0.pos.y, p1.pos.y);
 	rgb = ft_lerp_rgba(p0.col, p1.col, t);
 	c = ft_get_color(rgb);
 	return (c);
