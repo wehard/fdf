@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/12 15:15:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/10 17:40:59 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/11 13:44:02 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "ft_get_next_line.h"
 #include "fdf.h"
 
-static t_map *create_map(int w, int h)
+static t_map	*create_map(int w, int h)
 {
 	t_map	*map;
 	int		size;
@@ -31,13 +31,13 @@ static t_map *create_map(int w, int h)
 	map->h_min = INT32_MAX;
 	if (!(map->verts = (t_vertex*)malloc(sizeof(t_vertex) * size)))
 		return (NULL);
-	//ft_bzero(map->verts, sizeof(t_vertex) * size);
 	return (map);
 }
 
-static int	free_map_list(t_list *list)
+static int		free_map_list(t_list *list)
 {
 	t_list *tmp;
+
 	ft_putendl("map: done with list. deleting.");
 	if (!list)
 	{
@@ -54,12 +54,12 @@ static int	free_map_list(t_list *list)
 	return (0);
 }
 
-static void	init_map(t_map *map, t_rgba low, t_rgba high)
+static void		init_map(t_map *map, t_rgba c1, t_rgba c2)
 {
-	int x;
-	int y;
-	float x_offset;
-	float z_offset;
+	int		x;
+	int		y;
+	float	x_offset;
+	float	z_offset;
 
 	x_offset = ((float)map->w / 2) - 0.5f;
 	z_offset = ((float)map->h / 2) - 0.5f;
@@ -71,75 +71,73 @@ static void	init_map(t_map *map, t_rgba low, t_rgba high)
 		{
 			map->verts[y * map->w + x].pos.x -= x_offset;
 			map->verts[y * map->w + x].pos.z -= z_offset;
-			map->verts[y * map->w + x].col = ft_lerp_rgba(low, high, ft_convert_range(map->verts[y * map->w + x].pos.y, map->h_min, map->h_max, 0.0f, 1.0f));
+			map->verts[y * map->w + x].col = ft_lerp_rgba(c1, c2,
+				ft_convert_range(map->verts[y * map->w + x].pos.y,
+				map->h_min, map->h_max, 0.0f, 1.0f));
 			x++;
 		}
 		y++;
 	}
 }
 
-static t_map *convert_map_from_list(int w, int h, t_list *lst, t_rgba low, t_rgba high)
+static t_map	*list_to_map(t_intvec2 size, t_list *lst, t_rgba c1, t_rgba c2)
 {
-	t_list *current;
-	t_map *map;
-	char **points;
-	int x;
-	int y;
-	int ch;
+	t_list		*current;
+	t_map		*map;
+	char		**points;
+	t_intvec2	cur;
+	int			ch;
 
-	if (!(map = create_map(w, h)))
+	if (!(map = create_map(size.x, size.y)))
 		return (NULL);
-	y = 0;
+	cur.y = 0;
 	current = lst;
-	while (y < h)
+	while (cur.y < size.y)
 	{
 		points = ft_strsplit((char*)current->content, ' ');
-		x = 0;
-		while (x < map->w)
+		cur.x = 0;
+		while (cur.x < map->w)
 		{
-			ch = ft_atoi(points[x]);
+			ch = ft_atoi(points[cur.x]);
 			if (ch > map->h_max)
 				map->h_max = ch;
 			if (ch < map->h_min)
 				map->h_min = ch;
-			map->verts[y * map->w + x] = make_vertex(x, ch, y, ft_make_rgba(1.0f, 1.0f, 1.0f, 1.0f));
-			free(points[x]);
-			x++;
+			map->verts[cur.y * map->w + cur.x] = make_vertex(cur.x, ch, cur.y, WHITE);
+			free(points[cur.x]);
+			cur.x++;
 		}
 		free(points);
-		y++;
+		cur.y++;
 		current = current->next;
 	}
-	init_map(map, low, high);
+	init_map(map, c1, c2);
 	free_map_list(lst);
 	return (map);
 }
 
-int	read_map_file(int fd, t_map **map, t_rgba low, t_rgba high)
+int				read_map_file(int fd, t_map **map, t_rgba c1, t_rgba c2)
 {
-	t_list *lst;
-	t_list *temp;
-	int		width;
-	int		height;
-	char	*line;
+	t_list		*lst;
+	t_list		*temp;
+	t_intvec2	size;
+	char		*line;
 
 	lst = NULL;
-	width = -1;
-	height = 0;
+	size.x = -1;
+	size.y = 0;
 	while (ft_get_next_line(fd, &line))
 	{
-		if (width == -1)
-			width = ft_nwords(line, ' ');
+		if (size.x == -1)
+			size.x = ft_nwords(line, ' ');
 		if (!(temp = ft_lstnew(line, ft_strlen(line) + 1)))
 			return (free_map_list(lst));
-		if (ft_nwords(line, ' ') != width)
+		if (ft_nwords(line, ' ') != size.x)
 			return (free_map_list(lst));
 		ft_lstappend(&lst, temp);
-		height++;
+		size.y++;
 		free(line);
 	}
-	*map = convert_map_from_list(width, height, lst, low, high);
+	*map = list_to_map(size, lst, c1, c2);
 	return (1);
 }
-
-

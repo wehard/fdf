@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 15:23:29 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/10 19:13:32 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/11 14:10:53 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,7 +144,7 @@ typedef struct		s_fdf_data
 t_fdf_data			*init_fdf_data(char *title, t_map *map);
 int					del_fdf_data(t_fdf_data *fdf_data);
 
-int					read_map_file(int fd, t_map **map, t_rgba low, t_rgba high);
+int					read_map_file(int fd, t_map **map, t_rgba c1, t_rgba c2);
 
 void				frame_buffer_set(t_frame_buffer *fb, int x, int y, int color);
 void				clear_frame_buffer(t_frame_buffer *fb);
@@ -159,9 +159,12 @@ void				ft_set_parallel(t_fdf_data *fdf_data);
 void				ft_set_isometric(t_fdf_data *fdf_data);
 void				ft_set_perspective(t_fdf_data *fdf_data);
 
-void				draw_line(t_frame_buffer *fb, t_depth_buffer *db, t_vertex p0, t_vertex p1);
-
+void				draw_line(t_frame_buffer *fb, t_vertex p0, t_vertex p1);
+void				ft_draw_map(t_fdf_data *fdf_data);
 t_vec3				convert_to_screen_space(t_vec3 p);
+t_vec3				ft_transform_point(t_vec3 p, t_mat4x4 mvp);
+t_mat4x4			ft_create_mvp(t_fdf_data *fdf_data, t_vec3 p, t_vec3 r, t_vec3 s);
+int					ft_discard_point(t_vec3 p);
 
 int					throw_error(char *e);
 
@@ -180,6 +183,7 @@ t_vertex			make_vertex(float x, float y, float z, t_rgba c);
 
 t_vec2				make_vec2(float x, float y);
 t_intvec2			make_intvec2(int x, int y);
+t_intvec2			set_intvec2(int x, int y);
 t_vec3				make_vec3_pos(float x, float y, float z);
 t_vec3				make_vec3_rot(float x, float y, float z);
 t_vec3				add_vec3(t_vec3 a, t_vec3 b);
@@ -198,5 +202,8 @@ t_mat4x4			create_view_matrix(t_vec3 pos);
 t_mat4x4			multiply_matrix(t_mat4x4 a, t_mat4x4 b);
 t_vec3				multiply_matrix_vec3(t_vec3 in, t_mat4x4 m);
 t_vec3				multiply_matrix_vec3_2(t_vec3 in, t_mat4x4 m);
+
+void				ft_draw_axis(t_fdf_data *fdf_data, t_vec3 p, t_vec3 r, float s);
+void				ft_draw_info(t_fdf_data *fdf_data);
 
 #endif

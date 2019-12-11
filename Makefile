@@ -6,7 +6,7 @@
 #    By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/05 13:58:13 by wkorande          #+#    #+#              #
-#    Updated: 2019/12/10 18:41:06 by wkorande         ###   ########.fr        #
+#    Updated: 2019/12/11 13:18:43 by wkorande         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,8 +16,9 @@ CFLAGS = -Wall -Wextra -Werror
 
 SRCS = fdf.c\
 	matrix.c\
-	draw.c\
+	draw_line.c\
 	map.c\
+	draw_map.c\
 	frame_buffer.c\
 	depth_buffer.c\
 	event_handlers.c\
@@ -29,7 +30,8 @@ SRCS = fdf.c\
 	vec3.c\
 	control.c\
 	project.c\
-	fdf_data.c
+	fdf_data.c\
+	info.c
 
 SRCDIR = src
 
