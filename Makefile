@@ -6,7 +6,7 @@
 #    By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/05 13:58:13 by wkorande          #+#    #+#              #
-#    Updated: 2019/12/12 14:40:24 by wkorande         ###   ########.fr        #
+#    Updated: 2019/12/12 14:51:30 by wkorande         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -48,7 +48,6 @@ LIBFT=../libft
 
 MLXLIB=mlx
 MLXDIR=./minilibx
-
 
 all: $(NAME)
 
