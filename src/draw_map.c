@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/11 13:17:12 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/12 14:28:41 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/12 16:30:36 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ void		ft_draw_map(t_fdf_data *fdf_data)
 {
 	int			x;
 	int			y;
-	int			i;
 	t_quad		q;
 	t_mat4x4	mvp;
 

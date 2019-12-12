@@ -6,7 +6,7 @@
 #    By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/05 13:58:13 by wkorande          #+#    #+#              #
-#    Updated: 2019/12/12 15:02:10 by wkorande         ###   ########.fr        #
+#    Updated: 2019/12/12 16:30:04 by wkorande         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -46,11 +46,13 @@ INCL = include
 
 LIBFT=./libft
 
+FLAGS=-Wall -Wextra -Werror
+
 all: $(NAME)
 
 $(NAME):
 	make -C $(LIBFT)
-	gcc -o $(NAME) -I$(INCL) -I $(LIBFT)/includes $(SRC) -L$(LIBFT) -lft -lmlx -framework OpenGL -framework AppKit
+	gcc $(FLAGS) -o $(NAME) -I$(INCL) -I $(LIBFT)/includes $(SRC) -L$(LIBFT) -lft -lmlx -framework OpenGL -framework AppKit
 
 clean:
 	make clean -C $(LIBFT)

@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/06 14:21:07 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/11 13:57:13 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/12 16:31:31 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@ t_vec2		make_vec2(float x, float y)
 {
 	t_vec2 v;
 
-	v.x = 0;
-	v.y = 0;
+	v.x = x;
+	v.y = y;
 	return (v);
 }
 
