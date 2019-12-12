@@ -6,11 +6,12 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/10 18:35:25 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/12 15:15:37 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/12 16:44:09 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
+#include "libft.h"
 #include "mlx.h"
 
 t_fdf_data	*init_fdf_data(char *title, t_map *map)
@@ -26,7 +27,7 @@ t_fdf_data	*init_fdf_data(char *title, t_map *map)
 	fdf_data->znear = 0.1f;
 	fdf_data->zfar = 100.0f;
 	fdf_data->aspect = (float)WIN_W / (float)WIN_H;
-	fdf_data->ortho_size = map->w;
+	fdf_data->ortho_size = ft_max(map->w, ft_max(map->h_max, map->h));
 	ortho_size = fdf_data->ortho_size;
 	fdf_data->fov = 35.0f;
 	fdf_data->perspective_matrix = create_perspective_matrix(fdf_data->fov,
@@ -36,7 +37,7 @@ t_fdf_data	*init_fdf_data(char *title, t_map *map)
 		fdf_data->zfar);
 	fdf_data->m_proj = (t_mat4x4*)malloc(sizeof(t_mat4x4));
 	fdf_data->map = map;
-	fdf_data->camera.pos = make_vec3_pos(0.0f, 3.0f, map->w);
+	fdf_data->camera.pos = make_vec3_pos(0.0f, 3.0f, ortho_size);
 	ft_set_isometric(fdf_data);
 	return (fdf_data);
 }
