@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/10 18:35:25 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/12 14:41:15 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/12 15:15:37 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ int			del_fdf_data(t_fdf_data *fdf_data)
 {
 	mlx_destroy_window(fdf_data->mlx_ptr, fdf_data->win_ptr);
 	mlx_destroy_image(fdf_data->mlx_ptr, fdf_data->f_buf->img);
+	free(fdf_data->f_buf);
 	free(fdf_data->m_proj);
 	free(fdf_data->map->verts);
 	free(fdf_data->map);
