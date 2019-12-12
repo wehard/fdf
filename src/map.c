@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/12 15:15:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/12 15:11:38 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/12 16:25:20 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ static int		free_map_list(t_list *list)
 {
 	t_list *tmp;
 
-	ft_putendl("map: done with list. deleting.");
 	if (!list)
 	{
 		ft_putendl("map: list was null!");
@@ -31,6 +30,14 @@ static int		free_map_list(t_list *list)
 		list = tmp->next;
 		free(tmp);
 	}
+	return (0);
+}
+
+static int		free_temp_and_line(t_list *temp, char *line)
+{
+	free(line);
+	free(temp->content);
+	free(temp);
 	return (0);
 }
 
@@ -104,7 +111,7 @@ int				read_map_file(int fd, t_map **map, t_rgba c1, t_rgba c2)
 		if (!(temp = ft_lstnew(line, ft_strlen(line) + 1)))
 			return (free_map_list(lst));
 		if (ft_nwords(line, ' ') != size.x)
-			return (free_map_list(lst));
+			return (free_map_list(lst) || free_temp_and_line(temp, line));
 		ft_lstappend(&lst, temp);
 		size.y++;
 		free(line);
