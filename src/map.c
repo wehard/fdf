@@ -6,33 +6,13 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/12 15:15:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/11 19:01:32 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/12 13:20:45 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "ft_get_next_line.h"
 #include "fdf.h"
-
-static t_map	*create_map(int w, int h)
-{
-	t_map	*map;
-	int		size;
-
-	size = w * h;
-	if (!(map = (t_map*)malloc(sizeof(t_map))))
-		return (NULL);
-	map->size = size;
-	map->w = w;
-	map->h = h;
-	map->pos = make_vec3_pos(0.0f, 0.0f, 0.0f);
-	map->rot = make_vec3_rot(0.0f, 0.0f, 0.0f);
-	map->h_max = INT32_MIN;
-	map->h_min = INT32_MAX;
-	if (!(map->verts = (t_vertex*)malloc(sizeof(t_vertex) * size)))
-		return (NULL);
-	return (map);
-}
 
 static int		free_map_list(t_list *list)
 {
@@ -52,26 +32,6 @@ static int		free_map_list(t_list *list)
 		free(tmp);
 	}
 	return (0);
-}
-
-static void		calculate_map_minmax(t_map *map)
-{
-	t_intvec2 c;
-
-	c.y = 0;
-	while (c.y < map->h)
-	{
-		c.x = 0;
-		while (c.x < map->w)
-		{
-			if (map->verts[c.y * map->w + c.x].pos.y > map->h_max)
-				map->h_max = map->verts[c.y * map->w + c.x].pos.y;
-			if (map->verts[c.y * map->w + c.x].pos.y < map->h_min)
-				map->h_min = map->verts[c.y * map->w + c.x].pos.y;
-			c.x++;
-		}
-		c.y++;
-	}
 }
 
 static void		init_map(t_map *map, t_rgba c1, t_rgba c2)
@@ -100,15 +60,12 @@ static void		init_map(t_map *map, t_rgba c1, t_rgba c2)
 	}
 }
 
-static t_map	*list_to_map(t_intvec2 size, t_list *lst, t_rgba c1, t_rgba c2)
+static t_map	*list_to_map(t_map *map, t_list *lst)
 {
 	t_list		*current;
-	t_map		*map;
 	char		**points;
 	t_intvec2	cur;
 
-	if (!(map = create_map(size.x, size.y)))
-		return (NULL);
 	cur.y = 0;
 	current = lst;
 	while (cur.y < map->h)
@@ -117,7 +74,8 @@ static t_map	*list_to_map(t_intvec2 size, t_list *lst, t_rgba c1, t_rgba c2)
 		cur.x = 0;
 		while (cur.x < map->w)
 		{
-			map->verts[cur.y * map->w + cur.x] = make_vertex(cur.x, ft_atoi(points[cur.x]), cur.y, RED);
+			map->verts[cur.y * map->w + cur.x] =
+				make_vertex(cur.x, ft_atoi(points[cur.x]), cur.y, RED);
 			free(points[cur.x]);
 			cur.x++;
 		}
@@ -151,7 +109,9 @@ int				read_map_file(int fd, t_map **map, t_rgba c1, t_rgba c2)
 		size.y++;
 		free(line);
 	}
-	*map = list_to_map(size, lst, c1, c2);
+	if (!(*map = create_map(size.x, size.y)))
+		return (0);
+	list_to_map(*map, lst);
 	init_map(*map, c1, c2);
 	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/11 13:04:16 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/11 18:23:44 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/12 14:38:47 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,21 +38,6 @@ void	ft_draw_axis(t_fdf_data *fdf_data, t_vec3 pos, t_vec3 rot, float scale)
 
 void	ft_draw_info(t_fdf_data *fdf_data)
 {
-	char rot[50];
-	char campos[50];
-
 	mlx_string_put(fdf_data->mlx_ptr, fdf_data->win_ptr, 10, 10,
 		ft_get_color(WHITE), fdf_data->view_state);
-	sprintf(rot, "%.3f, %.3f, %.3f", fdf_data->map->rot.x,
-		fdf_data->map->rot.y, fdf_data->map->rot.z);
-	mlx_string_put(fdf_data->mlx_ptr, fdf_data->win_ptr, 10, 40,
-		ft_get_color(WHITE), "rot: ");
-	mlx_string_put(fdf_data->mlx_ptr, fdf_data->win_ptr, 50, 40,
-		ft_get_color(WHITE), rot);
-	sprintf(campos, "%.3f, %.3f, %.3f", fdf_data->camera.pos.x,
-		fdf_data->camera.pos.y, fdf_data->camera.pos.z);
-	mlx_string_put(fdf_data->mlx_ptr, fdf_data->win_ptr, 970, 10,
-		ft_get_color(WHITE), "cam pos: ");
-	mlx_string_put(fdf_data->mlx_ptr, fdf_data->win_ptr, 1060, 10,
-		ft_get_color(WHITE), campos);
 }

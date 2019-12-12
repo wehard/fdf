@@ -6,7 +6,7 @@
 #    By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/05 13:58:13 by wkorande          #+#    #+#              #
-#    Updated: 2019/12/11 17:56:25 by wkorande         ###   ########.fr        #
+#    Updated: 2019/12/12 14:40:24 by wkorande         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,11 +23,10 @@ SRCS = fdf.c\
 	matrix_projection.c\
 	draw_line.c\
 	map.c\
+	map_helper.c\
 	draw_map.c\
 	frame_buffer.c\
-	depth_buffer.c\
 	error.c\
-	ft_print_matrix.c\
 	color.c\
 	vertex.c\
 	vec2.c\

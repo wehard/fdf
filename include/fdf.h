@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 15:23:29 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/11 18:43:27 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/12 14:40:56 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,13 +116,6 @@ typedef struct		s_frame_buffer
 	int				h;
 }					t_frame_buffer;
 
-typedef struct		s_depth_buffer
-{
-	float			*data;
-	int				width;
-	int				height;
-}					t_depth_buffer;
-
 typedef struct		s_camera
 {
 	t_vec3			pos;
@@ -134,7 +127,6 @@ typedef struct		s_fdf_data
 	void			*mlx_ptr;
 	void			*win_ptr;
 	t_frame_buffer	*f_buf;
-	t_depth_buffer	*db;
 	t_mat4x4		*m_proj;
 	t_mat4x4		perspective_matrix;
 	t_mat4x4		ortho_matrix;
@@ -153,15 +145,12 @@ t_fdf_data			*init_fdf_data(char *title, t_map *map);
 int					del_fdf_data(t_fdf_data *fdf_data);
 
 int					read_map_file(int fd, t_map **map, t_rgba c1, t_rgba c2);
+t_map				*create_map(int w, int h);
+void				calculate_map_minmax(t_map *map);
 
 void				frame_buffer_set(t_frame_buffer *fb, int x, int y, int c);
 void				clear_frame_buffer(t_frame_buffer *fb);
 t_frame_buffer		*create_frame_buffer(t_fdf_data *fdf_data);
-
-void				depth_buffer_set(t_depth_buffer *db, int x, int y, float f);
-t_depth_buffer		*create_depth_buffer(int width, int height);
-void				clear_depth_buffer(t_depth_buffer *db, float value);
-float				depth_buffer_sample(t_depth_buffer *db, int x, int y);
 
 void				ft_set_parallel(t_fdf_data *fdf_data);
 void				ft_set_isometric(t_fdf_data *fdf_data);
@@ -177,9 +166,6 @@ int					ft_discard_point(t_vec3 p);
 int					throw_error(char *e);
 
 int					on_key_down(int key, void *param);
-
-void				ft_print_matrix(t_mat4x4 m, int precision);
-void				ft_print_vec3(t_vec3 v, int precision);
 
 float				ft_inverse_lerp(float value, float a, float b);
 float				ft_lerp_f(float n1, float n2, float t);

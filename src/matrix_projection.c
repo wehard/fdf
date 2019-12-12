@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/11 17:53:48 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/11 18:39:46 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/12 14:34:59 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,13 @@ t_mat4x4	create_perspective_matrix(float fov, float ar, float zn, float zf)
 	t_mat4x4	mat;
 	float		tanhalfov;
 
-	tanhalfov = tanf((fov / 2.0f) * M_PI / 180.0f);
-	mat.m[0][0] = 1.0f / (tanhalfov * ar);
+	tanhalfov = tanf((fov * M_PI / 180.0f) / 2.0f);
+	mat.m[0][0] = zn / (tanhalfov * ar);
 	mat.m[0][1] = 0.0f;
 	mat.m[0][2] = 0.0f;
 	mat.m[0][3] = 0.0f;
 	mat.m[1][0] = 0.0f;
-	mat.m[1][1] = -1.0f / tanhalfov;
+	mat.m[1][1] = -zn / tanhalfov;
 	mat.m[1][2] = 0.0f;
 	mat.m[1][3] = 0.0f;
 	mat.m[2][0] = 0.0f;
