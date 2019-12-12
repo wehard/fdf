@@ -6,7 +6,7 @@
 #    By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/05 13:58:13 by wkorande          #+#    #+#              #
-#    Updated: 2019/12/12 14:51:30 by wkorande         ###   ########.fr        #
+#    Updated: 2019/12/12 14:55:53 by wkorande         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -52,30 +52,19 @@ MLXDIR=./minilibx
 all: $(NAME)
 
 $(NAME):
-	#@make -C $(LIBFT)
-	gcc -o $(NAME) -I$(INCL) -I $(LIBFT)/includes -I $(MLXDIR) $(SRC) -L$(LIBFT) -lft -L$(MLXDIR) -l$(MLXLIB) -framework OpenGL -framework AppKit
-
-debug:
-	gcc -g -o $(NAME) -I$(INCL) -I $(LIBFT)/includes -I $(MLXDIR) $(SRC) -L$(LIBFT) -lft -L$(MLXDIR) -l$(MLXLIB) -framework OpenGL -framework AppKit
-
-linux: libft
-	@echo "Creating LINUX executable $(NAME) ..."
-	@gcc -g -o $(NAME) -I$(INCL) -I $(LIBFT)/includes -I minilibx $(SRC) -L $(LIBFT) -lft -L minilibx -lmlx_Linux -lXext -lX11 -lm
-
-libft:
-	@make -C $(LIBFT) fclean
-	@make -C $(LIBFT)
+	make -C $(LIBFT)
+	gcc -o $(NAME) -I$(INCL) -I $(LIBFT)/includes $(SRC) -L$(LIBFT) -lft -lmlx -framework OpenGL -framework AppKit
 
 clean:
-	#@make clean -C $(LIBFT)
+	make clean -C $(LIBFT)
 	@echo "Removing object files ..."
 	@rm -f $(OBJ)
 
 fclean : clean
-	#@make fclean -C $(LIBFT)
+	make fclean -C $(LIBFT)
 	@echo "Removing $(NAME) ..."
 	@rm -f $(NAME)
 
 re: fclean all
 
-.PHONY: all debug linux clean fclean re
+.PHONY: all clean fclean re
