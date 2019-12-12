@@ -6,7 +6,7 @@
 #    By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/05 13:58:13 by wkorande          #+#    #+#              #
-#    Updated: 2019/12/12 14:55:53 by wkorande         ###   ########.fr        #
+#    Updated: 2019/12/12 15:02:10 by wkorande         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -44,10 +44,7 @@ OUT = $(SRCS:.c=.o)
 
 INCL = include
 
-LIBFT=../libft
-
-MLXLIB=mlx
-MLXDIR=./minilibx
+LIBFT=./libft
 
 all: $(NAME)
 
