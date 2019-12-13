@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/04 18:03:59 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/11 17:01:48 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/13 13:01:02 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 
 float	ft_inverse_lerp(float value, float a, float b)
 {
-	if ((a == b) || (value == a))
+	if ((a == b) || (value <= a))
 		return (0.0f);
-	if (value == b)
+	if (value >= b)
 		return (1.0f);
 	return (((value - a) * 1.0f) / (b - a));
 }

@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/10 18:28:39 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/12 16:44:38 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/13 13:14:10 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void		ft_set_parallel(t_fdf_data *fdf_data)
 	fdf_data->view_state = PARALLEL;
 	*(fdf_data->m_proj) = fdf_data->ortho_matrix;
 	fdf_data->map->pos = make_vec3_pos(0.0f, 0.0f, 0.0f);
-	fdf_data->map->rot = make_vec3_rot(0.0f, 0.0f, 0.0f);
+	fdf_data->map->rot = make_vec3_rot(-90.0f, 0.0f, 0.0f);
 	fdf_data->map->scale = make_vec3_rot(1.0f, 1.0f, 1.0f);
 }
 
@@ -35,7 +35,7 @@ void		ft_set_perspective(t_fdf_data *fdf_data)
 	fdf_data->view_state = PERSPECTIVE;
 	*(fdf_data->m_proj) = fdf_data->perspective_matrix;
 	fdf_data->map->pos = make_vec3_pos(0.0f, 0.0f, 0.0f);
-	fdf_data->map->rot = make_vec3_rot(0.0f, 0.0f, 0.0f);
+	fdf_data->map->rot = make_vec3_rot(-10.0f, 0.0f, 0.0f);
 	fdf_data->map->scale = make_vec3_rot(1.0f, 1.0f, 1.0f);
 }
 
@@ -71,8 +71,8 @@ int			on_key_down(int key, void *param)
 		key == KEY_S ? (fdf_data->map->rot.x -= rotation) :
 			(fdf_data->map->rot.y += rotation);
 	if (key == KEY_Z || key == KEY_X)
-		key == KEY_Z ? (fdf_data->camera.pos.z += 1.0f) :
-			(fdf_data->camera.pos.z -= 1.0f);
+		key == KEY_Z ? (fdf_data->map->scale.y += 0.1f) :
+			(fdf_data->map->scale.y -= 0.1f);
 	if (key == KEY_UP || key == KEY_DOWN)
 		key == KEY_UP ? (fdf_data->camera.pos.y += 1.0f) :
 			(fdf_data->camera.pos.y -= 1.0f);

@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/12 15:15:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/12 16:25:20 by wkorande         ###   ########.fr       */
+/*   Updated: 2019/12/13 12:58:24 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ static t_map	*list_to_map(t_map *map, t_list *lst)
 		while (cur.x < map->w)
 		{
 			map->verts[cur.y * map->w + cur.x] =
-				make_vertex(cur.x, ft_atoi(points[cur.x]), cur.y, RED);
+				make_vertex(cur.x, ft_atoi(points[cur.x]), cur.y, WHITE);
 			free(points[cur.x]);
 			cur.x++;
 		}
