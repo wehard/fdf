@@ -6,7 +6,7 @@
 /*   By: wkorande <wkorande@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:53:10 by wkorande          #+#    #+#             */
-/*   Updated: 2019/12/12 16:26:11 by wkorande         ###   ########.fr       */
+/*   Updated: 2020/01/08 16:44:41 by wkorande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,9 @@ int		main(int argc, char const *argv[])
 
 	if (argc == 2)
 	{
-		fd = open(argv[1], O_RDONLY);
+		fd = open(argv[1], O_RDWR);
+		if (fd == -1)
+			return (throw_error("error: is probably a directory"));
 		if (fd < 3 || !read_map_file(fd, &map, BLUE, WHITE))
 		{
 			close(fd);
